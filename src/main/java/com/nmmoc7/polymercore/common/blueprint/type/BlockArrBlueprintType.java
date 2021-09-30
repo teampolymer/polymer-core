@@ -15,6 +15,6 @@ public class BlockArrBlueprintType implements IBlueprintType {
 
     @Override
     public boolean test(BlockState block) {
-        return Arrays.stream(blocks).anyMatch(block1 -> block == block1);
+        return Arrays.stream(blocks).anyMatch(block1 -> block.getBlock() == block1);
     }
 }

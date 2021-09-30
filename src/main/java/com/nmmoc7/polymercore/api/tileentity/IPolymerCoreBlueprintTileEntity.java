@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.common.tileentity.blueprint;
+package com.nmmoc7.polymercore.api.tileentity;
 
 import com.nmmoc7.polymercore.api.blueprint.IBlueprint;
 

@@ -1,7 +1,10 @@
 package com.nmmoc7.polymercore.common.block;
 
+import com.nmmoc7.polymercore.api.block.IPolymerCoreBlock;
 import com.nmmoc7.polymercore.common.tileentity.PolymerCoreTileEntity;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.tileentity.TileEntity;

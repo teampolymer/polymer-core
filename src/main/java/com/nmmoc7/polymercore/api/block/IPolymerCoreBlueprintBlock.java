@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.block;
+package com.nmmoc7.polymercore.api.block;
 
 public interface IPolymerCoreBlueprintBlock {
 }

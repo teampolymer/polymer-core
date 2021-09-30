@@ -1,6 +1,7 @@
 package com.nmmoc7.polymercore.common.tileentity;
 
-import com.nmmoc7.polymercore.RegisterHandler;
+import com.nmmoc7.polymercore.api.tileentity.IPolymerCoreTileEntity;
+import com.nmmoc7.polymercore.common.RegisterHandler;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 

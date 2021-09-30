@@ -1,8 +1,9 @@
 package com.nmmoc7.polymercore.common.tileentity.blueprint;
 
-import com.nmmoc7.polymercore.RegisterHandler;
 import com.nmmoc7.polymercore.api.blueprint.IBlueprint;
 import com.nmmoc7.polymercore.api.blueprint.type.IBlueprintType;
+import com.nmmoc7.polymercore.api.tileentity.IPolymerCoreBlueprintTileEntity;
+import com.nmmoc7.polymercore.common.RegisterHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
