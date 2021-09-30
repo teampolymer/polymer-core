@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.tileentity;
+package com.nmmoc7.polymercore.common.tileentity;
 
 import com.nmmoc7.polymercore.RegisterHandler;
 import net.minecraft.tileentity.ITickableTileEntity;

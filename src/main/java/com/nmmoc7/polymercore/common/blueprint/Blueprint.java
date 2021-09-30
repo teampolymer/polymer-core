@@ -1,9 +1,9 @@
-package com.nmmoc7.polymercore.blueprint;
+package com.nmmoc7.polymercore.common.blueprint;
 
-import com.nmmoc7.polymercore.blueprint.type.IBlueprintType;
+import com.nmmoc7.polymercore.api.blueprint.IBlueprint;
+import com.nmmoc7.polymercore.api.blueprint.type.IBlueprintType;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

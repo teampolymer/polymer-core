@@ -1,6 +1,7 @@
-package com.nmmoc7.polymercore.block;
+package com.nmmoc7.polymercore.common.block;
 
-import com.nmmoc7.polymercore.tileentity.blueprint.PolymerCoreBlueprintTileEntity;
+import com.nmmoc7.polymercore.block.IPolymerCoreBlueprintBlock;
+import com.nmmoc7.polymercore.common.tileentity.blueprint.PolymerCoreBlueprintTileEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

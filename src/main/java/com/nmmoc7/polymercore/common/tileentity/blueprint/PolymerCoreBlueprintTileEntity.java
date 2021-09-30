@@ -1,12 +1,10 @@
-package com.nmmoc7.polymercore.tileentity.blueprint;
+package com.nmmoc7.polymercore.common.tileentity.blueprint;
 
 import com.nmmoc7.polymercore.RegisterHandler;
-import com.nmmoc7.polymercore.blueprint.IBlueprint;
-import com.nmmoc7.polymercore.blueprint.type.IBlueprintType;
+import com.nmmoc7.polymercore.api.blueprint.IBlueprint;
+import com.nmmoc7.polymercore.api.blueprint.type.IBlueprintType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.Map;
 

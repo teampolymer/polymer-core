@@ -1,6 +1,6 @@
 package com.nmmoc7.polymercore.common;
 
-import com.nmmoc7.polymercore.api.IPolymerCore;
+import com.nmmoc7.polymercore.api.IPolymerCoreBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -9,7 +9,7 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
-public class PolymerCoreBlock extends Block implements IPolymerCore {
+public class PolymerCoreBlock extends Block implements IPolymerCoreBlock {
     public PolymerCoreBlock() {
         super(AbstractBlock.Properties.create(Material.IRON, MaterialColor.IRON)
                 .setRequiresTool()
