@@ -31,26 +31,31 @@ public class RegisterHandler {
     @SubscribeEvent
     public static void onBlockRegister(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
-                BLOCK.setRegistryName(BLOCK_NAME),
-                BLUEPRINT_BLOCK.setRegistryName(BLUEPRINT_BLOCK_NAME)
+            BLOCK.setRegistryName(BLOCK_NAME),
+            BLUEPRINT_BLOCK.setRegistryName(BLUEPRINT_BLOCK_NAME)
         );
     }
 
     @SubscribeEvent
     public static void onItemRegister(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                ITEM.setRegistryName(BLOCK_NAME),
-                BLUEPRINT_ITEM.setRegistryName(BLUEPRINT_BLOCK_NAME)
+            ITEM.setRegistryName(BLOCK_NAME),
+            BLUEPRINT_ITEM.setRegistryName(BLUEPRINT_BLOCK_NAME)
         );
     }
 
     @SubscribeEvent
     public static void onTileTypeRegister(RegistryEvent.Register<TileEntityType<?>> event) {
+        TILE = TileEntityType.Builder
+            .create(PolymerCoreTileEntity::new, getTileBlocks())
+            .build(null);
+        BLUEPRINT_TILE = TileEntityType.Builder
+            .create(PolymerCoreBlueprintTileEntity::new, getBlueprintTileBlocks())
+            .build(null);
+
         event.getRegistry().registerAll(
-                TILE = (TileEntityType<PolymerCoreTileEntity>) TileEntityType.Builder.create(PolymerCoreTileEntity::new, getTileBlocks()).build(null)
-                        .setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLOCK_NAME.getPath() + "_tile")),
-                BLUEPRINT_TILE = (TileEntityType<PolymerCoreBlueprintTileEntity>) TileEntityType.Builder.create(PolymerCoreBlueprintTileEntity::new, getBlueprintTileBlocks()).build(null)
-                        .setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
+            TILE.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLOCK_NAME.getPath() + "_tile")),
+            BLUEPRINT_TILE.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
         );
     }
 
