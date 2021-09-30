@@ -6,5 +6,5 @@ import net.minecraftforge.fml.common.Mod;
 @Mod(PolymerCore.MOD_ID)
 public class PolymerCore {
     public static final String MOD_ID = "polymer-core";
-
+    ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 }
