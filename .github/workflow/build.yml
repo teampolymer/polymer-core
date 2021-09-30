@@ -6,7 +6,8 @@ name: Build
 on:
   push:
     tags:
-      - "v*"
+      - "v1.12*"
+      - "v1.16*"
   workflow_dispatch:
 
 jobs:
