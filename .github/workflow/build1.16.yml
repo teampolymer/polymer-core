@@ -29,4 +29,4 @@ jobs:
         automatic_release_tag: "${{ github.ref }}"
         prerelease: false
         files: |
-          build/libs/*.jar
+          build/libs/1.16/*.jar
