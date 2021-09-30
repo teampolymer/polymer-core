@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore;
+package com.nmmoc7.polymercore.tileentity;
 
 public interface IPolymerCoreTileEntity {
 }
