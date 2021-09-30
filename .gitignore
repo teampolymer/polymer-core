@@ -16,11 +16,16 @@ atlassian-ide-plugin.xml
 # Compiled class file
 *.class
 
-# Log file
-*.log
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
 
-# BlueJ files
-*.ctxt
+# gradle
+build
+.gradle
 
 # Package Files #
 *.jar
