@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore;
+package com.nmmoc7.polymercore.common;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

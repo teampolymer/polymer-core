@@ -1,13 +1,14 @@
-package com.nmmoc7.polymercore.recipes.recipeobj;
+package com.nmmoc7.polymercore.common.recipes.recipeobj;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 
-public class RecipeItem extends RecipeObject<Item> {
-    public RecipeItem(Item obj) {
+public class RecipeBlock extends RecipeObject<Block> {
+    public RecipeBlock(Block obj) {
         super(obj);
     }
 
@@ -18,7 +19,7 @@ public class RecipeItem extends RecipeObject<Item> {
 
     @Override
     public boolean matches(ItemStack obj) {
-        return this.obj == obj.getItem();
+        return this.obj.asItem() == obj.getItem();
     }
 
     @Override
@@ -27,8 +28,8 @@ public class RecipeItem extends RecipeObject<Item> {
     }
 
     @Override
-    public Item fromJson(JsonObject json) {
-        return Ingredient.deserializeItemList(json).getStacks().toArray(new ItemStack[0])[0].getItem();
+    public Block fromJson(JsonObject json) {
+        return ((BlockItem) (Ingredient.deserializeItemList(json).getStacks().toArray(new ItemStack[0])[0].getItem())).getBlock();
     }
 
     @Override
@@ -39,12 +40,12 @@ public class RecipeItem extends RecipeObject<Item> {
     }
 
     @Override
-    public Item fromNBT(CompoundNBT nbt) {
-        return ItemStack.read(nbt).getItem();
+    public Block fromNBT(CompoundNBT nbt) {
+        return ((BlockItem) ItemStack.read(nbt).getItem()).getBlock();
     }
 
     @Override
-    public RecipeObjectType<Item, ? extends RecipeObject<Item>> getType() {
-        return RecipeObjectRegisterHandler.ITEM;
+    public RecipeObjectType<Block, ? extends RecipeObject<Block>> getType() {
+        return RecipeObjectRegisterHandler.BLOCK;
     }
 }

@@ -1,6 +1,7 @@
-package com.nmmoc7.polymercore;
+package com.nmmoc7.polymercore.common;
 
-import com.nmmoc7.polymercore.event.DefaultTileRegEvent;
+import com.nmmoc7.polymercore.PolymerCore;
+import com.nmmoc7.polymercore.common.event.DefaultTileRegEvent;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;

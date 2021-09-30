@@ -1,5 +1,6 @@
-package com.nmmoc7.polymercore;
+package com.nmmoc7.polymercore.common;
 
+import com.nmmoc7.polymercore.api.IPolymerCore;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;

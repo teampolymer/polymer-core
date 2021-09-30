@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.capability;
+package com.nmmoc7.polymercore.common.capability;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;

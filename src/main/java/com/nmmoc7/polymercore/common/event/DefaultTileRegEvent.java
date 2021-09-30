@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.event;
+package com.nmmoc7.polymercore.common.event;
 
 import net.minecraft.block.Block;
 import net.minecraftforge.eventbus.api.Event;

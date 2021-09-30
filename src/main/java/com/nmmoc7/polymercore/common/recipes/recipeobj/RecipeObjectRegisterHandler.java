@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.recipes.recipeobj;
+package com.nmmoc7.polymercore.common.recipes.recipeobj;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

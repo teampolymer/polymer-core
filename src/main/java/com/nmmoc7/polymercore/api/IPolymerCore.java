@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore;
+package com.nmmoc7.polymercore.api;
 
 import net.minecraft.block.ITileEntityProvider;
 

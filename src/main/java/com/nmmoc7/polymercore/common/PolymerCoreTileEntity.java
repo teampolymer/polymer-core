@@ -1,9 +1,8 @@
-package com.nmmoc7.polymercore;
+package com.nmmoc7.polymercore.common;
 
-import net.minecraft.inventory.IInventory;
+import com.nmmoc7.polymercore.api.IPolymerCoreTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 
 public class PolymerCoreTileEntity extends TileEntity implements IPolymerCoreTileEntity, ITickableTileEntity {
     public PolymerCoreTileEntity() {

@@ -1,5 +1,6 @@
-package com.nmmoc7.polymercore.capability;
+package com.nmmoc7.polymercore.common.capability;
 
+import com.nmmoc7.polymercore.api.capability.IPolymerCapability;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.ItemStackHandler;
 
