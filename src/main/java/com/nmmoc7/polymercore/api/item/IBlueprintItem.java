@@ -1,2 +1,7 @@
-package com.nmmoc7.polymercore.api.item;public interface IBlueprintItem {
+package com.nmmoc7.polymercore.api.item;
+
+import com.nmmoc7.polymercore.api.blueprint.IBlueprint;
+
+public interface IBlueprintItem {
+    IBlueprint getBlueprint();
 }

@@ -1,3 +1,7 @@
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below

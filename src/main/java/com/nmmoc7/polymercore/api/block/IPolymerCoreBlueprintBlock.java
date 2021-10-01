@@ -1,4 +1,6 @@
 package com.nmmoc7.polymercore.api.block;
 
-public interface IPolymerCoreBlueprintBlock {
+import net.minecraft.block.ITileEntityProvider;
+
+public interface IPolymerCoreBlueprintBlock extends ITileEntityProvider {
 }

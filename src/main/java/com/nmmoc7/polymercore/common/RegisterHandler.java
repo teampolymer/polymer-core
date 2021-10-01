@@ -4,6 +4,8 @@ import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.common.block.PolymerCoreBlock;
 import com.nmmoc7.polymercore.common.block.PolymerCoreBlueprintBlock;
 import com.nmmoc7.polymercore.common.event.DefaultTileRegEvent;
+import com.nmmoc7.polymercore.common.item.Hammer;
+import com.nmmoc7.polymercore.common.item.TestBlueprintItem;
 import com.nmmoc7.polymercore.common.tileentity.PolymerCoreTileEntity;
 import com.nmmoc7.polymercore.common.tileentity.blueprint.PolymerCoreBlueprintTileEntity;
 import net.minecraft.block.Block;
@@ -28,6 +30,9 @@ public class RegisterHandler {
     public static final ResourceLocation BLOCK_NAME = new ResourceLocation(PolymerCore.MOD_ID, "polymer_core_block");
     public static final ResourceLocation BLUEPRINT_BLOCK_NAME = new ResourceLocation(PolymerCore.MOD_ID, "polymer_core_blueprint_block");
 
+    public static final Hammer HAMMER = new Hammer();
+    public static final TestBlueprintItem TEST_BLUEPRINT_ITEM = new TestBlueprintItem();
+
     @SubscribeEvent
     public static void onBlockRegister(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
@@ -40,17 +45,24 @@ public class RegisterHandler {
     public static void onItemRegister(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
                 ITEM.setRegistryName(BLOCK_NAME),
-                BLUEPRINT_ITEM.setRegistryName(BLUEPRINT_BLOCK_NAME)
+                BLUEPRINT_ITEM.setRegistryName(BLUEPRINT_BLOCK_NAME),
+                HAMMER.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "hammer")),
+                TEST_BLUEPRINT_ITEM.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "test_blueprint"))
         );
     }
 
     @SubscribeEvent
     public static void onTileTypeRegister(RegistryEvent.Register<TileEntityType<?>> event) {
+        TILE = TileEntityType.Builder
+                .create(PolymerCoreTileEntity::new, getTileBlocks())
+                .build(null);
+        BLUEPRINT_TILE = TileEntityType.Builder
+                .create(PolymerCoreBlueprintTileEntity::new, getBlueprintTileBlocks())
+                .build(null);
+
         event.getRegistry().registerAll(
-                TILE = (TileEntityType<PolymerCoreTileEntity>) TileEntityType.Builder.create(PolymerCoreTileEntity::new, getTileBlocks()).build(null)
-                        .setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLOCK_NAME.getPath() + "_tile")),
-                BLUEPRINT_TILE = (TileEntityType<PolymerCoreBlueprintTileEntity>) TileEntityType.Builder.create(PolymerCoreBlueprintTileEntity::new, getBlueprintTileBlocks()).build(null)
-                        .setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
+                TILE.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLOCK_NAME.getPath() + "_tile")),
+                BLUEPRINT_TILE.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
         );
     }
 
