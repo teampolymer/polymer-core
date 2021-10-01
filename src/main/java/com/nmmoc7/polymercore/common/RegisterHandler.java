@@ -36,8 +36,8 @@ public class RegisterHandler {
     @SubscribeEvent
     public static void onBlockRegister(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
-                BLOCK.setRegistryName(BLOCK_NAME),
-                BLUEPRINT_BLOCK.setRegistryName(BLUEPRINT_BLOCK_NAME)
+            BLOCK.setRegistryName(BLOCK_NAME),
+            BLUEPRINT_BLOCK.setRegistryName(BLUEPRINT_BLOCK_NAME)
         );
     }
 
