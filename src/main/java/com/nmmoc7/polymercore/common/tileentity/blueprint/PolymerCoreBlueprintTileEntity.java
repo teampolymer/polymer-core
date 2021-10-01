@@ -9,14 +9,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class PolymerCoreBlueprintTileEntity extends TileEntity implements IPolymerCoreBlueprintTileEntity {
+public class PolymerCoreBlueprintTileEntity extends IPolymerCoreBlueprintTileEntity {
     IBlueprint blueprint;
 
     public PolymerCoreBlueprintTileEntity() {
@@ -58,7 +57,7 @@ public class PolymerCoreBlueprintTileEntity extends TileEntity implements IPolym
         super.read(state, nbt);
         String result = nbt.getString("rl");
         if (!result.equals(""))
-            this.blueprint = BlueprintRegisterHandler.REGISTRY.getValue(new ResourceLocation(result));
+            setBlueprint(BlueprintRegisterHandler.REGISTRY.getValue(new ResourceLocation(result)));
     }
 
     @Override

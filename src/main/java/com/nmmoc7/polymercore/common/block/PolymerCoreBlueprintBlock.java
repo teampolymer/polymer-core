@@ -42,7 +42,7 @@ public class PolymerCoreBlueprintBlock extends Block implements IPolymerCoreBlue
             ItemStack heldItem = player.getHeldItem(handIn);
 
             if (heldItem.getItem() instanceof IHammer) {
-                boolean testResult = blueTile.test();
+                boolean testResult = blueTile.testWithEvent();
                 if (testResult) {
                     player.sendMessage(new StringTextComponent("111"), player.getUniqueID());
                 }

@@ -14,6 +14,6 @@ public class TestItem extends Item {
 
     public static class ItemRegistry {
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, PolymerCore.MOD_ID);
-        public static final RegistryObject<Item> obsidianIngot = ITEMS.register("test_item", TestItem::new);
+        public static final RegistryObject<Item> OBSIDIAN_INGOT = ITEMS.register("test_item", TestItem::new);
     }
 }
