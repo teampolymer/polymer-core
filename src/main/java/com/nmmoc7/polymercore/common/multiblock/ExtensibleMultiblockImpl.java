@@ -22,8 +22,8 @@ import java.util.Map;
 public class ExtensibleMultiblockImpl extends DefinedMultiblockImpl implements IExtensibleMultiblock {
     private final List<IMultiblockExtension> extensions;
 
-    public ExtensibleMultiblockImpl(List<IMultiblockComponent> components, IMachine machine, Vector3i size, ResourceLocation registryName, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical, List<IMultiblockExtension> extensions) {
-        super(components, machine, size, registryName, partsMap, type, canSymmetrical);
+    public ExtensibleMultiblockImpl(List<IMultiblockComponent> components, IMachine machine, Vector3i size, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical, List<IMultiblockExtension> extensions) {
+        super(components, machine, size, partsMap, type, canSymmetrical);
         this.extensions = extensions;
     }
 

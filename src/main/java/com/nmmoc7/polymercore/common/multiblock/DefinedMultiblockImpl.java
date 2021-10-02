@@ -23,9 +23,8 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     private final IMultiblockType type;
     private final boolean canSymmetrical;
 
-    public DefinedMultiblockImpl(List<IMultiblockComponent> components, IMachine machine, Vector3i size, ResourceLocation registryName, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical) {
+    public DefinedMultiblockImpl(List<IMultiblockComponent> components, IMachine machine, Vector3i size, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical) {
         super(components, machine, size);
-        this.registryName = registryName;
         this.partsMap = partsMap;
         this.type = type;
         this.canSymmetrical = canSymmetrical;
