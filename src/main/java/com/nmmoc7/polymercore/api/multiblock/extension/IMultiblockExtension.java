@@ -3,10 +3,11 @@ package com.nmmoc7.polymercore.api.multiblock.extension;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Map;
 
-public interface IMultiblockExtension {
+public interface IMultiblockExtension extends IForgeRegistryEntry<IMultiblockExtension> {
 
     /**
      * 获取多方快结构的具体部件
