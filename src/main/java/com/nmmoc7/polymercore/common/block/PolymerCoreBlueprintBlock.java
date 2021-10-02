@@ -47,7 +47,7 @@ public class PolymerCoreBlueprintBlock extends Block implements IPolymerCoreBlue
                     player.sendMessage(new StringTextComponent("111"), player.getUniqueID());
                 }
             } else if (heldItem.getItem() instanceof IBlueprintItem) {
-                blueTile.setBlueprint(((IBlueprintItem) heldItem.getItem()).getBlueprint());
+//                blueTile.setBlueprint(((IBlueprintItem) heldItem.getItem()).getBlueprint());
             }
         }
 

@@ -12,6 +12,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -33,7 +34,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(World world, BlockPos corePos, Rotation rotation, boolean isSymmetrical) {
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical) {
         if (!canAssemble(world, corePos, rotation, isSymmetrical)) {
             return null;
         }
@@ -42,7 +43,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(World world, BlockPos corePos, Rotation rotation) {
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation) {
         if (canAssemble(world, corePos, rotation, true)) {
             return assemble(world, corePos, rotation, true);
         }
@@ -51,7 +52,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(World world, BlockPos corePos) {
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos) {
         for (Rotation value : Rotation.values()) {
             boolean result = canAssemble(world, corePos, value);
             if (result) {
@@ -62,7 +63,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     }
 
     @Override
-    public boolean canAssemble(World world, BlockPos corePos, Rotation rotation, boolean isSymmetrical) {
+    public boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical) {
         if (!canSymmetrical && isSymmetrical) {
             return false;
         }
@@ -78,12 +79,12 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     }
 
     @Override
-    public boolean canAssemble(World world, BlockPos corePos, Rotation rotation) {
+    public boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation) {
         return canAssemble(world, corePos, rotation, true) || canAssemble(world, corePos, rotation, false);
     }
 
     @Override
-    public boolean canAssemble(World world, BlockPos corePos) {
+    public boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos) {
         for (Rotation value : Rotation.values()) {
             boolean result = canAssemble(world, corePos, value);
             if (result) {

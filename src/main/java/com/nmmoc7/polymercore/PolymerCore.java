@@ -11,6 +11,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class PolymerCore {
     public static final String MOD_ID = "polymer-core";
 
+
     public PolymerCore() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         TestItem.ItemRegistry.ITEMS.register(modBus);

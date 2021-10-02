@@ -13,6 +13,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class ExtensibleMultiblockImpl extends DefinedMultiblockImpl implements I
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(World world, BlockPos corePos, Rotation rotation, boolean isSymmetrical) {
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical) {
         if (!canAssemble(world, corePos, rotation, isSymmetrical)) {
             return null;
         }

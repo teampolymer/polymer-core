@@ -1,12 +1,12 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
-import com.sun.istack.internal.NotNull;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Map;
