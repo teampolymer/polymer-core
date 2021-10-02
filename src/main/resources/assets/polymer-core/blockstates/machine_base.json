@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "polymer:block/machine_base_model" }
+  }
+}

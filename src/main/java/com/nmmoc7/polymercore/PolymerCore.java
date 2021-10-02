@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore;
 
+import com.nmmoc7.polymercore.common.block.TestBlock;
 import com.nmmoc7.polymercore.common.blueprint.BlueprintRegisterHandler;
 import com.nmmoc7.polymercore.common.item.TestItem;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,5 +16,6 @@ public class PolymerCore {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         BlueprintRegisterHandler.REGISTER.register(modBus);
         TestItem.ItemRegistry.ITEMS.register(modBus);
+        TestBlock.BlockRegistry.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }
