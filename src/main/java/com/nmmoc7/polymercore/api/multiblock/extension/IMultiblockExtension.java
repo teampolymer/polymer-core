@@ -44,11 +44,4 @@ public interface IMultiblockExtension extends IForgeRegistryEntry<IMultiblockExt
      * @return 最大拓展数量
      */
     int maxExtensionCount();
-
-    /**
-     * 支持的最小拓展数量
-     *
-     * @return 最小拓展数量
-     */
-    int minExtensionCount();
 }

@@ -1,6 +1,7 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.sun.istack.internal.NotNull;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
@@ -10,7 +11,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public interface IDefinedMultiblock extends IForgeRegistryEntry<IDefinedMultiblock> {
+public interface IDefinedMultiblock extends IMultiblock, IForgeRegistryEntry<IDefinedMultiblock> {
     /**
      * 尝试组装一个多方快结构，并返回组装后的多方快
      *
@@ -20,16 +21,13 @@ public interface IDefinedMultiblock extends IForgeRegistryEntry<IDefinedMultiblo
      * @return 组装后的的多方块
      */
     @Nullable
-    IAssembledMultiblock assemble(World world, BlockPos corePos, @Nullable Rotation rotation, @Nullable Boolean isSymmetrical);
+    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical);
 
     @Nullable
-    default IAssembledMultiblock assemble(World world, BlockPos corePos, @Nullable Rotation rotation) {
-        return assemble(world, corePos, rotation, null);
-    }
+    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation);
+
     @Nullable
-    default IAssembledMultiblock assemble(World world, BlockPos corePos) {
-        return assemble(world, corePos, null);
-    }
+    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos);
 
     /**
      * 判断一个多方快结构是否可以在指定位置组装
@@ -39,15 +37,11 @@ public interface IDefinedMultiblock extends IForgeRegistryEntry<IDefinedMultiblo
      * @param isSymmetrical 是否是和定义对称
      * @return 是否可以组装
      */
-    boolean canAssemble(World world, BlockPos corePos, @Nullable Rotation rotation, @Nullable Boolean isSymmetrical);
+    boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical);
 
-    default boolean canAssemble(World world, BlockPos corePos, @Nullable Rotation rotation) {
-        return canAssemble(world, corePos, rotation, null);
-    }
+    boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation);
 
-    default boolean canAssemble(World world, BlockPos corePos) {
-        return canAssemble(world, corePos, null, null);
-    }
+    boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos);
 
     /**
      * 这个结构是否可以对称
