@@ -1,6 +1,0 @@
-{
-    "parent":"item/test",
-    "textures":{
-        "test_item":"polymercore:item/test_item"
-    }
-}
