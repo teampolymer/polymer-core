@@ -23,7 +23,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
     private char[][][] pattern;
     private IMultiblockType type;
     private IMachine machine;
-    private boolean canSymmetrical;
+    private boolean canSymmetrical = false;
     private final List<IMultiblockExtension> extensions = new ArrayList<>();
     private final List<IMultiblockComponent> components = new ArrayList<>();
 
@@ -51,6 +51,12 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
 
     @Override
     public IDefinedMultiblock build() {
+        if (machine == null) {
+            throw new MultiblockBuilderException("'Machine' can not be null");
+        }
+        if (type == null) {
+            //TODO: 这里允许配置默认的多方快结构类型，并给默认值
+        }
         Vector3i coreOffset = null;
         Map<Vector3i, IMultiblockPart> resolvedParts = new HashMap<>();
         int maxX = 0, maxY = 0, maxZ = 0;
@@ -99,6 +105,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
                 , Map.Entry::getValue));
 
         Vector3i size = new Vector3i(maxX, maxY, maxZ);
+
         //可拓展的版本
         if (extensions.size() > 0) {
             return new ExtensibleMultiblockImpl(
