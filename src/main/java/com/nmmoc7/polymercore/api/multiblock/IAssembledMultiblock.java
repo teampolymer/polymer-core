@@ -1,16 +1,25 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
-import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 组装后的多方快结构
  */
-public interface IAssembledMultiblock {
+public interface IAssembledMultiblock extends INBTSerializable<CompoundNBT> {
+    /**
+     * 获取多方快结构的Id
+     *
+     * @return id
+     */
+    UUID getMultiblockId();
+
     /**
      * 取消组装本多方快
      */
@@ -49,6 +58,8 @@ public interface IAssembledMultiblock {
      * @return 所有部件
      */
     Map<BlockPos, IMultiblockPart> getParts();
+
+
 
 
 }

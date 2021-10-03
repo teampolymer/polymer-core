@@ -57,7 +57,7 @@ public class FreeMachineUpdateHandler {
         if (!(event.getObject() instanceof Chunk)) {
             return;
         }
-        IChunk chunk = (IChunk) event.getObject();
+        Chunk chunk = (Chunk) event.getObject();
         ChunkMultiblockCapabilityProvider provider = new ChunkMultiblockCapabilityProvider(() -> chunk);
         event.addCapability(ChunkMultiblockCapabilityProvider.CAPABILITY_PROVIDER_CHUNK_MULTIBLOCK, provider);
 

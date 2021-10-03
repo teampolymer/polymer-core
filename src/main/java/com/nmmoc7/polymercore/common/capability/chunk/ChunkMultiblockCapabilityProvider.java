@@ -3,23 +3,27 @@ package com.nmmoc7.polymercore.common.capability.chunk;
 import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
-public class ChunkMultiblockCapabilityProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class ChunkMultiblockCapabilityProvider implements ICapabilitySerializable<INBT> {
     public static final ResourceLocation CAPABILITY_PROVIDER_CHUNK_MULTIBLOCK = new ResourceLocation(PolymerCore.MOD_ID, "capability_provider_chunk_multiblock");
 
-    public ChunkMultiblockCapabilityProvider(Supplier<IChunk> chunkSupplier) {
+    public ChunkMultiblockCapabilityProvider(Supplier<Chunk> chunkSupplier) {
         this.CONTEXT = LazyOptional.of(() -> new ChunkMultiblockStorage(chunkSupplier.get()));
     }
 
@@ -32,12 +36,23 @@ public class ChunkMultiblockCapabilityProvider implements ICapabilityProvider, I
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        return null;
+    public INBT serializeNBT() {
+        return CONTEXT.resolve().map(storage ->
+            CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE
+                .getStorage().writeNBT(
+                    CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE,
+                    storage,
+                    null
+                )
+        ).orElse(new CompoundNBT());
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-
+    public void deserializeNBT(INBT nbt) {
+        CONTEXT.ifPresent(it -> {
+            CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE
+                .getStorage().readNBT(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE,
+                    it, null, nbt);
+        });
     }
 }

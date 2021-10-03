@@ -1,6 +1,7 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
 import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -23,5 +24,8 @@ public interface IMultiblockType {
                                             List<Tuple<IMultiblockExtension, Integer>> appliedExtensions);
 
     IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical);
+
+
+    IAssembledMultiblock createFromNBT(CompoundNBT nbt);
 
 }

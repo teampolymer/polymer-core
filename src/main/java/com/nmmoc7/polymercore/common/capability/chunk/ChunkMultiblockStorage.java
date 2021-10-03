@@ -5,6 +5,7 @@ import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 
 import javax.annotation.Nullable;
@@ -18,11 +19,11 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
      */
     private Map<BlockPos, Tuple<BlockPos, IMultiblockPart>> data = new HashMap<>();
 
-    public ChunkMultiblockStorage(IChunk chunk) {
+    public ChunkMultiblockStorage(Chunk chunk) {
         this.chunk = chunk;
     }
 
-    private final IChunk chunk;
+    private final Chunk chunk;
 
     public Map<BlockPos, Tuple<BlockPos, IMultiblockPart>> getData() {
         return data;
@@ -43,24 +44,37 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
 
     @Override
     public void addMachine(BlockPos corePos, Map<BlockPos, IMultiblockPart> parts) {
+        boolean modified = false;
         for (Map.Entry<BlockPos, IMultiblockPart> entry : parts.entrySet()) {
             if (!isPosInChunk(entry.getKey())) {
                 continue;
             }
             Tuple<BlockPos, IMultiblockPart> replaced = data.put(entry.getKey(), new Tuple<>(corePos, entry.getValue()));
-            if (replaced != null && replaced.getA() != corePos) {
-                PolymerCore.LOG.warn("Position: {} Trying to replace an existing machine part for machine in '{}' to another machine in '{}', this may be a mistake!",
-                    entry.getKey(), replaced.getA(), corePos);
+            if (replaced != null) {
+                modified = true;
+                if (replaced.getA() != corePos) {
+                    PolymerCore.LOG.warn("Position: {} Trying to replace an existing machine part for machine in '{}' to another machine in '{}', this may be a mistake!",
+                        entry.getKey(), replaced.getA(), corePos);
+                }
             }
+        }
+        if (modified) {
+            chunk.markDirty();
         }
     }
 
     @Override
     public void removeMachine(Collection<BlockPos> blocks) {
+        boolean modified = false;
         for (BlockPos pos : blocks) {
             if (isPosInChunk(pos)) {
-                data.remove(pos);
+                if (data.remove(pos) != null) {
+                    modified = true;
+                }
             }
+        }
+        if (modified) {
+            chunk.markDirty();
         }
     }
 

@@ -13,6 +13,8 @@ import java.util.Map;
 public interface IChunkMultiblockStorage {
     IChunk getChunk();
 
+
+    Map<BlockPos, Tuple<BlockPos, IMultiblockPart>> getData();
     @Nullable
     Tuple<BlockPos, IMultiblockPart> getMultiblockPart(BlockPos pos);
 

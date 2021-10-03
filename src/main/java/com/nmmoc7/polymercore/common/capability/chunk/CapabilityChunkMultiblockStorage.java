@@ -3,6 +3,7 @@ package com.nmmoc7.polymercore.common.capability.chunk;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -18,7 +19,9 @@ public class CapabilityChunkMultiblockStorage {
                 @Override
                 public INBT writeNBT(Capability<IChunkMultiblockStorage> capability, IChunkMultiblockStorage instance, Direction side) {
                     CompoundNBT nbt = new CompoundNBT();
-
+                    instance.getData().forEach((key, val) -> {
+                        //TODO: 序列化
+                    });
                     return nbt;
                 }
 
@@ -27,6 +30,7 @@ public class CapabilityChunkMultiblockStorage {
                     if (!(nbt instanceof CompoundNBT)) {
                         return;
                     }
+                    //TODO 反序列化
 
                 }
             },
