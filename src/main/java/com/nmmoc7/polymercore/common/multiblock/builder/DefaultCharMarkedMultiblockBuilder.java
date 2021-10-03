@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.vector.Vector3i;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,12 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
     private IMultiblockType type;
     private IMachine machine;
     private boolean canSymmetrical = false;
+    @Nullable
+    private Character coreChar;
     private final List<IMultiblockExtension> extensions = new ArrayList<>();
     private final List<IMultiblockComponent> components = new ArrayList<>();
+
+    private final List<String[]> patternAlternative = new ArrayList<>();
 
     @Override
     public ICharMarkedMultiblockBuilder setPartsMap(Map<Character, IMultiblockPart> partsMap) {
@@ -52,6 +57,26 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
         return this;
     }
 
+    public ICharMarkedMultiblockBuilder addPattern(String... pattern) {
+        patternAlternative.add(pattern);
+        return this;
+    }
+
+    @Override
+    public ICharMarkedMultiblockBuilder addPartsMap(char ch, IMultiblockPart part) {
+        if (partsMap == null) {
+            partsMap = new HashMap<>();
+        }
+        partsMap.put(ch, part);
+        return this;
+    }
+
+    @Override
+    public ICharMarkedMultiblockBuilder setCoreChar(char ch) {
+        this.coreChar = ch;
+        return this;
+    }
+
     @Override
     public IDefinedMultiblock build() {
         if (machine == null) {
@@ -60,6 +85,9 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
         if (type == null) {
             //TODO: 这里允许配置默认的多方快结构类型，并给默认值
             type = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(PolymerCore.MOD_ID, "free"));
+        }
+        if (pattern == null) {
+            setPattern(patternAlternative.toArray(new String[0][0]));
         }
         Vector3i coreOffset = null;
         Map<Vector3i, IMultiblockPart> resolvedParts = new HashMap<>();
@@ -76,11 +104,14 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
                         continue;
                     }
                     maxZ = Math.max(z, maxZ);
+                    if (coreChar != null && ch == coreChar) {
+                        coreOffset = postion;
+                    }
                     IMultiblockPart part = partsMap.get(ch);
                     if (part == null) {
                         throw new MultiblockBuilderException("Could not find MultiblockPart matching char: " + ch);
                     }
-                    if (part instanceof IMultiblockCore) {
+                    if (coreChar == null && part instanceof IMultiblockCore) {
                         if (coreOffset != null) {
                             throw new MultiblockBuilderException("There are more than one multiblock core in the structure!");
                         }
