@@ -6,10 +6,11 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.List;
 
-public interface IMultiblockType {
+public interface IMultiblockType extends IForgeRegistryEntry<IMultiblockType> {
     /**
      * 在指定坐标创建多方快结构，并进行一些额外操作（写ChunkData，替换方块等等）
      *

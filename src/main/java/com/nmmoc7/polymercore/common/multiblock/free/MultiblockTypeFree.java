@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.common.multiblock.free;
 
+import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
@@ -16,12 +17,13 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-public class MultiblockTypeFree implements IMultiblockType {
+public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> implements IMultiblockType {
     @Override
     public IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical, List<Tuple<IMultiblockExtension, Integer>> appliedExtensions) {
         return null;
@@ -53,7 +55,12 @@ public class MultiblockTypeFree implements IMultiblockType {
     public IAssembledMultiblock createFromNBT(CompoundNBT nbt) {
         //TODO: 拓展
         FreeMultiblockImpl multiblock = new FreeMultiblockImpl();
-        multiblock.deserializeNBT(nbt);
+        try {
+            multiblock.deserializeNBT(nbt);
+        }catch (IllegalStateException e) {
+            PolymerCore.LOG.error(e.getMessage());
+            return null;
+        }
         return multiblock;
     }
 }

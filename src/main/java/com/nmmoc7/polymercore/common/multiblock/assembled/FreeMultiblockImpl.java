@@ -3,9 +3,11 @@ package com.nmmoc7.polymercore.common.multiblock.assembled;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -108,7 +110,9 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
         this.isSymmetrical = nbt.getBoolean("symm");
         this.rotation = Rotation.values()[nbt.getByte("rot")];
         String define = nbt.getString("define");
-        //TODO: Registry
-        this.definedMultiblock = null;
+        this.definedMultiblock = PolymerCoreRegistries.DEFINED_MULTIBLOCKS.getValue(new ResourceLocation(define));
+        if (definedMultiblock == null) {
+            throw new IllegalStateException(String.format("Could not get multiblock %s from NBT", define));
+        }
     }
 }

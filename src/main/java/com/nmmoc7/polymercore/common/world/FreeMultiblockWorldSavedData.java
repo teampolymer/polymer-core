@@ -47,6 +47,9 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         ListNBT multiblocks = nbt.getList("assembled_multiblocks", 10);
         for (INBT multiblock : multiblocks) {
             IAssembledMultiblock assembledMultiblock = MultiblockUtils.deserializeNBT(multiblock);
+            if (assembledMultiblock == null) {
+                continue;
+            }
             assembledMultiblockMap.put(assembledMultiblock.getMultiblockId(), assembledMultiblock);
         }
     }
@@ -57,6 +60,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         for (IAssembledMultiblock value : assembledMultiblockMap.values()) {
             listNBT.add(value.serializeNBT());
         }
+        compound.put("assembled_multiblocks", listNBT);
         return compound;
     }
 

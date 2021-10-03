@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.common.multiblock.builder;
 
+import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.component.IMultiblockComponent;
 import com.nmmoc7.polymercore.api.exceptions.MultiblockBuilderException;
 import com.nmmoc7.polymercore.api.machine.IMachine;
@@ -10,8 +11,10 @@ import com.nmmoc7.polymercore.api.multiblock.builder.IMultiblockBuilder;
 import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockCore;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.common.multiblock.DefinedMultiblockImpl;
 import com.nmmoc7.polymercore.common.multiblock.ExtensibleMultiblockImpl;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.vector.Vector3i;
 
@@ -56,6 +59,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
         }
         if (type == null) {
             //TODO: 这里允许配置默认的多方快结构类型，并给默认值
+            type = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(PolymerCore.MOD_ID, "free"));
         }
         Vector3i coreOffset = null;
         Map<Vector3i, IMultiblockPart> resolvedParts = new HashMap<>();

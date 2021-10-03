@@ -2,8 +2,10 @@ package com.nmmoc7.polymercore.api.util;
 
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
+import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.ResourceLocation;
 
 public class MultiblockUtils {
     public static IAssembledMultiblock deserializeNBT(INBT nbt) {
@@ -12,8 +14,7 @@ public class MultiblockUtils {
         }
         CompoundNBT compound = (CompoundNBT) nbt;
         String type = compound.getString("type");
-        //TODO 从TypeRegistry获取Type
-        IMultiblockType typeObj = null;
+        IMultiblockType typeObj = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(type));
         if (typeObj == null) {
             return null;
         }
