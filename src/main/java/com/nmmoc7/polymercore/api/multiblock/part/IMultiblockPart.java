@@ -23,23 +23,6 @@ public interface IMultiblockPart extends Predicate<BlockState> {
     Collection<BlockState> getSampleBlocks();
 
     /**
-     * 组合
-     *
-     * @param other 另一个IMultiblockPart
-     * @return 组合后的方块
-     */
-    default IMultiblockPart combineWith(IMultiblockPart other) {
-        return new CompositeMultiblockPart(this, other);
-    }
-
-    static IMultiblockPart combine(IMultiblockPart first, IMultiblockPart second) {
-        if (first == null) {
-            return second;
-        }
-        return first.combineWith(second);
-    }
-
-    /**
      * 检测一个方块是否匹配此Part
      * @param block 方块
      * @return 是否匹配

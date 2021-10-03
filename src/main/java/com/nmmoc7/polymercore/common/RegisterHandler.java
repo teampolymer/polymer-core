@@ -37,20 +37,20 @@ public class RegisterHandler {
     @SubscribeEvent
     public static void onItemRegister(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                BLUEPRINT_ITEM.setRegistryName(BLUEPRINT_BLOCK_NAME),
-                HAMMER.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "hammer")),
-                TEST_BLUEPRINT_ITEM.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "test_blueprint"))
+            BLUEPRINT_ITEM.setRegistryName(BLUEPRINT_BLOCK_NAME),
+            HAMMER.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "hammer")),
+            TEST_BLUEPRINT_ITEM.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "test_blueprint"))
         );
     }
 
     @SubscribeEvent
     public static void onTileTypeRegister(RegistryEvent.Register<TileEntityType<?>> event) {
         BLUEPRINT_TILE = TileEntityType.Builder
-                .create(PolymerCoreBlueprintTileEntity::new, getBlueprintTileBlocks())
-                .build(null);
+            .create(PolymerCoreBlueprintTileEntity::new, getBlueprintTileBlocks())
+            .build(null);
 
         event.getRegistry().registerAll(
-                BLUEPRINT_TILE.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
+            BLUEPRINT_TILE.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
         );
     }
 

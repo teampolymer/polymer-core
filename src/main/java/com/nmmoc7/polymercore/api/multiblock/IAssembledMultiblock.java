@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -43,11 +44,11 @@ public interface IAssembledMultiblock {
     Rotation getRotation();
 
     /**
-     * 获取多方快结构中所有方块
+     * 获取多方快结构中所有部件
      *
-     * @return 所有方块
+     * @return 所有部件
      */
-    Map<BlockPos, BlockState> getBlocks();
+    Map<BlockPos, IMultiblockPart> getParts();
 
 
 }
