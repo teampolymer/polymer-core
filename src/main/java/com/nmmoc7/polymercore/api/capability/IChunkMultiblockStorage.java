@@ -4,28 +4,40 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface IChunkMultiblockStorage {
     IChunk getChunk();
 
 
-    Map<BlockPos, Tuple<BlockPos, IMultiblockPart>> getData();
+    Map<BlockPos, Tuple<UUID, IMultiblockPart>> getData();
+
     @Nullable
-    Tuple<BlockPos, IMultiblockPart> getMultiblockPart(BlockPos pos);
+    Tuple<UUID, IMultiblockPart> getMultiblockPart(BlockPos pos);
 
-    void addMachine(BlockPos corePos, Map<BlockPos, IMultiblockPart> parts);
+    void addMultiblock(UUID multiblockId, Map<BlockPos, IMultiblockPart> parts);
 
-    void removeMachine(Collection<BlockPos> blocks);
+    void removeMultiblock(UUID multiblockId, Collection<BlockPos> blocks);
 
-    void removeMachine(BlockPos corePos);
+    void removeMultiblock(UUID multiblockId);
 
     default boolean isPosInChunk(BlockPos pos) {
         ChunkPos chunkPos = getChunk().getPos();
         return chunkPos.x == pos.getX() >> 4 && chunkPos.z == pos.getZ() >> 4;
     }
+
+    void setContainingMultiblocks(List<UUID> uuidList);
+    List<UUID> getContainingMultiblocks();
+
+    void invalidate();
+
+    void initialize(World world);
 }

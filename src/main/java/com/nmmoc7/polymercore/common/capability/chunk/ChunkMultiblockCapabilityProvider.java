@@ -35,6 +35,10 @@ public class ChunkMultiblockCapabilityProvider implements ICapabilitySerializabl
         return CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE.orEmpty(cap, CONTEXT);
     }
 
+    public void invalidate() {
+        CONTEXT.ifPresent(IChunkMultiblockStorage::invalidate);
+    }
+
     @Override
     public INBT serializeNBT() {
         return CONTEXT.resolve().map(storage ->
