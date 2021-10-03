@@ -27,6 +27,6 @@ public interface IMultiblockType extends IForgeRegistryEntry<IMultiblockType> {
     IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical);
 
 
-    IAssembledMultiblock createFromNBT(CompoundNBT nbt);
+    IAssembledMultiblock createFromNBT(World world, CompoundNBT nbt);
 
 }

@@ -28,7 +28,6 @@ public class PositionUtils {
             case CLOCKWISE_90:
                 if (isSymmetrical)
                     return new BlockPos(pos.getZ() + x0, y, pos.getX() + z0);
-                ;
                 return new BlockPos(-pos.getZ() + x0, y, pos.getX() + z0);
             case CLOCKWISE_180:
                 if (isSymmetrical)

@@ -62,7 +62,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
             if (!isPosInChunk(entry.getKey())) {
                 continue;
             }
-            Tuple<UUID, IMultiblockPart> replaced = getData().put(entry.getKey(), new Tuple<>(multiblockId, entry.getValue()));
+            Tuple<UUID, IMultiblockPart> replaced = data.put(entry.getKey(), new Tuple<>(multiblockId, entry.getValue()));
             if (replaced != null) {
                 modified = true;
                 if (replaced.getA() != multiblockId) {
@@ -78,7 +78,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
     public void removeMultiblock(UUID multiblockId, Collection<BlockPos> blocks) {
         for (BlockPos pos : blocks) {
             if (isPosInChunk(pos)) {
-                getData().remove(pos);
+                data.remove(pos);
             }
         }
         if (multiblocks.remove(multiblockId)) {
@@ -89,7 +89,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
     @Override
     public void removeMultiblock(UUID multiblockId) {
         Collection<BlockPos> blocks =
-            getData().entrySet().stream()
+            data.entrySet().stream()
                 .filter(it -> it.getValue().getA().equals(multiblockId))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
@@ -118,6 +118,9 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
         this.data.clear();
         for (UUID uuid : this.multiblocks) {
             IAssembledMultiblock multiblock = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblock(uuid);
+            if (multiblock == null) {
+                continue;
+            }
             addMultiblockInternal(uuid, multiblock.getParts());
         }
     }

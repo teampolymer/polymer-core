@@ -80,7 +80,8 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
     @Override
     public IDefinedMultiblock build() {
         if (machine == null) {
-            throw new MultiblockBuilderException("'Machine' can not be null");
+            //TODO: Machine
+//            throw new MultiblockBuilderException("'Machine' can not be null");
         }
         if (type == null) {
             //TODO: 这里允许配置默认的多方快结构类型，并给默认值

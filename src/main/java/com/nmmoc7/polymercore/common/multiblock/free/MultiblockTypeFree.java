@@ -31,6 +31,9 @@ public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> impl
 
     @Override
     public IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical) {
+        if (world.isRemote) {
+            return null;
+        }
         UUID uuid = UUID.randomUUID();
         FreeMultiblockImpl multiblock = new FreeMultiblockImpl(
             uuid,
@@ -39,6 +42,8 @@ public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> impl
             rotation,
             definition
         );
+
+        multiblock.setWorld(world);
         FreeMultiblockWorldSavedData.get(world).addAssembledMultiblock(multiblock);
 
         Collection<ChunkPos> crossedChunks = multiblock.getCrossedChunks();
@@ -52,12 +57,13 @@ public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> impl
     }
 
     @Override
-    public IAssembledMultiblock createFromNBT(CompoundNBT nbt) {
+    public IAssembledMultiblock createFromNBT(World world, CompoundNBT nbt) {
         //TODO: 拓展
         FreeMultiblockImpl multiblock = new FreeMultiblockImpl();
         try {
             multiblock.deserializeNBT(nbt);
-        }catch (IllegalStateException e) {
+            multiblock.setWorld(world);
+        } catch (IllegalStateException e) {
             PolymerCore.LOG.error(e.getMessage());
             return null;
         }

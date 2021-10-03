@@ -6,9 +6,10 @@ import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public class MultiblockUtils {
-    public static IAssembledMultiblock deserializeNBT(INBT nbt) {
+    public static IAssembledMultiblock deserializeNBT(World world, INBT nbt) {
         if (!(nbt instanceof CompoundNBT)) {
             return null;
         }
@@ -18,6 +19,6 @@ public class MultiblockUtils {
         if (typeObj == null) {
             return null;
         }
-        return typeObj.createFromNBT(compound);
+        return typeObj.createFromNBT(world, compound);
     }
 }

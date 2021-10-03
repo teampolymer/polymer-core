@@ -23,7 +23,7 @@ public class MultiblockRegisterHandler {
 
     public static final RegistryObject<IMultiblockType> TYPE_FREE = MULTIBLOCK_TYPES.register("type_free", MultiblockTypeFree::new);
     public static final RegistryObject<IDefinedMultiblock> TestMachine =
-        DEFINED_MULTIBLOCKS.register("testMachine",
+        DEFINED_MULTIBLOCKS.register("test_machine",
             new DefaultCharMarkedMultiblockBuilder()
                 .addPattern(
                     "AAAAA",
@@ -47,7 +47,7 @@ public class MultiblockRegisterHandler {
                 .addPartsMap('B', new PartSpecifiedBlock(Blocks.OAK_WOOD))
                 .addPartsMap('C', new PartSpecifiedBlock(Blocks.GLOWSTONE))
                 .setCoreChar('C')
-                .setType(TYPE_FREE.get())
+                .setType(new MultiblockTypeFree())
                 .setCanSymmetrical()
                 ::build
         );

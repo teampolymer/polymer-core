@@ -16,9 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FreeMultiblockWorldSavedData extends WorldSavedData {
     private static final String NAME = "PolymerCoreFreeMultiblock";
+    private World world;
 
-    public FreeMultiblockWorldSavedData() {
+    public FreeMultiblockWorldSavedData(World world) {
         super(NAME);
+        this.world = world;
         this.assembledMultiblockMap = new ConcurrentHashMap<>();
     }
 
@@ -46,7 +48,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         assembledMultiblockMap.clear();
         ListNBT multiblocks = nbt.getList("assembled_multiblocks", 10);
         for (INBT multiblock : multiblocks) {
-            IAssembledMultiblock assembledMultiblock = MultiblockUtils.deserializeNBT(multiblock);
+            IAssembledMultiblock assembledMultiblock = MultiblockUtils.deserializeNBT(world, multiblock);
             if (assembledMultiblock == null) {
                 continue;
             }
@@ -70,6 +72,6 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         }
         ServerWorld world = (ServerWorld) worldIn;
         DimensionSavedDataManager storage = world.getSavedData();
-        return storage.getOrCreate(FreeMultiblockWorldSavedData::new, NAME);
+        return storage.getOrCreate(() -> new FreeMultiblockWorldSavedData(world), NAME);
     }
 }

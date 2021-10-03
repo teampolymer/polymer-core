@@ -5,6 +5,8 @@ import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
+import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
+import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +25,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     private BlockPos offset;
     private boolean isSymmetrical;
     private Rotation rotation;
+    private World world;
 
     private IDefinedMultiblock definedMultiblock;
     private final Lazy<Map<BlockPos, IMultiblockPart>> partMap = Lazy.concurrentOf(() -> {
@@ -56,9 +59,17 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
 
     }
 
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
     @Override
     public void disassemble() {
-
+        for (ChunkPos crossedChunk : getCrossedChunks()) {
+            world.getChunk(crossedChunk.x, crossedChunk.z).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE)
+                .ifPresent(it -> it.removeMultiblock(getMultiblockId()));
+            FreeMultiblockWorldSavedData.get(world).removeAssembledMultiblock(multiblockId);
+        }
     }
 
     @Override
@@ -100,6 +111,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
         nbt.putBoolean("symm", isSymmetrical);
         nbt.putByte("rotation", (byte) rotation.ordinal());
         nbt.putString("define", definedMultiblock.getRegistryName().toString());
+        nbt.putString("type", definedMultiblock.getType().getRegistryName().toString());
         return nbt;
     }
 

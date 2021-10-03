@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CapabilityChunkMultiblockStorage {
-    @CapabilityInject(IEnergyStorage.class)
+    @CapabilityInject(IChunkMultiblockStorage.class)
     public static Capability<IChunkMultiblockStorage> MULTIBLOCK_STORAGE = null;
 
     public static void register() {
