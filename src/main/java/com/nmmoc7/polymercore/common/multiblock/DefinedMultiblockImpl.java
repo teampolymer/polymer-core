@@ -6,6 +6,7 @@ import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.util.PositionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -69,7 +70,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
         }
         Map<Vector3i, IMultiblockPart> parts = getParts();
         for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
-            BlockPos testPos = corePos.add(entry.getKey());
+            BlockPos testPos = PositionUtils.applyModifies(entry.getKey(), corePos, rotation, isSymmetrical);
             BlockState block = world.getBlockState(testPos);
             if (!entry.getValue().test(block)) {
                 return false;
