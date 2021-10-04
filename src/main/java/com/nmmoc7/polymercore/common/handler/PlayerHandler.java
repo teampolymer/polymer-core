@@ -4,10 +4,12 @@ import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
+import com.nmmoc7.polymercore.common.registry.MultiblockManagerImpl;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -31,11 +33,15 @@ public class PlayerHandler {
         }
         ItemStack heldItem = e.getPlayer().getHeldItem(e.getHand());
         if (heldItem.getItem() == Items.STICK) {
-            IAssembledMultiblock assemble = MultiblockRegisterHandler.TestMachine.get().assemble(world, e.getPos());
-            if (assemble != null) {
-                e.getPlayer().sendMessage(new StringTextComponent("Multiblock Assembled"), Util.DUMMY_UUID);
-            }
+            MultiblockManagerImpl.INSTANCE.get()
+                .getDefinedMultiblock(new ResourceLocation(PolymerCore.MOD_ID, "test_machine"))
+                .ifPresent(it -> {
+                    IAssembledMultiblock assemble = it.assemble(world, e.getPos());
 
+                    if (assemble != null) {
+                        e.getPlayer().sendMessage(new StringTextComponent("Multiblock Assembled"), Util.DUMMY_UUID);
+                    }
+                });
 
 
         }

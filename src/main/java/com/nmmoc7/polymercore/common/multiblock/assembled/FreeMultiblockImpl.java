@@ -47,7 +47,6 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     }
 
     public FreeMultiblockImpl() {
-
     }
 
     public FreeMultiblockImpl(UUID multiblockId, BlockPos offset, boolean isSymmetrical, Rotation rotation, IDefinedMultiblock definedMultiblock) {

@@ -15,7 +15,6 @@ import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.common.multiblock.DefinedMultiblockImpl;
 import com.nmmoc7.polymercore.common.multiblock.ExtensibleMultiblockImpl;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nullable;
@@ -32,6 +31,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
     private Character coreChar;
     private final List<IMultiblockExtension> extensions = new ArrayList<>();
     private final List<IMultiblockComponent> components = new ArrayList<>();
+    private final List<String> tags = new ArrayList<>();
 
     private final List<String[]> patternAlternative = new ArrayList<>();
 
@@ -57,8 +57,15 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
         return this;
     }
 
+    @Override
     public ICharMarkedMultiblockBuilder addPattern(String... pattern) {
         patternAlternative.add(pattern);
+        return this;
+    }
+
+    @Override
+    public ICharMarkedMultiblockBuilder addTags(String... tags) {
+        this.tags.addAll(Arrays.asList(tags));
         return this;
     }
 
@@ -151,7 +158,8 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
                 result,
                 type,
                 canSymmetrical,
-                extensions
+                extensions,
+                tags
             );
         }
         //不可拓展的版本
@@ -161,8 +169,8 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
             size,
             result,
             type,
-            canSymmetrical
-        );
+            canSymmetrical,
+            tags);
 
     }
 

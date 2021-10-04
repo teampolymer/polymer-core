@@ -9,6 +9,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Map;
 
 public interface IDefinedMultiblock extends IMultiblock, IForgeRegistryEntry<IDefinedMultiblock> {
@@ -63,6 +64,13 @@ public interface IDefinedMultiblock extends IMultiblock, IForgeRegistryEntry<IDe
      * @return 多方快结构的部件
      */
     Map<Vector3i, IMultiblockPart> getParts();
+
+    /**
+     * 获取多方快结构的Tags，用于搜索
+     *
+     * @return
+     */
+    Collection<String> getTags();
 
 
 }

@@ -2,6 +2,7 @@ package com.nmmoc7.polymercore.api.multiblock;
 
 import com.nmmoc7.polymercore.api.component.IMultiblockComponent;
 import com.nmmoc7.polymercore.api.machine.IMachine;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.util.IAttributeProvider;
 import net.minecraft.util.math.vector.Vector3i;
 
@@ -32,6 +33,7 @@ public interface IMultiblock extends IAttributeProvider {
      * @return 尺寸
      */
     Vector3i getSize();
+    IMultiblockPart getCore();
 
 
 }

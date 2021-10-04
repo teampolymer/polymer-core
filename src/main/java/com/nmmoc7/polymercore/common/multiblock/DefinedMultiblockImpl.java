@@ -16,6 +16,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,12 +26,14 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     private final Map<Vector3i, IMultiblockPart> partsMap;
     private final IMultiblockType type;
     private final boolean canSymmetrical;
+    private List<String> tags;
 
-    public DefinedMultiblockImpl(List<IMultiblockComponent> components, IMachine machine, Vector3i size, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical) {
+    public DefinedMultiblockImpl(List<IMultiblockComponent> components, IMachine machine, Vector3i size, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical, List<String> tags) {
         super(components, machine, size);
         this.partsMap = partsMap;
         this.type = type;
         this.canSymmetrical = canSymmetrical;
+        this.tags = tags;
     }
 
 
@@ -111,6 +115,11 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     }
 
     @Override
+    public Collection<String> getTags() {
+        return Collections.unmodifiableList(this.tags);
+    }
+
+    @Override
     public DefinedMultiblockImpl setRegistryName(ResourceLocation name) {
         registryName = name;
         return this;
@@ -125,5 +134,10 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     @Override
     public Class<IDefinedMultiblock> getRegistryType() {
         return IDefinedMultiblock.class;
+    }
+
+    @Override
+    public IMultiblockPart getCore() {
+        return partsMap.get(Vector3i.NULL_VECTOR);
     }
 }
