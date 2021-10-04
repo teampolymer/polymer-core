@@ -156,7 +156,7 @@ public class MultiblockProjectionHandler {
                 }
                 //渲染投影
                 RenderSystem.blendColor(1, 1, 1, alpha);
-                renderBlock(block, bufferSource, ms, 0xF000F0, modelData);
+                RenderUtils.renderBlock(block, bufferSource, ms, 0xF000F0, modelData);
                 bufferSource.finish(ProjectionRenderType.TRANSPARENT_BLOCK);
                 RenderSystem.blendColor(1, 1, 1, 1);
             } else {
@@ -176,33 +176,7 @@ public class MultiblockProjectionHandler {
     }
 
 
-    private static void renderBlock(BlockState blockStateIn,
-                                    IRenderTypeBuffer bufferSource,
-                                    MatrixStack matrixStackIn,
-                                    int combinedLightIn,
-                                    IModelData modelData) {
-        if (blockStateIn.getRenderType() == BlockRenderType.MODEL) {
-            Minecraft mc = Minecraft.getInstance();
-            BlockRendererDispatcher dispatcher = mc.getBlockRendererDispatcher();
-            IBakedModel ibakedmodel = dispatcher.getModelForState(blockStateIn);
-            int i = Minecraft.getInstance().getBlockColors().getColor(blockStateIn, null, null, 0);
-            float f = (float) (i >> 16 & 255) / 255.0F;
-            float f1 = (float) (i >> 8 & 255) / 255.0F;
-            float f2 = (float) (i & 255) / 255.0F;
-            IVertexBuilder buffer = bufferSource.getBuffer(ProjectionRenderType.TRANSPARENT_BLOCK);
-            dispatcher.getBlockModelRenderer().renderModel(
-                matrixStackIn.getLast(),
-                buffer,
-                blockStateIn,
-                ibakedmodel,
-                f, f1, f2,
-                combinedLightIn,
-                OverlayTexture.NO_OVERLAY,
-                modelData != null ? modelData : EmptyModelData.INSTANCE);
-
-        }
-
-    }
+    
 
 
 }

@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.common.multiblock.assembled;
 
+import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
@@ -68,8 +69,9 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
         for (ChunkPos crossedChunk : getCrossedChunks()) {
             world.getChunk(crossedChunk.x, crossedChunk.z).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE)
                 .ifPresent(it -> it.removeMultiblock(getMultiblockId()));
-            FreeMultiblockWorldSavedData.get(world).removeAssembledMultiblock(multiblockId);
         }
+        FreeMultiblockWorldSavedData.get(world).removeAssembledMultiblock(multiblockId);
+        PolymerCore.LOG.debug("The multiblock '{}' disassembled", multiblockId);
     }
 
     @Override

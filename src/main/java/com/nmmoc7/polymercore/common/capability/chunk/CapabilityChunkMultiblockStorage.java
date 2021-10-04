@@ -1,17 +1,22 @@
 package com.nmmoc7.polymercore.common.capability.chunk;
 
+import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
-import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
-import com.nmmoc7.polymercore.api.util.MultiblockUtils;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,6 +33,9 @@ public class CapabilityChunkMultiblockStorage {
                         //可恶啊，这句居然没有mcp
                         nbt.add(NBTUtil.func_240626_a_(uuid));
                     }
+                    if (PolymerCore.LOG.isDebugEnabled() && nbt.size() > 0) {
+                        PolymerCore.LOG.debug("Saving {} machines in chunk {}", nbt.size(), instance.getChunk().getPos());
+                    }
                     return nbt;
                 }
 
@@ -38,8 +46,32 @@ public class CapabilityChunkMultiblockStorage {
                     }
                     List<UUID> collect = ((ListNBT) nbt).stream().map(NBTUtil::readUniqueId).collect(Collectors.toList());
                     instance.setContainingMultiblocks(collect);
+                    if (PolymerCore.LOG.isDebugEnabled() && collect.size() > 0) {
+                        PolymerCore.LOG.debug("Loading {} machines in chunk {}", collect.size(), instance.getChunk().getPos());
+                    }
                 }
             },
             () -> null);
+    }
+
+    public static Optional<IChunkMultiblockStorage> getCapability(World world, BlockPos pos) {
+        IChunk chunk = world.getChunk(pos);
+        if (!(chunk instanceof ICapabilityProvider)) {
+            return Optional.empty();
+        }
+        LazyOptional<IChunkMultiblockStorage> capability = ((ICapabilityProvider) chunk).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE);
+        if (!capability.isPresent()) {
+            return Optional.empty();
+        }
+        return capability.resolve();
+    }
+
+    public static Tuple<UUID, IMultiblockPart> getMultiblockPart(World world, BlockPos pos) {
+
+        IChunkMultiblockStorage storage = getCapability(world, pos).orElse(null);
+        if (storage == null) {
+            return null;
+        }
+        return storage.getMultiblockPart(pos);
     }
 }

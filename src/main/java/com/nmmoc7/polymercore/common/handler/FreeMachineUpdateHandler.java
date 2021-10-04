@@ -17,13 +17,13 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = PolymerCore.MOD_ID)
@@ -43,28 +43,26 @@ public class FreeMachineUpdateHandler {
         if (world.isRemote) {
             return;
         }
-        IChunk chunk = world.getChunk(pos);
-        if (!(chunk instanceof ICapabilityProvider)) {
+        Optional<IChunkMultiblockStorage> capability = CapabilityChunkMultiblockStorage.getCapability(world, pos);
+        if (!capability.isPresent()) {
             return;
         }
-        LazyOptional<IChunkMultiblockStorage> capability = ((ICapabilityProvider) chunk).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE);
-        capability.ifPresent(it -> {
-            Tuple<UUID, IMultiblockPart> part = it.getMultiblockPart(pos);
-            if (part == null) {
+        IChunkMultiblockStorage it = capability.get();
+        Tuple<UUID, IMultiblockPart> part = it.getMultiblockPart(pos);
+        if (part == null) {
+            return;
+        }
+        boolean test = part.getB().test(world.getBlockState(pos));
+        if (!test) {
+            IAssembledMultiblock assembledMultiblock = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblock(part.getA());
+            if (assembledMultiblock == null) {
+                PolymerCore.LOG.warn("The multiblock '{}' 's block in {} is invalid!", part.getA(), pos);
+                it.removeMultiblock(part.getA());
                 return;
             }
-            boolean test = part.getB().test(world.getBlockState(pos));
-            if (!test) {
-                IAssembledMultiblock assembledMultiblock = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblock(part.getA());
-                if (assembledMultiblock == null) {
-                    PolymerCore.LOG.warn("The multiblock '{}' 's block in {} is invalid!", part.getA(), pos);
-                    it.removeMultiblock(part.getA());
-                    return;
-                }
-                //解除组装
-                assembledMultiblock.disassemble();
-            }
-        });
+            //解除组装
+            assembledMultiblock.disassemble();
+        }
 
     }
 
@@ -86,6 +84,8 @@ public class FreeMachineUpdateHandler {
         if (chunk instanceof ICapabilityProvider && world instanceof ServerWorld) {
             ((ICapabilityProvider) chunk).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE)
                 .ifPresent(it -> it.initialize((World) world));
+        } else if (world instanceof ServerWorld) {
+            FreeMultiblockWorldSavedData.get((World) world).validateMultiblocksInChunk(chunk.getPos());
         }
     }
 

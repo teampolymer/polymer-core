@@ -11,6 +11,8 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -62,14 +64,23 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
             if (!isPosInChunk(entry.getKey())) {
                 continue;
             }
+            modified = true;
             Tuple<UUID, IMultiblockPart> replaced = data.put(entry.getKey(), new Tuple<>(multiblockId, entry.getValue()));
+
             if (replaced != null) {
-                modified = true;
                 if (replaced.getA() != multiblockId) {
                     PolymerCore.LOG.warn("Position: {} Trying to replace an existing machine part for machine '{}' to another machine '{}', this may be a mistake!",
                         entry.getKey(), replaced.getA(), multiblockId);
+
+                    IAssembledMultiblock duplicate = FreeMultiblockWorldSavedData.get(chunk.getWorld()).getAssembledMultiblock(multiblockId);
+                    if (duplicate != null) {
+                        duplicate.disassemble();
+                    }
                 }
             }
+        }
+        if (modified) {
+            chunk.markDirty();
         }
         return modified;
     }
@@ -116,12 +127,25 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
     @Override
     public void initialize(World world) {
         this.data.clear();
+        List<UUID> invalidateMultiblocks = new ArrayList<>();
         for (UUID uuid : this.multiblocks) {
             IAssembledMultiblock multiblock = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblock(uuid);
             if (multiblock == null) {
+                invalidateMultiblocks.add(uuid);
                 continue;
             }
             addMultiblockInternal(uuid, multiblock.getParts());
         }
+        if (PolymerCore.LOG.isDebugEnabled() && multiblocks.size() > 0) {
+            PolymerCore.LOG.debug("Initializing {} machines in chunk {}", multiblocks.size(), chunk.getPos());
+        }
+        if (invalidateMultiblocks.size() > 0) {
+            PolymerCore.LOG.warn("Initializing {} machines in chunk {} failed", invalidateMultiblocks.size(), chunk.getPos());
+
+        }
+        invalidateMultiblocks.forEach(multiblockId -> {
+            removeMultiblock(multiblockId);
+            PolymerCore.LOG.warn("Removing {} machines in chunk {}", multiblockId, chunk.getPos());
+        });
     }
 }
