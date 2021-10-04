@@ -26,7 +26,7 @@ public class ProjectionRenderType extends RenderType {
             .layer(VIEW_OFFSET_Z_LAYERING)
             .transparency(TRANSLUCENT_TRANSPARENCY)
             .texture(NO_TEXTURE)
-            .depthTest(DEPTH_ALWAYS)
+            .depthTest(RenderState.DEPTH_LEQUAL)
             .cull(CULL_DISABLED)
             .lightmap(LIGHTMAP_DISABLED)
             .writeMask(COLOR_WRITE)

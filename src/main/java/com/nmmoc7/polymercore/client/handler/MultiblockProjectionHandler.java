@@ -8,6 +8,7 @@ import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.client.renderer.ProjectionRenderType;
+import com.nmmoc7.polymercore.client.utils.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -43,6 +44,7 @@ public class MultiblockProjectionHandler {
     private static BlockPos targetPos;
     private static Rotation rotation = Rotation.NONE;
     private static boolean isSymmetrical = false;
+    private static IVertexBuilder buffer;
 
     public static void setMultiblock(IDefinedMultiblock multiblock) {
         MultiblockProjectionHandler.multiblock = multiblock;
@@ -112,13 +114,13 @@ public class MultiblockProjectionHandler {
 
             float alpha = 0.3F;
             if (offPos.equals(trackPos)) {
-                alpha = 0.7F + (float) (Math.sin(ClientEventHandler.elapsedTicks * 0.2F) + 1F) * 0.2F;
+                alpha = 0.6F + (float) (Math.sin(ClientEventHandler.elapsedTicks * 0.2F) + 1F) * 0.3F;
             }
 
             BlockState current = world.getBlockState(offPos);
-            if (current != block) {
-                ms.push();
-                ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
+            ms.push();
+            ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
+            if (!entry.getValue().test(current)) {
 
                 IModelData modelData = ModelDataManager.getModelData(world, offPos);
 
@@ -130,8 +132,13 @@ public class MultiblockProjectionHandler {
                 renderBlock(block, bufferSource, ms, 0xF000F0, modelData);
                 bufferSource.finish(ProjectionRenderType.TRANSPARENT_BLOCK);
                 RenderSystem.blendColor(1, 1, 1, 1);
-                ms.pop();
+            } else {
+                buffer = bufferSource.getBuffer(ProjectionRenderType.OVERLAY_LINES);
+                RenderUtils.outlineRed(buffer, ms.getLast().getMatrix(), pos);
+                bufferSource.finish(ProjectionRenderType.OVERLAY_LINES);
             }
+            bufferSource.finish();
+            ms.pop();
         }
         RenderSystem.enableDepthTest();
         ms.pop();
