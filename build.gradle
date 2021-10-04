@@ -10,13 +10,10 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
-// MixinGradle:
-apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.nmmoc7'
 version = 'r1.16.5-1-1'
@@ -136,8 +133,6 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.6'
-    // Apply Mixin AP
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
@@ -150,12 +145,6 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-}
-
-mixin {
-    // MixinGradle Settings
-    add sourceSets.main, 'mixins.polymer-core.refmap.json'
-    config 'mixins.polymer-core.json'
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

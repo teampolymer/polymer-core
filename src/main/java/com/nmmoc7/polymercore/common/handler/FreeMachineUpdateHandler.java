@@ -7,8 +7,6 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.capability.chunk.ChunkMultiblockCapabilityProvider;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
-import com.nmmoc7.polymercore.core.event.BlockUpdateEvent;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -16,9 +14,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,8 +30,15 @@ import java.util.UUID;
 public class FreeMachineUpdateHandler {
 
     @SubscribeEvent
-    public static void onBlockUpdate(BlockUpdateEvent event) {
-        World world = event.getWorld();
+    @OnlyIn(Dist.CLIENT)
+    public static void onBlockUpdate(BlockEvent.NeighborNotifyEvent event) {
+        if (!(event.getWorld() instanceof ServerWorld)) {
+            return;
+        }
+        if (event.getNotifiedSides().size() < 6) {
+            return;
+        }
+        World world = (World) event.getWorld();
         BlockPos pos = event.getPos().toImmutable();
         if (world.isRemote) {
             return;
