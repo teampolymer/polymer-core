@@ -4,6 +4,7 @@ import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
+import com.nmmoc7.polymercore.client.handler.MultiblockProjectionHandler;
 import com.nmmoc7.polymercore.common.registry.MultiblockManagerImpl;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.block.BlockState;
@@ -40,6 +41,10 @@ public class PlayerHandler {
 
                     if (assemble != null) {
                         e.getPlayer().sendMessage(new StringTextComponent("Multiblock Assembled"), Util.DUMMY_UUID);
+                    } else {
+                        MultiblockProjectionHandler.setMultiblock(it);
+                        MultiblockProjectionHandler.setIsProjecting(true);
+                        MultiblockProjectionHandler.setTargetPos(e.getPos());
                     }
                 });
 
