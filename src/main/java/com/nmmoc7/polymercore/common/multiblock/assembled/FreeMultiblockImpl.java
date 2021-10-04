@@ -6,6 +6,7 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
+import com.nmmoc7.polymercore.common.registry.MultiblockManagerImpl;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -121,9 +122,8 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
         this.isSymmetrical = nbt.getBoolean("symm");
         this.rotation = Rotation.values()[nbt.getByte("rot")];
         String define = nbt.getString("define");
-        this.definedMultiblock = PolymerCoreRegistries.DEFINED_MULTIBLOCKS.getValue(new ResourceLocation(define));
-        if (definedMultiblock == null) {
-            throw new IllegalStateException(String.format("Could not get multiblock %s from NBT", define));
-        }
+        this.definedMultiblock = MultiblockManagerImpl.INSTANCE.get().getDefinedMultiblock(new ResourceLocation(define))
+            .orElseThrow(() -> new IllegalStateException(String.format("Could not get multiblock %s from NBT", define)));
+
     }
 }

@@ -23,7 +23,6 @@ public class PolymerCore {
         TestItem.ItemRegistry.ITEMS.register(modBus);
         TestBlock.BlockRegistry.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         MultiblockRegisterHandler.MULTIBLOCK_TYPES.register(modBus);
-        MultiblockRegisterHandler.DEFINED_MULTIBLOCKS.register(modBus);
 
         modBus.addListener(this::preInit);
     }
