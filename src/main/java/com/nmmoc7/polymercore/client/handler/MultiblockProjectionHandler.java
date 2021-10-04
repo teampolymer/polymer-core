@@ -17,10 +17,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.LightType;
@@ -79,6 +82,9 @@ public class MultiblockProjectionHandler {
         BlockPos trackPos = null;
 
         Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) {
+            return;
+        }
 
 
         //获取玩家正在看向的方块
@@ -105,42 +111,63 @@ public class MultiblockProjectionHandler {
 
         IRenderTypeBuffer.Impl bufferSource = mc.getRenderTypeBuffers().getBufferSource();
 
-        RenderSystem.disableDepthTest();
         for (Map.Entry<Vector3i, IMultiblockPart> entry : multiblock.getParts().entrySet()) {
             Vector3i relative = entry.getKey();
             //TODO: 这里应该循环显示所有可能的方块
             BlockState block = entry.getValue().getFirstMatchingBlock();
             BlockPos offPos = PositionUtils.applyModifies(relative, pos, rotation, isSymmetrical);
 
-            float alpha = 0.3F;
-            if (offPos.equals(trackPos)) {
-                alpha = 0.6F + (float) (Math.sin(ClientEventHandler.elapsedTicks * 0.2F) + 1F) * 0.3F;
-            }
+
 
             BlockState current = world.getBlockState(offPos);
             ms.push();
             ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
             if (!entry.getValue().test(current)) {
-
                 IModelData modelData = ModelDataManager.getModelData(world, offPos);
 
 //                int blockLight = world.getLightFor(LightType.BLOCK, pos);
 //                int sky = world.getLightFor(LightType.SKY, pos);
 //                int combinedLight = LightTexture.packLight(Math.max(15, blockLight + 8), sky);
                 //0xF000F0就是天空亮度15方块亮度15
+
+                if (current.getBlock() != Blocks.AIR) {
+                    //稍微放大一丁点，防止贴图错误
+                    ms.scale(1.002f, 1.002f, 1.002f);
+                    ms.translate(-0.001f, -0.001f, -0.001f);
+                    //如果不对，显示红色边框，潜行的时候透视
+                    IVertexBuilder buffer = mc.player.isSneaking() ? bufferSource.getBuffer(ProjectionRenderType.LINE_NO_DEPTH) : bufferSource.getBuffer(RenderType.LINES);
+                    WorldRenderer.drawBoundingBox(ms, buffer,
+                        0, 0, 0, 1, 1, 1
+                        , 1.0f, 0.1f, 0.07f, 0.8f);
+
+                } else {
+                    //正常情况下稍微缩小一点点
+                    ms.scale(0.94f, 0.94f, 0.94f);
+                    ms.translate(0.03f, 0.03f, 0.03f);
+                }
+                //默认透明度0.3
+                float alpha = 0.3F;
+                //对当前选中的方块提高透明度
+                if (offPos.equals(trackPos)) {
+                    alpha = 0.6F + (float) (Math.sin(ClientEventHandler.elapsedTicks * 0.2F) + 1F) * 0.15F;
+                }
+                //渲染投影
                 RenderSystem.blendColor(1, 1, 1, alpha);
                 renderBlock(block, bufferSource, ms, 0xF000F0, modelData);
                 bufferSource.finish(ProjectionRenderType.TRANSPARENT_BLOCK);
                 RenderSystem.blendColor(1, 1, 1, 1);
             } else {
-                buffer = bufferSource.getBuffer(ProjectionRenderType.OVERLAY_LINES);
-                RenderUtils.outlineRed(buffer, ms.getLast().getMatrix(), pos);
-                bufferSource.finish(ProjectionRenderType.OVERLAY_LINES);
+                //稍微放大一丁点，防止贴图错误
+                ms.scale(1.002f, 1.002f, 1.002f);
+                ms.translate(-0.001f, -0.001f, -0.001f);
+                //正确，显示绿色
+                WorldRenderer.drawBoundingBox(ms, bufferSource.getBuffer(RenderType.LINES),
+                    0, 0, 0, 1, 1, 1
+                    , 0.3f, 1.0f, 0.15f, 0.6f);
             }
-            bufferSource.finish();
             ms.pop();
         }
-        RenderSystem.enableDepthTest();
+        bufferSource.finish();
         ms.pop();
 
     }

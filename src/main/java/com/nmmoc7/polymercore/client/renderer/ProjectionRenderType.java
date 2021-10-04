@@ -17,20 +17,17 @@ public class ProjectionRenderType extends RenderType {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
-    private static final LineState THICK_LINES = new LineState(OptionalDouble.of(3.0D));
-
-    public static final RenderType OVERLAY_LINES = makeType("overlay_lines",
-        DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
+    public static final RenderType LINE_NO_DEPTH = makeType("lines",
+        DefaultVertexFormats.POSITION_COLOR, 1, 256,
         RenderType.State.getBuilder()
-            .line(THICK_LINES)
+            .line(new RenderState.LineState(OptionalDouble.empty()))
             .layer(VIEW_OFFSET_Z_LAYERING)
             .transparency(TRANSLUCENT_TRANSPARENCY)
-            .texture(NO_TEXTURE)
-            .depthTest(RenderState.DEPTH_LEQUAL)
-            .cull(CULL_DISABLED)
-            .lightmap(LIGHTMAP_DISABLED)
-            .writeMask(COLOR_WRITE)
+            .target(ITEM_ENTITY_TARGET)
+            .depthTest(DEPTH_ALWAYS)
+            .writeMask(COLOR_DEPTH_WRITE)
             .build(false));
+
 
     /**
      * 半透明混合
@@ -55,7 +52,7 @@ public class ProjectionRenderType extends RenderType {
             .alpha(DEFAULT_ALPHA)
             .lightmap(LIGHTMAP_ENABLED)
             .overlay(OVERLAY_ENABLED)
-            .depthTest(DEPTH_ALWAYS)
+            .writeMask(COLOR_WRITE)
             .build(true));
 
 
