@@ -48,7 +48,7 @@ public class PartBlockArray implements IMultiblockPart {
     }
 
     @Override
-    public Collection<BlockState> getSampleBlocks() {
+    public List<BlockState> getSampleBlocks() {
         return samples;
     }
 

@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
 import java.util.Collection;
+import java.util.List;
 
 public class PartSpecifiedBlock implements IMultiblockPart {
     private final Block block;
@@ -19,7 +20,7 @@ public class PartSpecifiedBlock implements IMultiblockPart {
     }
 
     @Override
-    public Collection<BlockState> getSampleBlocks() {
+    public List<BlockState> getSampleBlocks() {
         return block.getStateContainer().getValidStates();
     }
 

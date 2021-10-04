@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 
 public interface IMultiblockPart extends Predicate<BlockState> {
@@ -20,7 +21,7 @@ public interface IMultiblockPart extends Predicate<BlockState> {
      *
      * @return 样本的方块列表
      */
-    Collection<BlockState> getSampleBlocks();
+    List<BlockState> getSampleBlocks();
 
     /**
      * 检测一个方块是否匹配此Part

@@ -37,6 +37,8 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PolymerCore.MOD_ID)
@@ -113,10 +115,11 @@ public class MultiblockProjectionHandler {
 
         for (Map.Entry<Vector3i, IMultiblockPart> entry : multiblock.getParts().entrySet()) {
             Vector3i relative = entry.getKey();
-            //TODO: 这里应该循环显示所有可能的方块
-            BlockState block = entry.getValue().getFirstMatchingBlock();
-            BlockPos offPos = PositionUtils.applyModifies(relative, pos, rotation, isSymmetrical);
+            List<BlockState> sampleBlocks = entry.getValue().getSampleBlocks();
+            int i = (ClientEventHandler.elapsedTicks) / 20 % sampleBlocks.size();
 
+            BlockState block = sampleBlocks.get(i);
+            BlockPos offPos = PositionUtils.applyModifies(relative, pos, rotation, isSymmetrical);
 
 
             BlockState current = world.getBlockState(offPos);
