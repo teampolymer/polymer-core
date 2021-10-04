@@ -122,7 +122,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
         this.multiblockId = nbt.getUniqueId("uuid");
         this.offset = NBTUtil.readBlockPos(nbt.getCompound("off"));
         this.isSymmetrical = nbt.getBoolean("symm");
-        this.rotation = Rotation.values()[nbt.getByte("rot")];
+        this.rotation = Rotation.values()[nbt.getByte("rotation")];
         String define = nbt.getString("define");
         this.definedMultiblock = MultiblockManagerImpl.INSTANCE.get().getDefinedMultiblock(new ResourceLocation(define))
             .orElseThrow(() -> new IllegalStateException(String.format("Could not get multiblock %s from NBT", define)));
