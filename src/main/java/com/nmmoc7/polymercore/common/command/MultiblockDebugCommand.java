@@ -40,9 +40,8 @@ public class MultiblockDebugCommand {
         MinecraftServer server = source.getServer();
         ServerWorld world = source.getWorld();
 
-        Collection<IAssembledMultiblock> multiblocks = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();
-        for (IAssembledMultiblock multiblock : multiblocks) {
-            if (multiblock instanceof IFreeMultiblock) {
+        Collection<IFreeMultiblock> multiblocks = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();
+        for (IFreeMultiblock multiblock : multiblocks) {
 //                Collection<ChunkPos> crossedChunks = ((IFreeMultiblock) multiblock).getCrossedChunks();
 //                for (ChunkPos chunkPos : crossedChunks) {
 //                    Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
@@ -50,13 +49,13 @@ public class MultiblockDebugCommand {
 //                        Map<BlockPos, Tuple<UUID, IMultiblockPart>> data = it.getData();
 //                    });
 //                }
-                for (BlockPos pos : multiblock.getParts().keySet()) {
-                    Tuple<UUID, IMultiblockPart> multiblockPart = CapabilityChunkMultiblockStorage.getMultiblockPart(world, pos);
-                    if (multiblockPart == null || multiblockPart.getA() != multiblock.getMultiblockId()) {
-                        source.sendFeedback(new StringTextComponent("Found an invalid multiblock :" + multiblock.getMultiblockId()), true);
-                    }
+            for (BlockPos pos : multiblock.getParts().keySet()) {
+                Tuple<UUID, IMultiblockPart> multiblockPart = CapabilityChunkMultiblockStorage.getMultiblockPart(world, pos);
+                if (multiblockPart == null || multiblockPart.getA() != multiblock.getMultiblockId()) {
+                    source.sendFeedback(new StringTextComponent("Found an invalid multiblock :" + multiblock.getMultiblockId()), true);
                 }
             }
+
         }
         source.sendFeedback(new StringTextComponent("Check fininshed"), true);
         return 0;

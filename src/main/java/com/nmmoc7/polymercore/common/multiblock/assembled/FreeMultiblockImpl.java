@@ -1,6 +1,7 @@
 package com.nmmoc7.polymercore.common.multiblock.assembled;
 
 import com.nmmoc7.polymercore.PolymerCore;
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
@@ -126,7 +127,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
         this.isSymmetrical = nbt.getBoolean("symm");
         this.rotation = Rotation.values()[nbt.getByte("rotation")];
         String define = nbt.getString("define");
-        this.definedMultiblock = MultiblockManagerImpl.INSTANCE.get().getDefinedMultiblock(new ResourceLocation(define))
+        this.definedMultiblock = PolymerCoreApi.getInstance().getMultiblockManager().getDefinedMultiblock(new ResourceLocation(define))
             .orElseThrow(() -> new IllegalStateException(String.format("Could not get multiblock %s from NBT", define)));
 
     }

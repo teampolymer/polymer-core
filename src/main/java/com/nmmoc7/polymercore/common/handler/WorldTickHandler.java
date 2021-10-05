@@ -1,6 +1,8 @@
 package com.nmmoc7.polymercore.common.handler;
 
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
+import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
@@ -21,9 +23,9 @@ public class WorldTickHandler {
             return;
         }
         World world = event.world;
-        Collection<IAssembledMultiblock> multiblocks = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();
+        Collection<IFreeMultiblock> multiblocks = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();
 
-        for (IAssembledMultiblock multiblock : multiblocks) {
+        for (IFreeMultiblock multiblock : multiblocks) {
             BlockPos offset = multiblock.getOffset();
             Vector3i size = multiblock.getOriginalMultiblock().getSize();
 
@@ -34,7 +36,7 @@ public class WorldTickHandler {
     }
 
 
-    private static void tickMultiblock(World world, IAssembledMultiblock multiblock) {
+    private static void tickMultiblock(World world, IFreeMultiblock multiblock) {
 
     }
 

@@ -21,7 +21,6 @@ public class MultiblockManagerImpl implements IMultiblockDefinitionManager {
     private BiMap<ResourceLocation, IDefinedMultiblock> multiblocks = HashBiMap.create();
     private Multimap<String, IDefinedMultiblock> tagsMap = HashMultimap.create();
 
-    public static final Lazy<IMultiblockDefinitionManager> INSTANCE = Lazy.of(MultiblockManagerImpl::new);
 
 
     @Override

@@ -30,14 +30,18 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         this.assembledMultiblockMap = new ConcurrentHashMap<>();
     }
 
-    private final ConcurrentHashMap<UUID, IAssembledMultiblock> assembledMultiblockMap;
+    private final ConcurrentHashMap<UUID, IFreeMultiblock> assembledMultiblockMap;
     private final HashBiMap<UUID, BlockPos> positions = HashBiMap.create();
 
-    public IAssembledMultiblock getAssembledMultiblock(UUID multiblockId) {
+    public IFreeMultiblock getAssembledMultiblock(UUID multiblockId) {
         return assembledMultiblockMap.get(multiblockId);
     }
 
-    public Collection<IAssembledMultiblock> getAssembledMultiblocks() {
+    public IFreeMultiblock getAssembledMultiblock(BlockPos corePos) {
+        return assembledMultiblockMap.get(positions.inverse().get(corePos));
+    }
+
+    public Collection<IFreeMultiblock> getAssembledMultiblocks() {
         return Collections.unmodifiableCollection(assembledMultiblockMap.values());
     }
 
@@ -46,7 +50,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             if ((value.getX() >> 4) == pos.x && (value.getZ() >> 4) == pos.z) {
                 UUID uuid = positions.inverse().get(value);
                 PolymerCore.LOG.error("Found invalidate multiblock {} in {}", uuid, value);
-                IAssembledMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
+                IFreeMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
                 if (assembledMultiblock != null) {
                     assembledMultiblock.disassemble();
                 }
@@ -57,7 +61,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
     }
 
     public void addAssembledMultiblock(IFreeMultiblock multiblock) {
-        IAssembledMultiblock result = assembledMultiblockMap.put(multiblock.getMultiblockId(), multiblock);
+        IFreeMultiblock result = assembledMultiblockMap.put(multiblock.getMultiblockId(), multiblock);
         if (result != null) {
             PolymerCore.LOG.error("Attempting to add an multiblock with existing id: {}", multiblock.getMultiblockId());
         }
@@ -65,7 +69,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             UUID uuid = positions.inverse().get(multiblock.getOffset());
             PolymerCore.LOG.error("Attempting to add an multiblock {} to position {} where there are another multiblock {}",
                 multiblock.getMultiblockId(), multiblock.getOffset(), uuid);
-            IAssembledMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
+            IFreeMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
             if (assembledMultiblock != null) {
                 assembledMultiblock.disassemble();
             }
@@ -86,7 +90,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         assembledMultiblockMap.clear();
         ListNBT multiblocks = nbt.getList("assembled_multiblocks", 10);
         for (INBT multiblock : multiblocks) {
-            IAssembledMultiblock assembledMultiblock = MultiblockUtils.deserializeNBT(world, multiblock);
+            IFreeMultiblock assembledMultiblock = (IFreeMultiblock) MultiblockUtils.deserializeNBT(world, multiblock);
             if (assembledMultiblock == null) {
                 continue;
             }
@@ -101,7 +105,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         ListNBT listNBT = new ListNBT();
-        for (IAssembledMultiblock value : assembledMultiblockMap.values()) {
+        for (IFreeMultiblock value : assembledMultiblockMap.values()) {
             listNBT.add(value.serializeNBT());
         }
         compound.put("assembled_multiblocks", listNBT);
