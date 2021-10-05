@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore;
 
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.common.block.TestBlock;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;
@@ -12,9 +13,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(PolymerCore.MOD_ID)
+@Mod(PolymerCoreApi.MOD_ID)
 public class PolymerCore {
-    public static final String MOD_ID = "polymer-core";
 
     public static final Logger LOG = LogManager.getLogger();
 
