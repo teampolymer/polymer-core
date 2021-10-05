@@ -12,6 +12,6 @@ public class PolymerItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(RegisterHandler.BLUEPRINT_ITEM);
+        return new ItemStack(RegisterHandler.TEST_BLUEPRINT_ITEM);
     }
 }

@@ -1,8 +1,8 @@
 package com.nmmoc7.polymercore.common.handler;
 
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.client.handler.MultiblockProjectionHandler;
-import com.nmmoc7.polymercore.common.registry.MultiblockManagerImpl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +23,7 @@ public class PlayerHandler {
         }
         ItemStack heldItem = e.getPlayer().getHeldItem(e.getHand());
         if (heldItem.getItem() == Items.STICK) {
-            MultiblockManagerImpl.INSTANCE.get()
+            PolymerCoreApi.getInstance().getMultiblockManager()
                 .getDefinedMultiblock(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine"))
                 .ifPresent(it -> {
                     IAssembledMultiblock assemble = it.assemble(world, e.getPos());

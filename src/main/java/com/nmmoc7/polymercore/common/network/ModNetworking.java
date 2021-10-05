@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.common.network;
 
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;

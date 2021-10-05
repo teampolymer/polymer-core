@@ -57,7 +57,7 @@ public class ReloadListenerHandler {
                 .setCanSymmetrical()
                 .build();
 
-            MultiblockManagerImpl.INSTANCE.get().addDefinedMultiblock(build.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine")));
+            PolymerCoreApi.getInstance().getMultiblockManager().addDefinedMultiblock(build.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine")));
         }
     }
 
