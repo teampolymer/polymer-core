@@ -1,6 +1,7 @@
 package com.nmmoc7.polymercore.common.handler;
 
 import com.nmmoc7.polymercore.PolymerCore;
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
@@ -23,8 +24,7 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = PolymerCoreApi.MOD_ID)
 public class FreeMachineUpdateHandler {
@@ -81,12 +81,19 @@ public class FreeMachineUpdateHandler {
     public static void onChunkLoad(ChunkEvent.Load load) {
         IChunk chunk = load.getChunk();
         IWorld world = load.getWorld();
-        if (chunk instanceof ICapabilityProvider && world instanceof ServerWorld) {
-            ((ICapabilityProvider) chunk).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE)
-                .ifPresent(it -> it.initialize((World) world));
-        } else if (world instanceof ServerWorld) {
-            FreeMultiblockWorldSavedData.get((World) world).validateMultiblocksInChunk(chunk.getPos());
+        if (world.isRemote()) {
+            return;
         }
+        Set<UUID> multiblocks = new HashSet<>();
+        if (chunk instanceof ICapabilityProvider) {
+            ((ICapabilityProvider) chunk).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE)
+                .ifPresent(it -> {
+                    it.initialize((World) world);
+                    multiblocks.addAll(it.getContainingMultiblocks());
+                });
+        }
+        FreeMultiblockWorldSavedData.get((World) world).validateMultiblocksInChunk(chunk.getPos(), multiblocks);
+
     }
 
     @SubscribeEvent

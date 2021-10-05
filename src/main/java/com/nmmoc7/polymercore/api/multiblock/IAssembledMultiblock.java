@@ -60,6 +60,8 @@ public interface IAssembledMultiblock extends INBTSerializable<CompoundNBT> {
     Map<BlockPos, IMultiblockPart> getParts();
 
 
+    boolean validate(boolean disassemble);
+
 
 
 }

@@ -1,8 +1,8 @@
 package com.nmmoc7.polymercore.common.world;
 
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.HashMultimap;
 import com.nmmoc7.polymercore.PolymerCore;
-import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.util.MultiblockUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -15,9 +15,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FreeMultiblockWorldSavedData extends WorldSavedData {
@@ -32,6 +30,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
 
     private final ConcurrentHashMap<UUID, IFreeMultiblock> assembledMultiblockMap;
     private final HashBiMap<UUID, BlockPos> positions = HashBiMap.create();
+    private final HashMultimap<ChunkPos, UUID> chunksMultiblocks = HashMultimap.create();
 
     public IFreeMultiblock getAssembledMultiblock(UUID multiblockId) {
         return assembledMultiblockMap.get(multiblockId);
@@ -45,16 +44,19 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         return Collections.unmodifiableCollection(assembledMultiblockMap.values());
     }
 
-    public void validateMultiblocksInChunk(ChunkPos pos) {
-        for (BlockPos value : positions.values()) {
-            if ((value.getX() >> 4) == pos.x && (value.getZ() >> 4) == pos.z) {
-                UUID uuid = positions.inverse().get(value);
-                PolymerCore.LOG.error("Found invalidate multiblock {} in {}", uuid, value);
-                IFreeMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
-                if (assembledMultiblock != null) {
-                    assembledMultiblock.disassemble();
-                }
+    public void validateMultiblocksInChunk(ChunkPos pos, Set<UUID> multiblocks) {
+
+        for (UUID uuid : chunksMultiblocks.get(pos)) {
+            BlockPos corePos = positions.get(uuid);
+            IFreeMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
+            if (assembledMultiblock == null) {
+                PolymerCore.LOG.error("Multiblock {} in {} has no entry, this should not happen!", uuid, corePos);
                 removeAssembledMultiblock(uuid);
+            } else if (!multiblocks.contains(uuid)) {
+                PolymerCore.LOG.error("Found invalidate multiblock {} in {}", uuid, corePos);
+                assembledMultiblock.disassemble();
+            } else {
+                assembledMultiblock.validate(true);
             }
         }
 
@@ -64,6 +66,8 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         IFreeMultiblock result = assembledMultiblockMap.put(multiblock.getMultiblockId(), multiblock);
         if (result != null) {
             PolymerCore.LOG.error("Attempting to add an multiblock with existing id: {}", multiblock.getMultiblockId());
+            result.disassemble();
+            removeAssembledMultiblock(result.getMultiblockId());
         }
         if (positions.containsValue(multiblock.getOffset())) {
             UUID uuid = positions.inverse().get(multiblock.getOffset());
@@ -76,12 +80,14 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             removeAssembledMultiblock(uuid);
         }
         positions.put(multiblock.getMultiblockId(), multiblock.getOffset());
+        chunksMultiblocks.put(new ChunkPos(multiblock.getOffset()), multiblock.getMultiblockId());
         markDirty();
     }
 
     public void removeAssembledMultiblock(UUID multiblockId) {
         assembledMultiblockMap.remove(multiblockId);
-        positions.remove(multiblockId);
+        BlockPos remove = positions.remove(multiblockId);
+        chunksMultiblocks.remove(new ChunkPos(remove), multiblockId);
         markDirty();
     }
 
@@ -96,6 +102,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             }
             assembledMultiblockMap.put(assembledMultiblock.getMultiblockId(), assembledMultiblock);
             positions.put(assembledMultiblock.getMultiblockId(), assembledMultiblock.getOffset());
+            chunksMultiblocks.put(new ChunkPos(assembledMultiblock.getOffset()), assembledMultiblock.getMultiblockId());
         }
         if (PolymerCore.LOG.isDebugEnabled() && assembledMultiblockMap.size() > 0) {
             PolymerCore.LOG.debug("Loaded {} machines in world {}", assembledMultiblockMap.size(), world.getDimensionKey());

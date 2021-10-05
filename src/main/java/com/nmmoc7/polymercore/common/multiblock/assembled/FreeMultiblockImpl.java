@@ -103,6 +103,21 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     }
 
     @Override
+    public boolean validate(boolean disassemble) {
+
+        boolean result = getOriginalMultiblock().canAssemble(
+            world,
+            getOffset(),
+            getRotation(),
+            isSymmetrical()
+        );
+        if(disassemble && !result) {
+            disassemble();
+        }
+        return result;
+    }
+
+    @Override
     public Collection<ChunkPos> getCrossedChunks() {
         return crossedChunks.get();
     }
