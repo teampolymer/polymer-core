@@ -1,13 +1,10 @@
 package com.nmmoc7.polymercore.common.handler;
 
-import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -15,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.Collection;
 
-@Mod.EventBusSubscriber(modid = PolymerCore.MOD_ID)
+@Mod.EventBusSubscriber(modid = PolymerCoreApi.MOD_ID)
 public class WorldTickHandler {
 
     @SubscribeEvent

@@ -1,6 +1,9 @@
 package com.nmmoc7.polymercore.common.registry;
 
-import com.google.common.collect.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.registry.IMultiblockDefinitionManager;
@@ -8,7 +11,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MultiblockManagerImpl implements IMultiblockDefinitionManager {

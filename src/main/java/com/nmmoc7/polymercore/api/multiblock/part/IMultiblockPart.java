@@ -1,10 +1,7 @@
 package com.nmmoc7.polymercore.api.multiblock.part;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 

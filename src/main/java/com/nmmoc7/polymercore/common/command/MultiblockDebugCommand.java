@@ -13,18 +13,13 @@ import net.minecraft.command.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
 
 public class MultiblockDebugCommand {

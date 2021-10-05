@@ -1,8 +1,6 @@
 package com.nmmoc7.polymercore.api.registry;
 
-import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
-import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;

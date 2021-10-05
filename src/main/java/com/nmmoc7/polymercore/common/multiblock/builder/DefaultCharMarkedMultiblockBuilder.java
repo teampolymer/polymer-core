@@ -1,6 +1,6 @@
 package com.nmmoc7.polymercore.common.multiblock.builder;
 
-import com.nmmoc7.polymercore.PolymerCore;
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.component.IMultiblockComponent;
 import com.nmmoc7.polymercore.api.exceptions.MultiblockBuilderException;
 import com.nmmoc7.polymercore.api.machine.IMachine;
@@ -92,7 +92,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
         }
         if (type == null) {
             //TODO: 这里允许配置默认的多方快结构类型，并给默认值
-            type = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(PolymerCore.MOD_ID, "free"));
+            type = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(PolymerCoreApi.MOD_ID, "free"));
         }
         if (pattern == null) {
             setPattern(patternAlternative.toArray(new String[0][0]));

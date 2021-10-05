@@ -1,6 +1,5 @@
 package com.nmmoc7.polymercore.common.item;
 
-import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.common.ModGroup;
 import com.nmmoc7.polymercore.common.block.TestBlock;
 import net.minecraft.item.BlockItem;
@@ -16,7 +15,7 @@ public class TestItem extends Item {
     }
 
     public static class ItemRegistry {
-        public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, PolymerCore.MOD_ID);
+        public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, PolymerCoreApi.MOD_ID);
         public static final RegistryObject<Item> TestItem = ITEMS.register("test_item", TestItem::new);
         public static final RegistryObject<Item> obsidianBlock = ITEMS.register("obsidian_block", () -> new BlockItem(TestBlock.BlockRegistry.TestBlock.get(), new Properties().group(ModGroup.polymergroup)));
     }

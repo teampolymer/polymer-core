@@ -1,6 +1,6 @@
 package com.nmmoc7.polymercore.common.registry;
 
-import com.nmmoc7.polymercore.PolymerCore;
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;
 import com.nmmoc7.polymercore.common.multiblock.builder.DefaultCharMarkedMultiblockBuilder;
@@ -14,7 +14,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = PolymerCore.MOD_ID)
+@Mod.EventBusSubscriber(modid = PolymerCoreApi.MOD_ID)
 public class ReloadListenerHandler {
     @SubscribeEvent
     public static void onAddReloadListener(AddReloadListenerEvent e) {
@@ -57,7 +57,7 @@ public class ReloadListenerHandler {
                 .setCanSymmetrical()
                 .build();
 
-            MultiblockManagerImpl.INSTANCE.get().addDefinedMultiblock(build.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "test_machine")));
+            MultiblockManagerImpl.INSTANCE.get().addDefinedMultiblock(build.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine")));
         }
     }
 

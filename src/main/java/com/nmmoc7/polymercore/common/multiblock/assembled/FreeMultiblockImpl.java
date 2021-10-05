@@ -4,7 +4,6 @@ import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
-import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.registry.MultiblockManagerImpl;
@@ -19,7 +18,10 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Lazy;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class FreeMultiblockImpl implements IFreeMultiblock {

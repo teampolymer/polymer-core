@@ -1,6 +1,5 @@
 package com.nmmoc7.polymercore.common;
 
-import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.common.block.PolymerCoreBlueprintBlock;
 import com.nmmoc7.polymercore.common.event.DefaultTileRegEvent;
 import com.nmmoc7.polymercore.common.item.Hammer;
@@ -22,7 +21,7 @@ public class RegisterHandler {
     public static final BlockItem BLUEPRINT_ITEM = new BlockItem(BLUEPRINT_BLOCK, new Item.Properties().group(PolymerItemGroup.INSTANCE));
     public static TileEntityType<PolymerCoreBlueprintTileEntity> BLUEPRINT_TILE;
 
-    public static final ResourceLocation BLUEPRINT_BLOCK_NAME = new ResourceLocation(PolymerCore.MOD_ID, "polymer_core_blueprint_block");
+    public static final ResourceLocation BLUEPRINT_BLOCK_NAME = new ResourceLocation(PolymerCoreApi.MOD_ID, "polymer_core_blueprint_block");
 
     public static final Hammer HAMMER = new Hammer();
     public static final TestBlueprintItem TEST_BLUEPRINT_ITEM = new TestBlueprintItem();
@@ -38,8 +37,8 @@ public class RegisterHandler {
     public static void onItemRegister(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
             BLUEPRINT_ITEM.setRegistryName(BLUEPRINT_BLOCK_NAME),
-            HAMMER.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "hammer")),
-            TEST_BLUEPRINT_ITEM.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, "test_blueprint"))
+            HAMMER.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "hammer")),
+            TEST_BLUEPRINT_ITEM.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_blueprint"))
         );
     }
 
@@ -50,7 +49,7 @@ public class RegisterHandler {
             .build(null);
 
         event.getRegistry().registerAll(
-            BLUEPRINT_TILE.setRegistryName(new ResourceLocation(PolymerCore.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
+            BLUEPRINT_TILE.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, BLUEPRINT_BLOCK_NAME.getPath() + "_tile"))
         );
     }
 

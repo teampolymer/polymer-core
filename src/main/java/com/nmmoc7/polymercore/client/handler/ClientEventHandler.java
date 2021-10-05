@@ -1,6 +1,5 @@
 package com.nmmoc7.polymercore.client.handler;
 
-import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

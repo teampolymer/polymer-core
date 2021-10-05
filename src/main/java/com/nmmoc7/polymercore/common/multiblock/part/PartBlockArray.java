@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.tags.ITag;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -4,7 +4,6 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
-import java.util.Collection;
 import java.util.List;
 
 public class PartSpecifiedBlock implements IMultiblockPart {

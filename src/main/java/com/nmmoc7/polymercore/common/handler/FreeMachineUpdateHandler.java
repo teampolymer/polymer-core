@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.Optional;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = PolymerCore.MOD_ID)
+@Mod.EventBusSubscriber(modid = PolymerCoreApi.MOD_ID)
 public class FreeMachineUpdateHandler {
 
     @SubscribeEvent

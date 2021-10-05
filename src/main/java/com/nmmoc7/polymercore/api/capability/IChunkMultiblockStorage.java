@@ -4,7 +4,6 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 

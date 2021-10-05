@@ -1,7 +1,6 @@
 package com.nmmoc7.polymercore.common.world;
 
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultimap;
 import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
@@ -16,7 +15,9 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FreeMultiblockWorldSavedData extends WorldSavedData {

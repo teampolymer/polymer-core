@@ -2,8 +2,6 @@ package com.nmmoc7.polymercore.api.multiblock.builder;
 
 
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
-import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.Map;
 

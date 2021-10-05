@@ -1,6 +1,5 @@
 package com.nmmoc7.polymercore.common.network;
 
-import com.nmmoc7.polymercore.PolymerCore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -16,7 +15,7 @@ public class ModNetworking {
 
     public static void registerMessage() {
         INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(PolymerCore.MOD_ID, "default_networking"),
+            new ResourceLocation(PolymerCoreApi.MOD_ID, "default_networking"),
             () -> VERSION,
             (version) -> version.equals(VERSION),
             (version) -> version.equals(VERSION)
