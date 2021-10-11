@@ -24,7 +24,10 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = PolymerCoreApi.MOD_ID)
 public class FreeMachineUpdateHandler {

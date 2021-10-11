@@ -2,7 +2,6 @@ package com.nmmoc7.polymercore.api;
 
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.registry.IMultiblockDefinitionManager;
 import com.nmmoc7.polymercore.api.stub.StubPolymerCoreApi;

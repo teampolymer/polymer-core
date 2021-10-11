@@ -1,17 +1,12 @@
 package com.nmmoc7.polymercore.common;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
-import com.nmmoc7.polymercore.common.event.DefaultTileRegEvent;
 import com.nmmoc7.polymercore.common.item.Hammer;
 import com.nmmoc7.polymercore.common.item.TestBlueprintItem;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

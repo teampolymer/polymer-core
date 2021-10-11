@@ -9,7 +9,6 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.registry.IMultiblockDefinitionManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Lazy;
 
 import java.util.Collection;
 import java.util.Collections;

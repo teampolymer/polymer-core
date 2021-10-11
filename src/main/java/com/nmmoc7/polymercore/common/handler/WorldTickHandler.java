@@ -1,7 +1,6 @@
 package com.nmmoc7.polymercore.common.handler;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
-import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.util.math.BlockPos;
