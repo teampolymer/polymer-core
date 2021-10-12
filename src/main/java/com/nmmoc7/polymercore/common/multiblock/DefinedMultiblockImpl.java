@@ -34,6 +34,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
         this.type = type;
         this.canSymmetrical = canSymmetrical;
         this.tags = tags;
+
     }
 
 
@@ -117,6 +118,11 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     @Override
     public Collection<String> getTags() {
         return Collections.unmodifiableList(this.tags);
+    }
+
+    @Override
+    public boolean canUseexternalStroage() {
+        return false;
     }
 
     @Override

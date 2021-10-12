@@ -68,9 +68,15 @@ public interface IDefinedMultiblock extends IMultiblock, IForgeRegistryEntry<IDe
     /**
      * 获取多方快结构的Tags，用于搜索
      *
-     * @return
+     * @return string tag
      */
     Collection<String> getTags();
 
+    /**
+     * 获取多方块是否允许使用外部存储
+     * 例如箱子一类 如果设置为否则只能使用本mod机械存储
+     * @return 是或否
+     */
+    boolean canUseexternalStroage();
 
 }
