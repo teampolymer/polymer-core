@@ -8,6 +8,7 @@ import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.client.renderer.ProjectionRenderType;
+import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import com.nmmoc7.polymercore.client.utils.RenderUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -80,6 +81,8 @@ public class MultiblockProjectionHandler {
             return;
         }
 
+        float renderTimes = AnimationTickHelper.getRenderTime();
+        int renderTicks = AnimationTickHelper.getTicks();
 
         //获取玩家正在看向的方块
         if (mc.objectMouseOver instanceof BlockRayTraceResult) {
@@ -108,7 +111,7 @@ public class MultiblockProjectionHandler {
         for (Map.Entry<Vector3i, IMultiblockPart> entry : multiblock.getParts().entrySet()) {
             Vector3i relative = entry.getKey();
             List<BlockState> sampleBlocks = entry.getValue().getSampleBlocks();
-            int i = (ClientEventHandler.elapsedTicks) / 20 % sampleBlocks.size();
+            int i = (renderTicks) / 20 % sampleBlocks.size();
 
             BlockState block = sampleBlocks.get(i);
             BlockPos offPos = PositionUtils.applyModifies(relative, pos, rotation, isSymmetrical);
@@ -144,7 +147,7 @@ public class MultiblockProjectionHandler {
                 float alpha = 0.3F;
                 //对当前选中的方块提高透明度
                 if (offPos.equals(trackPos)) {
-                    alpha = 0.6F + (float) (Math.sin(ClientEventHandler.elapsedTicks * 0.2F) + 1F) * 0.15F;
+                    alpha = 0.6F + (float) (Math.sin(renderTimes * 0.2F) + 1F) * 0.15F;
                 }
                 //渲染投影
                 RenderSystem.blendColor(1, 1, 1, alpha);
@@ -166,9 +169,6 @@ public class MultiblockProjectionHandler {
         ms.pop();
 
     }
-
-
-    
 
 
 }
