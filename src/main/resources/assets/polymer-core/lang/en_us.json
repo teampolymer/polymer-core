@@ -2,5 +2,6 @@
     "item.polymers.test_item":"test_item",
 	"error.blueprint.no_core": "[PolymerCore] Blueprint lacks core",
     "itemGroup.polymer": "polymer-core",
-    "tile.polymer.machine_base": "machine_base_test"
+    "tile.polymer.machine_base": "machine_base_test",
+    "gui.toolmenu.cycle": "[鼠标滚轮] 来循环选择"
 }

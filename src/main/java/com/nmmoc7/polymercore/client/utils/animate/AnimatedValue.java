@@ -1,6 +1,6 @@
 package com.nmmoc7.polymercore.client.utils.animate;
 
-import com.nmmoc7.polymercore.client.utils.AngleHelper;
+import com.jozufozu.flywheel.util.AngleHelper;
 import net.minecraft.util.math.MathHelper;
 
 //Modify form com.simibubi.create.foundation.gui.widgets.InterpolatedValue

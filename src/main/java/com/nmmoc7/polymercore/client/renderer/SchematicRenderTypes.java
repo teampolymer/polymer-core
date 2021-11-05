@@ -11,8 +11,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.OptionalDouble;
 
-public class ProjectionRenderType extends RenderType {
-    public ProjectionRenderType(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+public class SchematicRenderTypes extends RenderType {
+    public SchematicRenderTypes(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
@@ -42,6 +42,10 @@ public class ProjectionRenderType extends RenderType {
         RenderSystem.defaultBlendFunc();
     });
 
+
+    /**
+     * 半透明方块
+     */
     public static final RenderType TRANSPARENT_BLOCK = makeType("projection_transparent_block",
         DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, true,
         RenderType.State.getBuilder()

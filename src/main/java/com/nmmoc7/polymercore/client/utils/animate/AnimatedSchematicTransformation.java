@@ -1,8 +1,11 @@
 package com.nmmoc7.polymercore.client.utils.animate;
 
+import com.jozufozu.flywheel.util.AnimationTickHolder;
+import com.jozufozu.flywheel.util.transform.MatrixTransformStack;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class AnimatedSchematicTransformation {
     private AnimatedValue x;
@@ -47,7 +50,22 @@ public class AnimatedSchematicTransformation {
     }
 
     public void applyToMS(MatrixStack ms) {
+        float pt = AnimationTickHolder.getPartialTicks();
 
+        // Translation
+        ms.translate(x.get(pt), y.get(pt), z.get(pt));
+        Vector3d rotationOffset = new Vector3d(0.5, 0.5, 0.5);
+
+        // Rotation
+        float rot = rotation.get(pt);
+        MatrixTransformStack.of(ms)
+            .translate(rotationOffset)
+            .rotateY(rot)
+            .translateBack(rotationOffset);
+
+        //Mirror
+        float flip = flipScale.get(pt);
+        ms.scale(MathHelper.abs(flip), 1, 1);
     }
 
 

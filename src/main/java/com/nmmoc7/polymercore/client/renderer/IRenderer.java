@@ -9,8 +9,7 @@ public interface IRenderer {
             return;
         }
         ms.push();
-
-
+        doRender(ms, buffer, pt);
         ms.pop();
     }
 

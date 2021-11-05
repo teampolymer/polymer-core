@@ -1,15 +1,20 @@
 package com.nmmoc7.polymercore.client.utils;
 
+import com.jozufozu.flywheel.util.RenderUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.nmmoc7.polymercore.client.renderer.ProjectionRenderType;
+import com.nmmoc7.polymercore.client.renderer.SchematicRenderTypes;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -29,7 +34,7 @@ public class RenderUtils {
             float f = (float) (i >> 16 & 255) / 255.0F;
             float f1 = (float) (i >> 8 & 255) / 255.0F;
             float f2 = (float) (i & 255) / 255.0F;
-            IVertexBuilder buffer = bufferSource.getBuffer(ProjectionRenderType.TRANSPARENT_BLOCK);
+            IVertexBuilder buffer = bufferSource.getBuffer(SchematicRenderTypes.TRANSPARENT_BLOCK);
             dispatcher.getBlockModelRenderer().renderModel(
                 matrixStackIn.getLast(),
                 buffer,
@@ -41,7 +46,6 @@ public class RenderUtils {
                 modelData != null ? modelData : EmptyModelData.INSTANCE);
 
         }
-
     }
 
 

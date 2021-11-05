@@ -1,10 +1,10 @@
 package com.nmmoc7.polymercore.client.event;
 
+import com.jozufozu.flywheel.util.AnimationTickHolder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.client.handler.MultiblockSchematicHandler;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
-import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.world.ClientWorld;
@@ -34,28 +34,12 @@ public class ClientEventHandler {
             return;
         }
 
-        AnimationTickHelper.tick();
 
 
     }
 
     public static boolean isGameNotReady() {
         return Minecraft.getInstance().world == null || Minecraft.getInstance().player == null;
-    }
-
-    @SubscribeEvent
-    public static void onLoadWorld(WorldEvent.Load event) {
-        IWorld world = event.getWorld();
-        if (world.isRemote() && world instanceof ClientWorld) {
-            AnimationTickHelper.reset();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onUnloadWorld(WorldEvent.Unload event) {
-        if (event.getWorld().isRemote()) {
-            AnimationTickHelper.reset();
-        }
     }
 
 
@@ -70,7 +54,7 @@ public class ClientEventHandler {
         ms.translate(-view.x, -view.y, -view.z);
 
         CustomRenderTypeBuffer buffer = CustomRenderTypeBuffer.instance();
-        float pt = AnimationTickHelper.getPartialTicks();
+        float pt = AnimationTickHolder.getPartialTicks();
         tickRenders(ms, buffer, pt);
 
         buffer.finish();

@@ -2,7 +2,6 @@ package com.nmmoc7.polymercore.common.handler;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
-import com.nmmoc7.polymercore.client.handler.MultiblockProjectionHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
@@ -30,10 +29,6 @@ public class PlayerHandler {
 
                     if (assemble != null) {
                         e.getPlayer().sendMessage(new StringTextComponent("Multiblock Assembled"), Util.DUMMY_UUID);
-                    } else {
-                        MultiblockProjectionHandler.setMultiblock(it);
-                        MultiblockProjectionHandler.setIsProjecting(true);
-                        MultiblockProjectionHandler.setTargetPos(e.getPos());
                     }
                 });
 
