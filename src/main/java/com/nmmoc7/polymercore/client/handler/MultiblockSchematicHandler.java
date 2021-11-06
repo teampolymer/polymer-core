@@ -2,25 +2,21 @@ package com.nmmoc7.polymercore.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
-import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
 import com.nmmoc7.polymercore.client.renderer.IRenderer;
-import com.nmmoc7.polymercore.client.utils.schematic.AnchoredSchematicRenderer;
+import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
 import com.nmmoc7.polymercore.client.utils.schematic.SchematicRenderer;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import com.nmmoc7.polymercore.common.registry.KeysRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * 渲染多方快结构蓝图投影
@@ -37,13 +33,29 @@ public class MultiblockSchematicHandler implements IRenderer {
     //固定
     private static boolean isAnchored = false;
 
-    private static AnchoredSchematicRenderer staticRender = new AnchoredSchematicRenderer();
+    //显示绑定的多方快结构
+    private BlockPos offset;
+    private Rotation rotation = Rotation.NONE;
+    private boolean isSymmetrical;
+
+
+    private static final SchematicRenderer renderer;
+    private static SchematicTransform targetTransform;
+    private static SchematicTransform originalTransform;
+    private static int animatingTicks = 0;
+    private static final int TOTAL_ANIMATION_TICK = 10;
+
+    static {
+        originalTransform = new SchematicTransform();
+        renderer = new SchematicRenderer();
+        renderer.setTransform(originalTransform);
+    }
 
 
     @Override
     public boolean isEnabled() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.world == null || mc.currentScreen == null || mc.player == null) {
+        if (mc.world == null || mc.player == null) {
             return false;
         }
         //手持蓝图或者已经固定一个坐标就显示
@@ -55,7 +67,15 @@ public class MultiblockSchematicHandler implements IRenderer {
         if (currentMultiblock == null) {
             return;
         }
-        staticRender.render(ms, buffer, pt);
+
+        //动画效果
+        if (animatingTicks > 0 && targetTransform != null) {
+            float percent = ((TOTAL_ANIMATION_TICK - animatingTicks) + pt) / TOTAL_ANIMATION_TICK;
+            renderer.getTransform().interpolateTo(percent, originalTransform, targetTransform);
+        }
+
+
+        renderer.render(ms, buffer, pt);
 
     }
 
@@ -66,7 +86,30 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
         isAnchored = true;
 
-        staticRender.setAnchorPos(pos);
+
+        if (pos.equals(offset)) {
+            isSymmetrical = !isSymmetrical;
+        } else {
+            offset = pos;
+        }
+
+
+        transformAnimated();
+
+    }
+
+    public void transformAnimated() {
+        renderer.setAnchorPos(offset);
+        renderer.setSymmetrical(isSymmetrical);
+        renderer.setRotation(rotation);
+        transformAnimated(SchematicTransform.create(offset, rotation, isSymmetrical));
+    }
+
+    public void transformAnimated(SchematicTransform transform) {
+        originalTransform = renderer.getTransform().copy();
+        targetTransform = transform;
+        animatingTicks = TOTAL_ANIMATION_TICK;
+        renderer.setAnimating(true);
     }
 
 
@@ -77,7 +120,6 @@ public class MultiblockSchematicHandler implements IRenderer {
             return;
         Minecraft mc = Minecraft.getInstance();
 
-        return;
     }
 
     public void onMouseInput(int button, boolean pressed) {
@@ -95,14 +137,25 @@ public class MultiblockSchematicHandler implements IRenderer {
         if (mc.objectMouseOver instanceof BlockRayTraceResult) {
             BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) mc.objectMouseOver;
 //            BlockState clickedBlock = mc.world.getBlockState(blockRayTraceResult.getPos());
-            currentMultiblock = PolymerCoreApi.getInstance().getMultiblockManager()
-                .getDefinedMultiblock(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine"))
-                .orElse(null);
-            staticRender.setMultiblock(currentMultiblock);
+            if (currentMultiblock == null) {
+                currentMultiblock = PolymerCoreApi.getInstance().getMultiblockManager()
+                    .getDefinedMultiblock(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine"))
+                    .orElse(null);
+                renderer.setMultiblock(currentMultiblock);
+            }
             anchorIn(blockRayTraceResult.getPos());
-            return;
         }
-        return;
+    }
+
+
+    public boolean onMouseScrolled(double delta) {
+        if (KeysRegistry.TOOL_CTRL_KEY.isPressed()) {
+            int index = (((int) delta + rotation.ordinal()) % 4 + 4) % 4;
+            rotation = Rotation.values()[index];
+            transformAnimated();
+            return true;
+        }
+        return false;
     }
 
 
@@ -125,6 +178,16 @@ public class MultiblockSchematicHandler implements IRenderer {
         } else {
             activating = false;
         }
+
+        if (animatingTicks > 0) {
+            if (animatingTicks == 1) {
+                renderer.setAnimating(false);
+                originalTransform = targetTransform.copy();
+                renderer.setTransform(targetTransform);
+            }
+            animatingTicks--;
+        }
+
 
     }
 

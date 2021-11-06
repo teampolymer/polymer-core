@@ -10,7 +10,7 @@ import org.lwjgl.glfw.GLFW;
 public class KeysRegistry {
     public static final KeyBinding TOOL_CTRL_KEY = new KeyBinding("key.message",
         KeyConflictContext.IN_GAME,
-        KeyModifier.CONTROL,
+        KeyModifier.NONE,
         InputMappings.Type.KEYSYM,
         GLFW.GLFW_KEY_G,
         "key.category." + PolymerCoreApi.MOD_ID);

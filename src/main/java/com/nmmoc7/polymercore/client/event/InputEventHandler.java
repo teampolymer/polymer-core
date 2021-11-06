@@ -29,6 +29,11 @@ public class InputEventHandler {
             return;
 
         double delta = event.getScrollDelta();
+        boolean cancel = false;
+        cancel |= MultiblockSchematicHandler.INSTANCE.onMouseScrolled(delta);
+
+        event.setCanceled(cancel);
+
 
     }
 
