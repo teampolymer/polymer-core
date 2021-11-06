@@ -21,8 +21,9 @@ public class SchematicRenderTypes extends RenderType {
         RenderType.State.getBuilder()
             .transparency(TRANSLUCENT_TRANSPARENCY)
             .depthTest(DEPTH_ALWAYS)
+            .alpha(DEFAULT_ALPHA)
             .writeMask(COLOR_DEPTH_WRITE)
-            .build(false));
+            .build(true));
 
     /**
      * 半透明混合

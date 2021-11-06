@@ -181,7 +181,7 @@ public class SchematicRenderer {
 
         } else {
             BlockPos hovering = InputUtils.getHoveringPos();
-
+            final Set<BlockPos> allWrong = new HashSet<>();
             //检查错误的方块并渲染
             entries.forEachOrdered(entry -> {
                 Vector3i relativePos = entry.getA();
@@ -198,23 +198,12 @@ public class SchematicRenderer {
 
                 IModelData modelData = ModelDataManager.getModelData(world, offPos);
 
-                //默认透明度0.3
-                float alpha = 0.3F;
                 ms.push();
-                //对当前选中的方块提高透明度
-                if (offPos.equals(hovering))
-                    alpha = 0.6F + (float) (Math.sin(renderTimes * 0.2F) + 1F) * 0.15F;
 
                 //渲染投影
                 if (!part.test(current))
                     if (current.getBlock() != Blocks.AIR) {
-                        ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
-                        //渲染错误的方块
-                        RenderUtils.renderCube(ms, buffer.getBuffer(SchematicRenderTypes.CUBE_NO_DEPTH),
-                            0.15f, 0.15f, 0.15f,
-                            0.85f, 0.85f, 0.85f,
-                            1.0f, 0.3f, 0.3f, 0.3f);
-
+                        allWrong.add(offPos);
                     } else {
                         transform.apply(ms);
                         ms.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
@@ -223,6 +212,12 @@ public class SchematicRenderer {
                         ms.translate(0.03f, 0.03f, 0.03f);
 
                         RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData);
+
+                        //默认透明度0.3
+                        float alpha = 0.3F;
+                        //对当前选中的方块提高透明度
+                        if (offPos.equals(hovering))
+                            alpha = 0.6F + (float) (Math.sin(renderTimes * 0.2F) + 1F) * 0.15F;
                         RenderSystem.blendColor(1, 1, 1, alpha);
                         buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
                         RenderSystem.blendColor(1, 1, 1, 1);
@@ -232,9 +227,20 @@ public class SchematicRenderer {
                 ms.pop();
 
             });
+
+            for (BlockPos offPos : allWrong) {
+                ms.push();
+                ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
+                //渲染错误的方块
+                RenderUtils.renderCube(ms, buffer.getBuffer(SchematicRenderTypes.CUBE_NO_DEPTH),
+                    0.15f, 0.15f, 0.15f,
+                    0.85f, 0.85f, 0.85f,
+                    1.0f, 0.3f, 0.3f, 0.3f);
+                ms.pop();
+            }
+            buffer.finish(SchematicRenderTypes.CUBE_NO_DEPTH);
         }
 
-        buffer.finish(SchematicRenderTypes.CUBE_NO_DEPTH);
         ms.pop();
 
         GL11.glFrontFace(GL11.GL_CCW);

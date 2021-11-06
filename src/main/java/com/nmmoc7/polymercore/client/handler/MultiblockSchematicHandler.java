@@ -149,8 +149,11 @@ public class MultiblockSchematicHandler implements IRenderer {
 
 
     public boolean onMouseScrolled(double delta) {
-        if (KeysRegistry.TOOL_CTRL_KEY.isPressed()) {
-            int index = (((int) delta + rotation.ordinal()) % 4 + 4) % 4;
+        if (!activating)
+            return false;
+        if (KeysRegistry.TOOL_CTRL_KEY.isKeyDown()) {
+            int dir = MathHelper.clamp((int) delta, -1, 1);
+            int index = ((dir + rotation.ordinal()) % 4 + 4) % 4;
             rotation = Rotation.values()[index];
             transformAnimated();
             return true;
