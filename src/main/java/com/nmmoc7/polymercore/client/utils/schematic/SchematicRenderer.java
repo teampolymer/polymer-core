@@ -1,6 +1,7 @@
 package com.nmmoc7.polymercore.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
@@ -19,16 +20,21 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 已经固定在某一个坐标的多方快投影
@@ -115,10 +121,30 @@ public class SchematicRenderer {
         isSymmetrical = symmetrical;
     }
 
+
     public void render(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {
         ClientWorld world = Minecraft.getInstance().world;
         int renderTicks = AnimationTickHelper.getTicks();
         float renderTimes = AnimationTickHelper.getRenderTime();
+        Map<Vector3i, IMultiblockPart> parts = multiblock.getParts();
+        Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
+
+        Stream<Tuple<Vector3i, BlockPos>> entries = parts
+            .keySet()
+            .stream()
+            .map(it -> new Tuple<>(it, PositionUtils.applyModifies(it, offset, rotation, isSymmetrical)))
+            .sorted(
+                Collections.reverseOrder(
+                    Comparator
+                        .comparingDouble(it ->
+                            view.squareDistanceTo(it.getB().getX(), it.getB().getY(), it.getB().getZ())
+                        )
+                )
+            );
+
+        if (transform.flip < 0) {
+            GL11.glFrontFace(GL11.GL_CW);
+        }
 
         ms.push();
         if (animating) {
@@ -126,16 +152,17 @@ public class SchematicRenderer {
             //默认透明度0.3
             float alpha = 0.3F;
             RenderSystem.blendColor(1, 1, 1, alpha);
-            for (Map.Entry<Vector3i, IMultiblockPart> entry : multiblock.getParts().entrySet()) {
+            entries.forEachOrdered(entry -> {
                 ms.push();
-                Vector3i relativePos = entry.getKey();
+
+                Vector3i relativePos = entry.getA();
                 ms.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
 
                 //稍微缩小一点点
                 ms.scale(0.94f, 0.94f, 0.94f);
                 ms.translate(0.03f, 0.03f, 0.03f);
                 //获取显示的样本
-                List<BlockState> sampleBlocks = entry.getValue().getSampleBlocks();
+                List<BlockState> sampleBlocks = parts.get(relativePos).getSampleBlocks();
                 int i = (renderTicks) / 20 % sampleBlocks.size();
                 BlockState block = sampleBlocks.get(i);
 
@@ -146,86 +173,70 @@ public class SchematicRenderer {
                 //渲染投影
                 RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData);
 
+                buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
                 ms.pop();
-            }
-
-            buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
+            });
             RenderSystem.blendColor(1, 1, 1, 1);
+
 
         } else {
             BlockPos hovering = InputUtils.getHoveringPos();
 
-            float alpha = 0.6F;
-            RenderSystem.blendColor(1, 1, 1, alpha);
-
             //检查错误的方块并渲染
-            for (Map.Entry<Vector3i, IMultiblockPart> entry : multiblock.getParts().entrySet()) {
-                Vector3i relativePos = entry.getKey();
-                BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
-                //当前检查的方块
-                BlockState current = world.getBlockState(offPos);
-                ms.push();
-                ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
-                if (!entry.getValue().test(current) && current.getBlock() != Blocks.AIR) {
-
-                    //获取显示的样本
-                    List<BlockState> sampleBlocks = entry.getValue().getSampleBlocks();
-                    int i = (renderTicks) / 20 % sampleBlocks.size();
-                    BlockState block = sampleBlocks.get(i);
-                    //稍微缩小一点点
-                    ms.scale(0.8f, 0.8f, 0.8f);
-                    ms.translate(0.1f, 0.1f, 0.1f);
-                    //渲染错误的方块
-                    RenderUtils.renderBlock(Blocks.RED_CONCRETE.getDefaultState(), buffer, ms, 0xF000F0, EmptyModelData.INSTANCE);
-//                    RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, EmptyModelData.INSTANCE);
-                }
-                ms.pop();
-
-            }
-            buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
-            RenderSystem.blendColor(1, 1, 1, 1);
-
-
-            //渲染其他方块
-            transform.apply(ms);
-            for (Map.Entry<Vector3i, IMultiblockPart> entry : multiblock.getParts().entrySet()) {
-                Vector3i relativePos = entry.getKey();
-                BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
-
-
+            entries.forEachOrdered(entry -> {
+                Vector3i relativePos = entry.getA();
+//                BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
+                BlockPos offPos = entry.getB();
                 //当前检查的方块
                 BlockState current = world.getBlockState(offPos);
 
+                IMultiblockPart part = parts.get(relativePos);
+                //获取显示的样本
+                List<BlockState> sampleBlocks = part.getSampleBlocks();
+                int i = (renderTicks) / 20 % sampleBlocks.size();
+                BlockState block = sampleBlocks.get(i);
 
+                IModelData modelData = ModelDataManager.getModelData(world, offPos);
+
+                //默认透明度0.3
+                float alpha = 0.3F;
                 ms.push();
-                ms.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
-                //稍微缩小一点点
-                ms.scale(0.94f, 0.94f, 0.94f);
-                ms.translate(0.03f, 0.03f, 0.03f);
-                if (!entry.getValue().test(current) && current.getBlock() == Blocks.AIR) {
-                    IModelData modelData = ModelDataManager.getModelData(world, offPos);
+                //对当前选中的方块提高透明度
+                if (offPos.equals(hovering))
+                    alpha = 0.6F + (float) (Math.sin(renderTimes * 0.2F) + 1F) * 0.15F;
 
-                    //获取显示的样本
-                    List<BlockState> sampleBlocks = entry.getValue().getSampleBlocks();
-                    int i = (renderTicks) / 20 % sampleBlocks.size();
-                    BlockState block = sampleBlocks.get(i);
-                    //默认透明度0.3
-                    alpha = 0.3F;
-                    //对当前选中的方块提高透明度
-                    if (offPos.equals(hovering)) {
-                        alpha = 0.6F + (float) (Math.sin(renderTimes * 0.2F) + 1F) * 0.15F;
+                //渲染投影
+                if (!part.test(current))
+                    if (current.getBlock() != Blocks.AIR) {
+                        ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
+                        //渲染错误的方块
+                        RenderUtils.renderCube(ms, buffer.getBuffer(SchematicRenderTypes.CUBE_NO_DEPTH),
+                            0.15f, 0.15f, 0.15f,
+                            0.85f, 0.85f, 0.85f,
+                            1.0f, 0.3f, 0.3f, 0.3f);
+
+                    } else {
+                        transform.apply(ms);
+                        ms.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
+                        //稍微缩小一点点
+                        ms.scale(0.94f, 0.94f, 0.94f);
+                        ms.translate(0.03f, 0.03f, 0.03f);
+
+                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData);
+                        RenderSystem.blendColor(1, 1, 1, alpha);
+                        buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
+                        RenderSystem.blendColor(1, 1, 1, 1);
+
                     }
-                    //渲染投影
-                    RenderSystem.blendColor(1, 1, 1, alpha);
-                    RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData);
-                    buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
-                    RenderSystem.blendColor(1, 1, 1, 1);
 
-                }
                 ms.pop();
 
-            }
+            });
         }
+
+        buffer.finish(SchematicRenderTypes.CUBE_NO_DEPTH);
         ms.pop();
+
+        GL11.glFrontFace(GL11.GL_CCW);
     }
 }

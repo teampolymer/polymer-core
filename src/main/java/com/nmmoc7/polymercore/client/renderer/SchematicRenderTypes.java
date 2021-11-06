@@ -16,22 +16,18 @@ public class SchematicRenderTypes extends RenderType {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
-    public static final RenderType LINE_NO_DEPTH = makeType("lines",
-        DefaultVertexFormats.POSITION_COLOR, 1, 256,
+    public static final RenderType CUBE_NO_DEPTH = makeType("cube_no_depth",
+        DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256,
         RenderType.State.getBuilder()
-            .line(new RenderState.LineState(OptionalDouble.empty()))
-            .layer(VIEW_OFFSET_Z_LAYERING)
             .transparency(TRANSLUCENT_TRANSPARENCY)
-            .target(ITEM_ENTITY_TARGET)
             .depthTest(DEPTH_ALWAYS)
             .writeMask(COLOR_DEPTH_WRITE)
             .build(false));
 
-
     /**
      * 半透明混合
      */
-    protected static final RenderState.TransparencyState CONST_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
+    protected static final RenderState.TransparencyState CONST_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency_const", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.CONSTANT_ALPHA, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_ALPHA);
         //发现这段额可以放外面，好耶！
@@ -47,7 +43,7 @@ public class SchematicRenderTypes extends RenderType {
      * 半透明方块
      */
     public static final RenderType TRANSPARENT_BLOCK = makeType("projection_transparent_block",
-        DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, true,
+        DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 1024, true, true,
         RenderType.State.getBuilder()
             .texture(new RenderState.TextureState(PlayerContainer.LOCATION_BLOCKS_TEXTURE, false, false))
             .transparency(CONST_TRANSPARENCY)
@@ -55,7 +51,7 @@ public class SchematicRenderTypes extends RenderType {
             .alpha(DEFAULT_ALPHA)
             .lightmap(LIGHTMAP_ENABLED)
             .overlay(OVERLAY_ENABLED)
-            .writeMask(COLOR_WRITE)
+            .writeMask(COLOR_DEPTH_WRITE)
             .build(true));
 
 

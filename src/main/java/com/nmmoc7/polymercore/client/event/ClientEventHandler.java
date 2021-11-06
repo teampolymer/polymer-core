@@ -33,6 +33,7 @@ public class ClientEventHandler {
             return;
         }
 
+        AnimationTickHelper.tick();
 
 
     }
@@ -60,7 +61,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onWorldRenderLast(RenderWorldLastEvent event) {
         if (isGameNotReady())
-        return;
+            return;
         MatrixStack ms = event.getMatrixStack();
         ms.push();
         //坐标向玩家视角偏移

@@ -23,8 +23,8 @@ public class PositionUtils {
             case NONE:
             default:
                 if (isSymmetrical)
-                    return new BlockPos(-pos.getX() + x0, y, pos.getX() + z0);
-                return offset.add(pos);
+                    return new BlockPos(-pos.getX() + x0, y, pos.getZ() + z0);
+                return new BlockPos(pos.getX() + x0, y, pos.getZ() + z0);
             case CLOCKWISE_90:
                 if (isSymmetrical)
                     return new BlockPos(-pos.getZ() + x0, y, -pos.getX() + z0);
