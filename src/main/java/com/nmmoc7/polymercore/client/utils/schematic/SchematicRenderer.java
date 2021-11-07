@@ -63,18 +63,14 @@ public class SchematicRenderer {
 
     public void setMultiblock(IDefinedMultiblock multiblock) {
         this.multiblock = multiblock;
-        reset();
     }
 
     public void reset() {
         animating = false;
         rotation = Rotation.NONE;
         isSymmetrical = false;
-        if (offset == null) {
-            transform = new SchematicTransform();
-        } else {
-            transform = SchematicTransform.create(offset, Rotation.NONE, false);
-        }
+        offset = null;
+        transform = new SchematicTransform();
     }
 
     public BlockPos getOffset() {
@@ -119,12 +115,14 @@ public class SchematicRenderer {
 
 
     public void render(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {
+        if(offset == null) {
+            return;
+        }
         ClientWorld world = Minecraft.getInstance().world;
         int renderTicks = AnimationTickHelper.getTicks();
         float renderTimes = AnimationTickHelper.getRenderTime();
         Map<Vector3i, IMultiblockPart> parts = multiblock.getParts();
         Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
-
         Stream<Tuple<Vector3i, BlockPos>> entries = parts
             .keySet()
             .stream()

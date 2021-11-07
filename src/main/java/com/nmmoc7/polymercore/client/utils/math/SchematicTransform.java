@@ -5,6 +5,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -28,7 +29,7 @@ public class SchematicTransform {
         this.flip = flip;
     }
 
-    public static SchematicTransform create(BlockPos offset, Rotation rotation, boolean isSymmetrical) {
+    public static SchematicTransform create(@NotNull BlockPos offset, @NotNull Rotation rotation, @NotNull boolean isSymmetrical) {
         float rotValue = 360 - rotation.ordinal() * 90;
         float flipValue = isSymmetrical ? -1f : 1f;
         return new SchematicTransform(

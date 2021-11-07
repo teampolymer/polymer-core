@@ -1,6 +1,9 @@
 {
-    "item.polymers.test_item":"测试物品",
-	"error.blueprint.no_core": "[PolymerCore] 蓝图缺少core",
-    "itemGroup.polymer": "polymer-core",
-    "tile.polymer.machine_base": "基础测试机械方块"
+  "item.polymer-core.blueprint": "蓝图 [%s]",
+  "error.blueprint.no_core": "[PolymerCore] 蓝图缺少core",
+  "itemGroup.polymer": "polymer-core",
+  "tile.polymer.machine_base": "基础测试机械方块",
+  "gui.toolmenu.cycle": "[鼠标滚轮] 来选择",
+  "name.polymer.multiblock.internal.unknown": "未知",
+  "name.polymer.multiblock.polymer-core.test_machine": "测试机械"
 }

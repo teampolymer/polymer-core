@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.common;
 
+import com.nmmoc7.polymercore.common.item.ModItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
@@ -12,6 +13,6 @@ public class PolymerItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(RegisterHandler.TEST_BLUEPRINT_ITEM);
+        return new ItemStack(ModItems.BLUEPRINT.get());
     }
 }

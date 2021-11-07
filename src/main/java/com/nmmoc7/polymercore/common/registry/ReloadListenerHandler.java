@@ -33,8 +33,9 @@ public class ReloadListenerHandler {
             IDefinedMultiblock build = new DefaultCharMarkedMultiblockBuilder()
                 .addPattern(
                     "AAAAA",
-                    "AABAA",
-                    "AAAAA"
+                    "AABAAA",
+                    "AAAAA",
+                    " B"
                 )
                 .addPattern(
                     "AAAAA",
@@ -58,6 +59,39 @@ public class ReloadListenerHandler {
                 .build();
 
             PolymerCoreApi.getInstance().getMultiblockManager().addDefinedMultiblock(build.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine")));
+
+
+            IDefinedMultiblock build2 = new DefaultCharMarkedMultiblockBuilder()
+                .addPattern(
+                    "ACCCA",
+                    "AAAAA",
+                    "AABAD"
+                )
+                .addPattern(
+                    "AAEEA",
+                    "A B A",
+                    "AEAAA"
+                )
+                .addPattern(
+                    "     ",
+                    "  B  ",
+                    "     "
+                )
+                .addPartsMap('A', new PartSpecifiedBlock(Blocks.GOLD_BLOCK))
+                .addPartsMap('B', new PartSpecifiedBlock(Blocks.OAK_WOOD))
+                .addPartsMap('C', new PartSpecifiedBlock(Blocks.DIAMOND_BLOCK))
+                .addPartsMap('D', new PartSpecifiedBlock(Blocks.GLOWSTONE))
+                .addPartsMap('E', new PartSpecifiedBlock(Blocks.QUARTZ_STAIRS))
+
+                .setCoreChar('D')
+                .setType(MultiblockRegisterHandler.TYPE_FREE.get())
+                .setCanSymmetrical()
+                .build();
+
+            PolymerCoreApi.getInstance().getMultiblockManager().addDefinedMultiblock(build2.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_machine_2")));
+
+
+
         }
     }
 

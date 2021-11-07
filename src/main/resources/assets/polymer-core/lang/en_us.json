@@ -1,7 +1,10 @@
 {
-    "item.polymers.test_item":"test_item",
-	"error.blueprint.no_core": "[PolymerCore] Blueprint lacks core",
-    "itemGroup.polymer": "polymer-core",
-    "tile.polymer.machine_base": "machine_base_test",
-    "gui.toolmenu.cycle": "[鼠标滚轮] 来循环选择"
+  "item.polymer-core.blueprint": "Blueprint [%s]",
+  "error.blueprint.no_core": "[PolymerCore] Blueprint lacks core",
+  "itemGroup.polymer": "polymer-core",
+  "tile.polymer.machine_base": "machine_base_test",
+  "gui.toolmenu.cycle": "[Mouse Wheel] To select",
+  "name.polymer.multiblock.internal.unknown": "Unknown",
+  "name.polymer.multiblock.polymer-core.test_machine": "Test Machine",
+  "name.polymer.multiblock.polymer-core.test_machine_2": "Test Machine 2"
 }

@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.api.capability;
 
+import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import net.minecraft.util.ResourceLocation;
 
@@ -12,11 +13,20 @@ public interface IMultiblockSupplier {
      *
      * @return
      */
-    IDefinedMultiblock getMultiblock();
+    default IDefinedMultiblock getMultiblock() {
+        ResourceLocation registryName = getMultiblockRegistryName();
+        if (registryName == null) {
+            return null;
+        }
+        return PolymerCoreApi.getInstance()
+            .getMultiblockManager()
+            .getDefinedMultiblock(registryName)
+            .orElse(null);
+    }
 
-    ResourceLocation getRegistryName();
+    ResourceLocation getMultiblockRegistryName();
 
     interface Mutable extends IMultiblockSupplier {
-        void setMultiblock(ResourceLocation registryName);
+        void setMultiblockRegistryName(ResourceLocation registryName);
     }
 }

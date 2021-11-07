@@ -2,9 +2,12 @@ package com.nmmoc7.polymercore;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.client.PolymerClient;
+import com.nmmoc7.polymercore.common.RegisterHandler;
 import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;
+import com.nmmoc7.polymercore.common.item.ModItems;
+import com.nmmoc7.polymercore.common.network.ModNetworking;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,8 +28,10 @@ public class PolymerCore {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         MultiblockRegisterHandler.MULTIBLOCK_TYPES.register(modBus);
+        ModItems.REGISTER.register(modBus);
 
         modBus.addListener(this::preInit);
+
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
             () -> () -> PolymerClient.onCtorClient(modBus, forgeBus));
@@ -35,6 +40,7 @@ public class PolymerCore {
 
     public void preInit(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            ModNetworking.registerMessage();
             registerCapabilities();
         });
     }

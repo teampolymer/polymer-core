@@ -7,22 +7,22 @@ import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.util.MultiblockUtils;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
 import com.nmmoc7.polymercore.client.renderer.IRenderer;
+import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
 import com.nmmoc7.polymercore.client.utils.schematic.SchematicRenderer;
 import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
+import com.nmmoc7.polymercore.common.network.ModNetworking;
+import com.nmmoc7.polymercore.common.network.PacketLocateHandlerSync;
 import com.nmmoc7.polymercore.common.registry.KeysRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.Tuple;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Optional;
@@ -43,17 +43,22 @@ public class MultiblockSchematicHandler implements IRenderer {
     //多方快
     private IDefinedMultiblock currentMultiblock;
 
-    IMultiblockLocateHandler locateHandler = null;
+    private IMultiblockLocateHandler locateHandler = null;
+    private int handleSlot = -1;
+
+    //是否后台投影
+    private boolean renderBackground = false;
 
     //动画相关
-    private final int TOTAL_ANIMATION_TICK = 10;
+    private final int DEFAULT_TOTAL_ANIMATION_TICK = 10;
     private final SchematicRenderer renderer;
     private SchematicTransform targetTransform;
     private SchematicTransform originalTransform;
     private int animatingTicks = 0;
+    private int totalAnimatingTicks = DEFAULT_TOTAL_ANIMATION_TICK;
 
     //其他
-    private BlockPos lastTrackPos = BlockPos.ZERO;
+    private BlockPos lastTrackPos = null;
 
 
     @Override
@@ -63,17 +68,25 @@ public class MultiblockSchematicHandler implements IRenderer {
             return false;
         }
         //手持蓝图或者已经固定一个坐标就显示
-        return enabled && currentMultiblock != null;
+        return enabled && currentMultiblock != null && (renderBackground || locateHandler != null);
     }
 
     @Override
     public void doRender(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {
         //动画效果
         if (animatingTicks > 0 && targetTransform != null) {
-            float percent = ((TOTAL_ANIMATION_TICK - animatingTicks) + pt) / TOTAL_ANIMATION_TICK;
+            float percent = ((totalAnimatingTicks - animatingTicks) + pt) / totalAnimatingTicks;
             renderer.getTransform().interpolateTo(percent, originalTransform, targetTransform);
         }
 
+        //判断鼠标指向的方块，必须
+        if (activating() && this.locateHandler != null && !this.locateHandler.isAnchored()) {
+            BlockPos tracePos = findTracePos();
+            if (tracePos != null && !tracePos.equals(lastTrackPos)) {
+                lastTrackPos = tracePos;
+                transformAnimated(6);
+            }
+        }
 
         renderer.render(ms, buffer, pt);
 
@@ -86,10 +99,13 @@ public class MultiblockSchematicHandler implements IRenderer {
         if (pos == null) {
             locateHandler.setOffset(BlockPos.ZERO);
             locateHandler.setAnchored(false);
+            sync();
             return;
         }
         locateHandler.setOffset(pos);
         locateHandler.setAnchored(true);
+        sync();
+
 
         transformAnimated();
 
@@ -97,11 +113,18 @@ public class MultiblockSchematicHandler implements IRenderer {
 
     public void reset(boolean full) {
         renderer.setAnimating(false);
-        originalTransform = new SchematicTransform();
-        renderer.setTransform(originalTransform);
-        targetTransform = null;
         if (full) {
+            lastTrackPos = null;
+            renderBackground = false;
             renderer.setMultiblock(currentMultiblock);
+            if (locateHandler == null) {
+                renderer.reset();
+                originalTransform = new SchematicTransform();
+                renderer.setTransform(originalTransform);
+                targetTransform = null;
+            } else {
+                transformAnimated(4);
+            }
         }
     }
 
@@ -114,8 +137,19 @@ public class MultiblockSchematicHandler implements IRenderer {
         int index = ((dir + current) % 4 + 4) % 4;
         Rotation rotation = Rotation.values()[index];
         locateHandler.setRotation(rotation);
+        sync();
 
         transformAnimated();
+    }
+
+    public void flip() {
+        locateHandler.flip();
+    }
+
+    public void sync() {
+        if (handleSlot >= -1 && locateHandler != null) {
+            ModNetworking.INSTANCE.sendToServer(new PacketLocateHandlerSync(handleSlot, locateHandler));
+        }
     }
 
     public boolean activating() {
@@ -123,6 +157,10 @@ public class MultiblockSchematicHandler implements IRenderer {
     }
 
     public void transformAnimated() {
+        transformAnimated(DEFAULT_TOTAL_ANIMATION_TICK);
+    }
+
+    public void transformAnimated(int animatingTicks) {
         if (locateHandler == null) {
             return;
         }
@@ -130,19 +168,28 @@ public class MultiblockSchematicHandler implements IRenderer {
             renderer.setOffset(locateHandler.getOffset());
             renderer.setSymmetrical(locateHandler.isFlipped());
             renderer.setRotation(locateHandler.getRotation());
-            transformAnimated(SchematicTransform.create(locateHandler.getOffset(), locateHandler.getRotation(), locateHandler.isFlipped()));
+            transformAnimated(
+                SchematicTransform.create(locateHandler.getOffset(), locateHandler.getRotation(), locateHandler.isFlipped()),
+                animatingTicks
+            );
         } else {
             renderer.setOffset(lastTrackPos);
             renderer.setSymmetrical(locateHandler.isFlipped());
             renderer.setRotation(locateHandler.getRotation());
-            transformAnimated(SchematicTransform.create(lastTrackPos, locateHandler.getRotation(), locateHandler.isFlipped()));
+            if (lastTrackPos != null) {
+                transformAnimated(
+                    SchematicTransform.create(lastTrackPos, locateHandler.getRotation(), locateHandler.isFlipped()),
+                    animatingTicks
+                );
+            }
         }
     }
 
-    public void transformAnimated(SchematicTransform transform) {
+    public void transformAnimated(SchematicTransform transform, int animatingTicks) {
         originalTransform = renderer.getTransform().copy();
         targetTransform = transform;
-        animatingTicks = TOTAL_ANIMATION_TICK;
+        this.animatingTicks = animatingTicks;
+        this.totalAnimatingTicks = animatingTicks;
         renderer.setAnimating(true);
     }
 
@@ -166,32 +213,66 @@ public class MultiblockSchematicHandler implements IRenderer {
             return;
 
         if (KeysRegistry.TOOL_CTRL_KEY.isKeyDown()) {
-            locateHandler.flip();
+            flip();
+            transformAnimated();
         } else {
             BlockPos tracePos = findTracePos();
-            anchorIn(tracePos);
+            if (locateHandler.getOffset().equals(tracePos)) {
+                anchorIn(null);
+            } else {
+                anchorIn(tracePos);
+            }
         }
     }
 
+
+    private BlockPos lastRaytracePos;
+    private Direction lastFace;
+    private BlockPos lastTraceResult;
 
     public BlockPos findTracePos() {
         if (!activating()) {
             return null;
         }
         Minecraft mc = Minecraft.getInstance();
-        if (mc.objectMouseOver instanceof BlockRayTraceResult) {
-            BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) mc.objectMouseOver;
-            RayTraceResult.Type type = blockRayTraceResult.getType();
-            if (type == RayTraceResult.Type.BLOCK) {
-                BlockPos pos = blockRayTraceResult.getPos();
-                Direction face = blockRayTraceResult.getFace();
+
+        final int distance = 16;
+
+        Vector3d start = mc.player.getEyePosition(AnimationTickHelper.getPartialTicks());
+        Vector3d direction = mc.player.getLook(AnimationTickHelper.getPartialTicks());
+        Vector3d end = start.add(direction.x * distance, direction.y * distance, direction.z * distance);
+        BlockRayTraceResult blockRayTraceResult = mc.world.rayTraceBlocks(
+            new RayTraceContext(start, end,
+                RayTraceContext.BlockMode.OUTLINE,
+                RayTraceContext.FluidMode.NONE,
+                mc.player)
+        );
+
+        RayTraceResult.Type type = blockRayTraceResult.getType();
+        if (type == RayTraceResult.Type.BLOCK && !blockRayTraceResult.isInside()) {
+            BlockPos pos = blockRayTraceResult.getPos();
+            Direction face = blockRayTraceResult.getFace();
+
+            if (!pos.equals(lastRaytracePos) || !face.equals(lastFace) || lastTraceResult == null) {
+                lastRaytracePos = pos;
+                lastFace = face;
 
                 //处理机械
-                return MultiblockUtils.findMostSuitablePosition(currentMultiblock, pos, face);
-
+                lastTraceResult = MultiblockUtils.findMostSuitablePosition(
+                    currentMultiblock,
+                    pos,
+                    face,
+                    locateHandler.getRotation(),
+                    locateHandler.isFlipped()
+                );
             }
 
+
+            return lastTraceResult;
+
         }
+
+
         return null;
     }
 
@@ -207,7 +288,6 @@ public class MultiblockSchematicHandler implements IRenderer {
         return false;
     }
 
-    private int elapsedTicks = 0;
 
     @Override
     public void update() {
@@ -234,44 +314,42 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
 
 
-        Optional<IMultiblockLocateHandler> locateHandler = findLocateHandler();
+        Tuple<Integer, Optional<IMultiblockLocateHandler>> locateHandlerWithSlot = findLocateHandler();
+        Optional<IMultiblockLocateHandler> locateHandler = locateHandlerWithSlot.getB();
         if (locateHandler.isPresent()) {
-            if (locateHandler.get() != this.locateHandler) {
+            if (!locateHandler.get().equals(this.locateHandler)) {
+                boolean fullReset = this.locateHandler != null;
                 this.locateHandler = locateHandler.get();
-                reset(false);
+                this.handleSlot = locateHandlerWithSlot.getA();
+                reset(fullReset);
             }
+        } else if (this.locateHandler != null) {
+            this.renderBackground = this.locateHandler.isAnchored();
+            this.handleSlot = -2;
+            this.locateHandler = null;
+
+            reset(false);
         }
 
-        if (elapsedTicks % 5 == 0) {
-            findBlueprints();
-        }
-        elapsedTicks++;
-        elapsedTicks %= 1000000;
-
-
-        if (activating() && locateHandler.isPresent()) {
-            BlockPos tracePos = findTracePos();
-            if (tracePos != null && !tracePos.equals(lastTrackPos)) {
-                lastTrackPos = tracePos;
-                transformAnimated();
-            }
-        }
+        findBlueprints();
 
 
     }
 
-    public Optional<IMultiblockLocateHandler> findLocateHandler() {
+    public Tuple<Integer, Optional<IMultiblockLocateHandler>> findLocateHandler() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) {
-            return Optional.empty();
+            return new Tuple<>(-2, Optional.empty());
         }
+        int slot = mc.player.inventory.currentItem;
         ItemStack heldItem = mc.player.getHeldItem(Hand.MAIN_HAND);
         LazyOptional<IMultiblockLocateHandler> capability = heldItem.getCapability(CapabilityMultiblock.MULTIBLOCK_LOCATE_HANDLER);
         if (!capability.isPresent()) {
             ItemStack heldOffhand = mc.player.getHeldItem(Hand.OFF_HAND);
             capability = heldOffhand.getCapability(CapabilityMultiblock.MULTIBLOCK_LOCATE_HANDLER);
+            slot = -1;
         }
-        return capability.resolve();
+        return new Tuple<>(slot, capability.resolve());
 
 
     }
@@ -323,12 +401,10 @@ public class MultiblockSchematicHandler implements IRenderer {
                 }
             }
         }
-
-        if (firstResult != null) {
+        if (this.currentMultiblock != firstResult) {
             this.currentMultiblock = firstResult;
             reset(true);
         }
-
 
     }
 
