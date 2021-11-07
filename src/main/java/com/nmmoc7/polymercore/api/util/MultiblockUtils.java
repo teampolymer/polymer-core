@@ -1,11 +1,14 @@
 package com.nmmoc7.polymercore.api.util;
 
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
+import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
 import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MultiblockUtils {
@@ -20,5 +23,9 @@ public class MultiblockUtils {
             return null;
         }
         return typeObj.createFromNBT(world, compound);
+    }
+
+    public static BlockPos findMostSuitablePosition(IDefinedMultiblock multiblock, BlockPos pos, Direction face) {
+        return pos;
     }
 }

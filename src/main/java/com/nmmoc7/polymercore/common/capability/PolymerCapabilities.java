@@ -1,5 +1,6 @@
-package com.nmmoc7.polymercore.common.capability.io;
+package com.nmmoc7.polymercore.common.capability;
 
+import com.nmmoc7.polymercore.common.capability.io.SimpleItemCapability;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 

@@ -2,7 +2,7 @@ package com.nmmoc7.polymercore.common.machine;
 
 import com.nmmoc7.polymercore.api.machine.IMachine;
 import com.nmmoc7.polymercore.api.storage.IPolymerCapabilityProvider;
-import com.nmmoc7.polymercore.common.capability.io.PolymerCapabilities;
+import com.nmmoc7.polymercore.common.capability.PolymerCapabilities;
 import com.nmmoc7.polymercore.common.capability.io.PolymerCapabilityProvider;
 import com.nmmoc7.polymercore.common.capability.io.SimpleItemCapability;
 import net.minecraft.util.Direction;

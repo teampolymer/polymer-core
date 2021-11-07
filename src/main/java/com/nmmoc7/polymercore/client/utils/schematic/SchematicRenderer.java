@@ -49,10 +49,6 @@ public class SchematicRenderer {
     }
 
 
-    public void setAnchorPos(BlockPos anchorPos) {
-        this.offset = anchorPos;
-    }
-
     private BlockPos offset;
     private SchematicTransform transform;
 

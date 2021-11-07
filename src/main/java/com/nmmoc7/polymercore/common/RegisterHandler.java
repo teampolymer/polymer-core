@@ -25,10 +25,5 @@ public class RegisterHandler {
             TEST_BLUEPRINT_ITEM.setRegistryName(new ResourceLocation(PolymerCoreApi.MOD_ID, "test_blueprint"))
         );
     }
-
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> ClientRegistry.registerKeyBinding(KeysRegistry.TOOL_CTRL_KEY));
-    }
 }
 
