@@ -131,7 +131,22 @@ public class MultiblockSchematicHandler implements IRenderer {
         this.totalAnimatingTicks = DEFAULT_TOTAL_ANIMATION_TICK;
         lastTraceResult = null;
         lastTrackPos = findTracePos();
+
+        boolean doFade = fade && currentMultiblock != null && locateHandler != null;
+
+        if (!fullReset && !fade) {
+            if (targetTransform != null) {
+                originalTransform = targetTransform.copy();
+                renderer.setTransform(targetTransform);
+            } else {
+                originalTransform = new SchematicTransform();
+                renderer.setTransform(new SchematicTransform());
+            }
+            return;
+        }
+
         //重置渲染
+        renderer.setAnimating(false);
         if (fullReset) {
             renderBackground = false;
             renderer.setMultiblock(currentMultiblock);
@@ -140,49 +155,23 @@ public class MultiblockSchematicHandler implements IRenderer {
                 originalTransform = new SchematicTransform();
                 renderer.setTransform(originalTransform);
                 targetTransform = null;
-            } else {
-                BlockPos offset = locateHandler.getOffset();
-                renderer.setOffset(offset == null || !locateHandler.isAnchored() ? lastTrackPos : offset);
-                renderer.setSymmetrical(locateHandler.isFlipped());
-                renderer.setRotation(locateHandler.getRotation());
-                renderer.reset(false);
-                originalTransform = renderer.getTransform().copy();
-            }
-            if (fade && currentMultiblock != null) {
-                renderer.getTransform().shrink(0.1f);
-                transformAnimated(10);
-            }
 
-        } else if (fade && currentMultiblock != null) {
-            renderer.setAnimating(false);
-            if (locateHandler != null) {
-                BlockPos offset = locateHandler.getOffset();
-                renderer.setOffset(offset == null || !locateHandler.isAnchored() ? lastTrackPos : offset);
-                renderer.setSymmetrical(locateHandler.isFlipped());
-                renderer.setRotation(locateHandler.getRotation());
-                renderer.reset(false);
-                originalTransform = renderer.getTransform().copy();
-
-                if (fade && currentMultiblock != null) {
-                    renderer.getTransform().shrink(0.1f);
-                    transformAnimated(10);
-                }
             }
+        }
+
+        if (doFade || (fullReset && locateHandler != null)) {
+
+            BlockPos offset = locateHandler.getOffset();
+            renderer.setOffset(offset == null || !locateHandler.isAnchored() ? lastTrackPos : offset);
+            renderer.setSymmetrical(locateHandler.isFlipped());
+            renderer.setRotation(locateHandler.getRotation());
+            renderer.reset(false);
+            originalTransform = renderer.getTransform().copy();
+        }
+
+        if (doFade) {
             renderer.getTransform().shrink(0.1f);
             transformAnimated(10);
-        } else {
-
-            //切换投影指示器
-            renderer.setAnimating(false);
-            if (targetTransform != null) {
-                originalTransform = targetTransform.copy();
-                renderer.setTransform(targetTransform);
-            } else {
-                originalTransform = new SchematicTransform();
-                renderer.setTransform(new SchematicTransform());
-            }
-
-
         }
 
 
