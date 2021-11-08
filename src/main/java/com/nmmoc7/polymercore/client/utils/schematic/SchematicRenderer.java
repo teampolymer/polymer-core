@@ -1,9 +1,6 @@
 package com.nmmoc7.polymercore.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
@@ -13,28 +10,20 @@ import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import com.nmmoc7.polymercore.client.utils.InputUtils;
 import com.nmmoc7.polymercore.client.utils.RenderUtils;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
+import it.unimi.dsi.fastutil.doubles.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.*;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 已经固定在某一个坐标的多方快投影
@@ -113,130 +102,113 @@ public class SchematicRenderer {
         isSymmetrical = symmetrical;
     }
 
-
     public void render(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {
-        if(offset == null) {
+        if (offset == null) {
             return;
         }
         ClientWorld world = Minecraft.getInstance().world;
         int renderTicks = AnimationTickHelper.getTicks();
-        float renderTimes = AnimationTickHelper.getRenderTime();
         Map<Vector3i, IMultiblockPart> parts = multiblock.getParts();
         Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
-        Stream<Tuple<Vector3i, BlockPos>> entries = parts
-            .keySet()
-            .stream()
-            .map(it -> new Tuple<>(it, PositionUtils.applyModifies(it, offset, rotation, isSymmetrical)))
-            .sorted(
-                Collections.reverseOrder(
-                    Comparator
-                        .comparingDouble(it ->
-                            view.squareDistanceTo(it.getB().getX(), it.getB().getY(), it.getB().getZ())
-                        )
-                )
-            );
 
-        if (transform.flip < 0) {
-            GL11.glFrontFace(GL11.GL_CW);
+        //转换视角
+        Matrix4f result = Matrix4f.makeTranslate(0.5f, 0.5f, 0.5f);
+        if (MathHelper.abs(transform.flip) > 0.1f) {
+            result.mul(Matrix4f.makeScale(1 / transform.flip, 1f, 1f));
         }
+        result.mul(Vector3f.YP.rotationDegrees(-transform.rotation));
+        result.mul(Matrix4f.makeTranslate(-0.5f, -0.5f, -0.5f));
+        result.mul(Matrix4f.makeTranslate(-offset.getX(), -offset.getY(), -offset.getZ()));
+        Vector4f viewRelative = new Vector4f((float) view.x, (float) view.y, (float) view.z, 1f);
+        viewRelative.transform(result);
+
+        Double2ObjectRBTreeMap<Vector3i> map = new Double2ObjectRBTreeMap<>(DoubleComparators.OPPOSITE_COMPARATOR);
+        for (Vector3i relativePos : parts.keySet()) {
+            double distanceSq = relativePos.distanceSq(viewRelative.getX(), viewRelative.getY(), viewRelative.getZ(), true);
+            map.put(distanceSq, relativePos);
+        }
+
 
         ms.push();
         if (animating) {
             transform.apply(ms);
-            //默认透明度0.3
-            float alpha = 0.3F;
-            RenderSystem.blendColor(1, 1, 1, alpha);
-            entries.forEachOrdered(entry -> {
+            for (Vector3i relativePos : map.values()) {
                 ms.push();
 
-                Vector3i relativePos = entry.getA();
-                ms.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
+                ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
 
                 //稍微缩小一点点
                 ms.scale(0.94f, 0.94f, 0.94f);
                 ms.translate(0.03f, 0.03f, 0.03f);
                 //获取显示的样本
-                List<BlockState> sampleBlocks = parts.get(relativePos).getSampleBlocks();
-                int i = (renderTicks) / 20 % sampleBlocks.size();
-                BlockState block = sampleBlocks.get(i);
-
-                //TODO: 这里需要调用VirtualWorld以进行复杂模型的处理
-                IModelData modelData = EmptyModelData.INSTANCE;
-
-
+                BlockState block = pickupSampleBlock(renderTicks, parts.get(relativePos));
+                IModelData modelData = findModelData(block, relativePos, multiblock);
                 //渲染投影
-                RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData);
+                RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData, SchematicRenderTypes.TRANSPARENT_BLOCK);
 
-                buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
                 ms.pop();
-            });
-            RenderSystem.blendColor(1, 1, 1, 1);
+            }
 
 
         } else {
             BlockPos hovering = InputUtils.getHoveringPos();
-            final Set<BlockPos> allWrong = new HashSet<>();
             //检查错误的方块并渲染
-            entries.forEachOrdered(entry -> {
-                Vector3i relativePos = entry.getA();
-//                BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
-                BlockPos offPos = entry.getB();
+            for (Vector3i relativePos : map.values()) {
+                BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
                 //当前检查的方块
                 BlockState current = world.getBlockState(offPos);
 
                 IMultiblockPart part = parts.get(relativePos);
-                //获取显示的样本
-                List<BlockState> sampleBlocks = part.getSampleBlocks();
-                int i = (renderTicks) / 20 % sampleBlocks.size();
-                BlockState block = sampleBlocks.get(i);
+                BlockState block = pickupSampleBlock(renderTicks, part);
 
-                IModelData modelData = ModelDataManager.getModelData(world, offPos);
+                IModelData modelData = findModelData(block, relativePos, multiblock);
 
                 ms.push();
 
                 //渲染投影
                 if (!part.test(current))
                     if (current.getBlock() != Blocks.AIR) {
-                        allWrong.add(offPos);
+                        ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
+                        //渲染错误的方块
+                        RenderUtils.renderCube(ms, buffer.getBuffer(SchematicRenderTypes.CUBE_NO_DEPTH),
+                            0.15f, 0.15f, 0.15f,
+                            0.85f, 0.85f, 0.85f,
+                            0.9f, 0.3f, 0.25f, 0.4f);
                     } else {
                         transform.apply(ms);
-                        ms.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
+                        ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
                         //稍微缩小一点点
                         ms.scale(0.94f, 0.94f, 0.94f);
                         ms.translate(0.03f, 0.03f, 0.03f);
 
-                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData);
-
-                        //默认透明度0.3
-                        float alpha = 0.3F;
-                        //对当前选中的方块提高透明度
+                        RenderType renderType;
                         if (offPos.equals(hovering))
-                            alpha = 0.6F + (float) (Math.sin(renderTimes * 0.2F) + 1F) * 0.15F;
-                        RenderSystem.blendColor(1, 1, 1, alpha);
-                        buffer.finish(SchematicRenderTypes.TRANSPARENT_BLOCK);
-                        RenderSystem.blendColor(1, 1, 1, 1);
+                            renderType = SchematicRenderTypes.TRANSPARENT_BLOCK_DYNAMIC;
+                        else
+                            renderType = SchematicRenderTypes.TRANSPARENT_BLOCK;
+
+                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData, renderType);
 
                     }
 
                 ms.pop();
 
-            });
-
-            for (BlockPos offPos : allWrong) {
-                ms.push();
-                ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
-                //渲染错误的方块
-                RenderUtils.renderCube(ms, buffer.getBuffer(SchematicRenderTypes.CUBE_NO_DEPTH),
-                    0.15f, 0.15f, 0.15f,
-                    0.85f, 0.85f, 0.85f,
-                    1.0f, 0.3f, 0.3f, 0.3f);
-                ms.pop();
             }
-            buffer.finish(SchematicRenderTypes.CUBE_NO_DEPTH);
+            buffer.finish();
         }
 
         ms.pop();
 
-        GL11.glFrontFace(GL11.GL_CCW);
+    }
+
+    private IModelData findModelData(BlockState block, Vector3i relativePos, IDefinedMultiblock multiblock) {
+        return EmptyModelData.INSTANCE;
+    }
+
+    private BlockState pickupSampleBlock(int renderTicks, IMultiblockPart part) {
+        //获取显示的样本
+        List<BlockState> sampleBlocks = part.getSampleBlocks();
+        int i = (renderTicks) / 20 % sampleBlocks.size();
+        return sampleBlocks.get(i);
     }
 }

@@ -22,7 +22,8 @@ public class RenderUtils {
                                    IRenderTypeBuffer bufferSource,
                                    MatrixStack matrixStackIn,
                                    int combinedLightIn,
-                                   IModelData modelData) {
+                                   IModelData modelData,
+                                   RenderType renderType) {
         if (blockStateIn.getRenderType() == BlockRenderType.MODEL) {
             Minecraft mc = Minecraft.getInstance();
             BlockRendererDispatcher dispatcher = mc.getBlockRendererDispatcher();
@@ -31,7 +32,7 @@ public class RenderUtils {
             float minX = (float) (i >> 16 & 255) / 255.0F;
             float minY = (float) (i >> 8 & 255) / 255.0F;
             float minZ = (float) (i & 255) / 255.0F;
-            IVertexBuilder buffer = bufferSource.getBuffer(SchematicRenderTypes.TRANSPARENT_BLOCK);
+            IVertexBuilder buffer = bufferSource.getBuffer(renderType);
             dispatcher.getBlockModelRenderer().renderModel(
                 matrixStackIn.getLast(),
                 buffer,

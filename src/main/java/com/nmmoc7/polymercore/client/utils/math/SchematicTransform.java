@@ -4,7 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -56,10 +58,14 @@ public class SchematicTransform {
         ms.translate(x, y, z);
 
         ms.translate(0.5f, 0.5f, 0.5f);
-        ms.rotate(Vector3f.YP.rotation(rotation * ((float) Math.PI / 180)));
-        ms.scale(this.flip, 1f, 1f);
+        ms.rotate(Vector3f.YP.rotationDegrees(rotation));
+        ms.scale(MathHelper.abs(this.flip), 1f, 1f);
         ms.translate(-0.5f, -0.5f, -0.5f);
 
+    }
+
+    public int getFlip() {
+        return this.flip > 0 ? 1 : -1;
     }
 
     public boolean similarTo(SchematicTransform another) {

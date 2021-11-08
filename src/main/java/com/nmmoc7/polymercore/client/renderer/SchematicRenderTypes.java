@@ -2,6 +2,7 @@ package com.nmmoc7.polymercore.client.renderer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -28,16 +29,33 @@ public class SchematicRenderTypes extends RenderType {
     /**
      * 半透明混合
      */
-    protected static final RenderState.TransparencyState CONST_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency_const", () -> {
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.CONSTANT_ALPHA, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_ALPHA);
-        //发现这段额可以放外面，好耶！
-//        RenderSystem.blendColor(1, 1, 1, 0.4f);
-    }, () -> {
-//        RenderSystem.blendColor(1, 1, 1, 1);
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
-    });
+    protected static RenderState.TransparencyState getConstTransparency(float alpha) {
+        return new RenderState.TransparencyState("translucent_transparency_const", () -> {
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.CONSTANT_ALPHA, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_ALPHA);
+            RenderSystem.blendColor(1, 1, 1, alpha);
+        }, () -> {
+            RenderSystem.blendColor(1, 1, 1, 1);
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        });
+    }
+
+    /**
+     * 半透明混合
+     */
+    protected static RenderState.TransparencyState getDynamicTransparency(float begin, float end, float period) {
+        return new RenderState.TransparencyState("translucent_transparency_dynamic", () -> {
+            float alpha = AnimationTickHelper.sinCirculateIn(begin, end, period);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.CONSTANT_ALPHA, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_ALPHA);
+            RenderSystem.blendColor(1, 1, 1, alpha);
+        }, () -> {
+            RenderSystem.blendColor(1, 1, 1, 1);
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        });
+    }
 
 
     /**
@@ -47,7 +65,22 @@ public class SchematicRenderTypes extends RenderType {
         DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 1024, true, true,
         RenderType.State.getBuilder()
             .texture(new RenderState.TextureState(PlayerContainer.LOCATION_BLOCKS_TEXTURE, false, false))
-            .transparency(CONST_TRANSPARENCY)
+            .transparency(getConstTransparency(0.3f))
+            .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
+            .alpha(DEFAULT_ALPHA)
+            .lightmap(LIGHTMAP_ENABLED)
+            .overlay(OVERLAY_ENABLED)
+            .writeMask(COLOR_DEPTH_WRITE)
+            .build(true));
+
+    /**
+     * 半透明方块
+     */
+    public static final RenderType TRANSPARENT_BLOCK_DYNAMIC = makeType("projection_transparent_block_dynamic",
+        DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 1024, true, true,
+        RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(PlayerContainer.LOCATION_BLOCKS_TEXTURE, false, false))
+            .transparency(getDynamicTransparency(0.6f, 1.0f, 30))
             .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
             .alpha(DEFAULT_ALPHA)
             .lightmap(LIGHTMAP_ENABLED)

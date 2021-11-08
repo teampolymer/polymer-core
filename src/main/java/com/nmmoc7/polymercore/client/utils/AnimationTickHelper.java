@@ -61,4 +61,8 @@ public final class AnimationTickHelper {
         return begin + (MathHelper.sin(getRenderTime() * 2 * 3.14159265358979323846f / period) + 1f) / 2 * (end - begin);
     }
 
+    public static float sinCirculateIn(float end, float period) {
+        return (MathHelper.sin(getRenderTime() * 2 * 3.14159265358979323846f / period) + 1f) / 2 * end;
+    }
+
 }
