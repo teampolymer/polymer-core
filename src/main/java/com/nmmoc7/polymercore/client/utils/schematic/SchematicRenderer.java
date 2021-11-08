@@ -19,11 +19,12 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.*;
-import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
 import java.util.*;
+
+import static com.nmmoc7.polymercore.client.utils.SchematicRenderUtils.*;
 
 /**
  * 已经固定在某一个坐标的多方快投影
@@ -33,8 +34,7 @@ public class SchematicRenderer {
     private AxisAlignedBB totalAABB;
 
     public SchematicRenderer() {
-
-        reset();
+        reset(true);
     }
 
 
@@ -44,6 +44,9 @@ public class SchematicRenderer {
 
     //是否在显示动画效果，如果是，不检查方块和处理
     private boolean animating = false;
+
+
+
     //显示绑定的多方快结构
     private IDefinedMultiblock multiblock;
     private Rotation rotation;
@@ -53,13 +56,20 @@ public class SchematicRenderer {
     public void setMultiblock(IDefinedMultiblock multiblock) {
         this.multiblock = multiblock;
     }
+    public IDefinedMultiblock getMultiblock() {
+        return multiblock;
+    }
 
-    public void reset() {
-        animating = false;
-        rotation = Rotation.NONE;
-        isSymmetrical = false;
-        offset = null;
-        transform = new SchematicTransform();
+    public void reset(boolean hard) {
+        if (hard) {
+            animating = false;
+            rotation = Rotation.NONE;
+            isSymmetrical = false;
+            offset = null;
+            transform = new SchematicTransform();
+        } else {
+            transform = SchematicTransform.create(offset, rotation, isSymmetrical);
+        }
     }
 
     public BlockPos getOffset() {
@@ -112,34 +122,22 @@ public class SchematicRenderer {
         Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
 
         //转换视角
-        Matrix4f result = Matrix4f.makeTranslate(0.5f, 0.5f, 0.5f);
-        if (MathHelper.abs(transform.flip) > 0.1f) {
-            result.mul(Matrix4f.makeScale(1 / transform.flip, 1f, 1f));
-        }
-        result.mul(Vector3f.YP.rotationDegrees(-transform.rotation));
-        result.mul(Matrix4f.makeTranslate(-0.5f, -0.5f, -0.5f));
-        result.mul(Matrix4f.makeTranslate(-offset.getX(), -offset.getY(), -offset.getZ()));
-        Vector4f viewRelative = new Vector4f((float) view.x, (float) view.y, (float) view.z, 1f);
-        viewRelative.transform(result);
+        Vector4f viewRelative = transformCamera(view, transform);
 
-        Double2ObjectRBTreeMap<Vector3i> map = new Double2ObjectRBTreeMap<>(DoubleComparators.OPPOSITE_COMPARATOR);
-        for (Vector3i relativePos : parts.keySet()) {
-            double distanceSq = relativePos.distanceSq(viewRelative.getX(), viewRelative.getY(), viewRelative.getZ(), true);
-            map.put(distanceSq, relativePos);
-        }
+        SortedMap<Double, Vector3i> map = sortByDistance(parts, viewRelative);
 
 
         ms.push();
         if (animating) {
-            transform.apply(ms);
+            transform.applyEntirely(ms);
             for (Vector3i relativePos : map.values()) {
                 ms.push();
-
                 ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
-
+                transform.applyPartially(ms);
                 //稍微缩小一点点
-                ms.scale(0.94f, 0.94f, 0.94f);
                 ms.translate(0.03f, 0.03f, 0.03f);
+                ms.scale(0.94f, 0.94f, 0.94f);
+
                 //获取显示的样本
                 BlockState block = pickupSampleBlock(renderTicks, parts.get(relativePos));
                 IModelData modelData = findModelData(block, relativePos, multiblock);
@@ -169,17 +167,20 @@ public class SchematicRenderer {
                 if (!part.test(current))
                     if (current.getBlock() != Blocks.AIR) {
                         ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
+
+                        transform.applyPartially(ms);
                         //渲染错误的方块
                         RenderUtils.renderCube(ms, buffer.getBuffer(SchematicRenderTypes.CUBE_NO_DEPTH),
                             0.15f, 0.15f, 0.15f,
                             0.85f, 0.85f, 0.85f,
                             0.9f, 0.3f, 0.25f, 0.4f);
                     } else {
-                        transform.apply(ms);
+                        transform.applyEntirely(ms);
                         ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
+                        transform.applyPartially(ms);
                         //稍微缩小一点点
-                        ms.scale(0.94f, 0.94f, 0.94f);
                         ms.translate(0.03f, 0.03f, 0.03f);
+                        ms.scale(0.94f, 0.94f, 0.94f);
 
                         RenderType renderType;
                         if (offPos.equals(hovering))
@@ -199,16 +200,5 @@ public class SchematicRenderer {
 
         ms.pop();
 
-    }
-
-    private IModelData findModelData(BlockState block, Vector3i relativePos, IDefinedMultiblock multiblock) {
-        return EmptyModelData.INSTANCE;
-    }
-
-    private BlockState pickupSampleBlock(int renderTicks, IMultiblockPart part) {
-        //获取显示的样本
-        List<BlockState> sampleBlocks = part.getSampleBlocks();
-        int i = (renderTicks) / 20 % sampleBlocks.size();
-        return sampleBlocks.get(i);
     }
 }

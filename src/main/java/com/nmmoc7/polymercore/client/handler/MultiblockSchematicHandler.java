@@ -9,6 +9,7 @@ import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
 import com.nmmoc7.polymercore.client.renderer.IRenderer;
 import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
+import com.nmmoc7.polymercore.client.utils.schematic.SchematicFadeOutRenderer;
 import com.nmmoc7.polymercore.client.utils.schematic.SchematicRenderer;
 import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
 import com.nmmoc7.polymercore.common.network.ModNetworking;
@@ -35,6 +36,7 @@ public class MultiblockSchematicHandler implements IRenderer {
 
     private MultiblockSchematicHandler() {
         renderer = new SchematicRenderer();
+        fadeOutRenderer = new SchematicFadeOutRenderer();
     }
 
     private boolean enabled = false;
@@ -52,6 +54,7 @@ public class MultiblockSchematicHandler implements IRenderer {
     //动画相关
     private final int DEFAULT_TOTAL_ANIMATION_TICK = 10;
     private final SchematicRenderer renderer;
+    private final SchematicFadeOutRenderer fadeOutRenderer;
     private SchematicTransform targetTransform;
     private SchematicTransform originalTransform;
     private int animatingTicks = 0;
@@ -68,7 +71,11 @@ public class MultiblockSchematicHandler implements IRenderer {
             return false;
         }
         //手持蓝图或者已经固定一个坐标就显示
-        return enabled && currentMultiblock != null && (renderBackground || locateHandler != null);
+        return enabled && shouldRenderMain() || fadeOutRenderer.isActivated();
+    }
+
+    public boolean shouldRenderMain() {
+        return currentMultiblock != null && (renderBackground || locateHandler != null);
     }
 
     @Override
@@ -79,16 +86,19 @@ public class MultiblockSchematicHandler implements IRenderer {
             renderer.getTransform().interpolateTo(percent, originalTransform, targetTransform);
         }
 
-        //判断鼠标指向的方块，必须
-        if (activating() && this.locateHandler != null && !this.locateHandler.isAnchored()) {
-            BlockPos tracePos = findTracePos();
-            if (tracePos != null && !tracePos.equals(lastTrackPos)) {
-                lastTrackPos = tracePos;
-                transformAnimated(6);
+        fadeOutRenderer.render(ms, buffer, pt);
+        if (shouldRenderMain()) {
+            //判断鼠标指向的方块，必须
+            if (activating() && this.locateHandler != null && !this.locateHandler.isAnchored()) {
+                BlockPos tracePos = findTracePos();
+                if (tracePos != null && !tracePos.equals(lastTrackPos)) {
+                    lastTrackPos = tracePos;
+                    transformAnimated(6);
+                }
             }
-        }
 
-        renderer.render(ms, buffer, pt);
+            renderer.render(ms, buffer, pt);
+        }
 
     }
 
@@ -111,21 +121,71 @@ public class MultiblockSchematicHandler implements IRenderer {
 
     }
 
-    public void reset(boolean full) {
-        renderer.setAnimating(false);
-        if (full) {
-            lastTrackPos = null;
+    public void fadeOutCurrent() {
+        fadeOutRenderer.fadeOut(renderer);
+    }
+
+    public void reset(boolean fullReset, boolean fade) {
+
+        this.animatingTicks = 0;
+        this.totalAnimatingTicks = DEFAULT_TOTAL_ANIMATION_TICK;
+        lastTraceResult = null;
+        lastTrackPos = findTracePos();
+        //重置渲染
+        if (fullReset) {
             renderBackground = false;
             renderer.setMultiblock(currentMultiblock);
             if (locateHandler == null) {
-                renderer.reset();
+                renderer.reset(true);
                 originalTransform = new SchematicTransform();
                 renderer.setTransform(originalTransform);
                 targetTransform = null;
             } else {
-                transformAnimated(4);
+                BlockPos offset = locateHandler.getOffset();
+                renderer.setOffset(offset == null || !locateHandler.isAnchored() ? lastTrackPos : offset);
+                renderer.setSymmetrical(locateHandler.isFlipped());
+                renderer.setRotation(locateHandler.getRotation());
+                renderer.reset(false);
+                originalTransform = renderer.getTransform().copy();
             }
+            if (fade && currentMultiblock != null) {
+                renderer.getTransform().shrink(0.1f);
+                transformAnimated(10);
+            }
+
+        } else if (fade && currentMultiblock != null) {
+            renderer.setAnimating(false);
+            if (locateHandler != null) {
+                BlockPos offset = locateHandler.getOffset();
+                renderer.setOffset(offset == null || !locateHandler.isAnchored() ? lastTrackPos : offset);
+                renderer.setSymmetrical(locateHandler.isFlipped());
+                renderer.setRotation(locateHandler.getRotation());
+                renderer.reset(false);
+                originalTransform = renderer.getTransform().copy();
+
+                if (fade && currentMultiblock != null) {
+                    renderer.getTransform().shrink(0.1f);
+                    transformAnimated(10);
+                }
+            }
+            renderer.getTransform().shrink(0.1f);
+            transformAnimated(10);
+        } else {
+
+            //切换投影指示器
+            renderer.setAnimating(false);
+            if (targetTransform != null) {
+                originalTransform = targetTransform.copy();
+                renderer.setTransform(targetTransform);
+            } else {
+                originalTransform = new SchematicTransform();
+                renderer.setTransform(new SchematicTransform());
+            }
+
+
         }
+
+
     }
 
 
@@ -138,12 +198,13 @@ public class MultiblockSchematicHandler implements IRenderer {
         Rotation rotation = Rotation.values()[index];
         locateHandler.setRotation(rotation);
         sync();
-
+        lastTraceResult = null;
         transformAnimated();
     }
 
     public void flip() {
         locateHandler.flip();
+        lastTraceResult = null;
     }
 
     public void sync() {
@@ -313,22 +374,28 @@ public class MultiblockSchematicHandler implements IRenderer {
             animatingTicks--;
         }
 
+        fadeOutRenderer.tick();
+
 
         Tuple<Integer, Optional<IMultiblockLocateHandler>> locateHandlerWithSlot = findLocateHandler();
         Optional<IMultiblockLocateHandler> locateHandler = locateHandlerWithSlot.getB();
         if (locateHandler.isPresent()) {
-            if (!locateHandler.get().equals(this.locateHandler)) {
-                boolean fullReset = this.locateHandler != null;
+            if (this.handleSlot != locateHandlerWithSlot.getA() || !locateHandler.get().equals(this.locateHandler)) {
+                //上一个没有手持控制器也没有后台渲染的蓝图
+                boolean fade = this.locateHandler == null && !renderBackground;
                 this.locateHandler = locateHandler.get();
                 this.handleSlot = locateHandlerWithSlot.getA();
-                reset(fullReset);
+                reset(false, fade);
             }
         } else if (this.locateHandler != null) {
             this.renderBackground = this.locateHandler.isAnchored();
+            if (!renderBackground) {
+                fadeOutCurrent();
+            }
             this.handleSlot = -2;
             this.locateHandler = null;
 
-            reset(false);
+            reset(false, false);
         }
 
         findBlueprints();
@@ -371,8 +438,9 @@ public class MultiblockSchematicHandler implements IRenderer {
         if (multiblockSupplier.isPresent()) {
             IDefinedMultiblock multiblock = multiblockSupplier.resolve().get().getMultiblock();
             if (multiblock != this.currentMultiblock) {
+                fadeOutCurrent();
                 this.currentMultiblock = multiblock;
-                reset(true);
+                reset(true, true);
             }
             return;
         }
@@ -387,8 +455,9 @@ public class MultiblockSchematicHandler implements IRenderer {
                 IDefinedMultiblock multiblock = multiblockSupplier.resolve().get().getMultiblock();
                 //当前多方快不存在，直接赋值结束
                 if (this.currentMultiblock == null) {
+                    fadeOutCurrent();
                     this.currentMultiblock = multiblock;
-                    reset(true);
+                    reset(true, true);
                     return;
                 }
 
@@ -402,8 +471,9 @@ public class MultiblockSchematicHandler implements IRenderer {
             }
         }
         if (this.currentMultiblock != firstResult) {
+            fadeOutCurrent();
             this.currentMultiblock = firstResult;
-            reset(true);
+            reset(true, firstResult != null);
         }
 
     }

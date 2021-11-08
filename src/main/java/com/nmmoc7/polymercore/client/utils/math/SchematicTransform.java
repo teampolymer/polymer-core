@@ -4,12 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 import static net.minecraft.util.math.MathHelper.*;
 
@@ -21,17 +17,22 @@ public class SchematicTransform {
         this.z = 0f;
         this.rotation = 0f;
         this.flip = 1f;
+        this.scale = 0f;
     }
 
-    public SchematicTransform(float x, float y, float z, float rotation, float flip) {
+    public SchematicTransform(float x, float y, float z, float rotation, float flip, float scale) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.rotation = rotation;
         this.flip = flip;
+        this.scale = scale;
     }
 
-    public static SchematicTransform create(@NotNull BlockPos offset, @NotNull Rotation rotation, @NotNull boolean isSymmetrical) {
+    public static SchematicTransform create(BlockPos offset, @NotNull Rotation rotation, @NotNull boolean isSymmetrical) {
+        if (offset == null) {
+            offset = BlockPos.ZERO;
+        }
         float rotValue = 360 - rotation.ordinal() * 90;
         float flipValue = isSymmetrical ? -1f : 1f;
         return new SchematicTransform(
@@ -39,7 +40,8 @@ public class SchematicTransform {
             offset.getY(),
             offset.getZ(),
             rotValue,
-            flipValue
+            flipValue,
+            1.0f
         );
     }
 
@@ -54,7 +56,9 @@ public class SchematicTransform {
     //对称反转程度 [-1,1]
     public float flip;
 
-    public void apply(MatrixStack ms) {
+    public float scale;
+
+    public void applyEntirely(MatrixStack ms) {
         ms.translate(x, y, z);
 
         ms.translate(0.5f, 0.5f, 0.5f);
@@ -63,6 +67,19 @@ public class SchematicTransform {
         ms.translate(-0.5f, -0.5f, -0.5f);
 
     }
+
+    public void applyPartially(MatrixStack ms) {
+        float scale = MathHelper.abs(this.scale);
+        float offset = (1f - scale) / 2;
+        ms.translate(offset, offset, offset);
+        ms.scale(scale, scale, scale);
+    }
+
+    public SchematicTransform shrink(float scale) {
+        this.scale = scale;
+        return this;
+    }
+
 
     public int getFlip() {
         return this.flip > 0 ? 1 : -1;
@@ -86,7 +103,8 @@ public class SchematicTransform {
             lerp(percent, start.y, end.y),
             lerp(percent, start.z, end.z),
             interpolateAngle(percent, start.rotation, end.rotation),
-            lerp(percent, start.flip, end.flip)
+            lerp(percent, start.flip, end.flip),
+            lerp(percent, start.scale, end.scale)
         );
     }
 
@@ -96,10 +114,11 @@ public class SchematicTransform {
         z = lerp(percent, start.z, target.z);
         rotation = interpolateAngle(percent, start.rotation, target.rotation);
         flip = lerp(percent, start.flip, target.flip);
+        scale = lerp(percent, start.scale, target.scale);
         return this;
     }
 
     public SchematicTransform copy() {
-        return new SchematicTransform(x, y, z, rotation, flip);
+        return new SchematicTransform(x, y, z, rotation, flip, scale);
     }
 }

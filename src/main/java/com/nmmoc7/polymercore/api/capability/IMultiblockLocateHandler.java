@@ -31,7 +31,7 @@ public interface IMultiblockLocateHandler {
         setRotation(Rotation.NONE);
         setAnchored(false);
         setFlipped(false);
-        setOffset(BlockPos.ZERO);
+        setOffset(null);
     }
 
 }

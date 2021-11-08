@@ -11,6 +11,7 @@ public final class AnimationTickHelper {
     private static int ticks = 0;
     private static int pausedTicks = 0;
 
+
     public static void reset() {
         ticks = 0;
         pausedTicks = 0;

@@ -71,9 +71,9 @@ public class ClientEventHandler {
         CustomRenderTypeBuffer buffer = CustomRenderTypeBuffer.instance();
         float pt = AnimationTickHelper.getPartialTicks();
         tickRenders(ms, buffer, pt);
-
         buffer.finish();
         ms.pop();
+
     }
 
     private static void tickRenders(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {

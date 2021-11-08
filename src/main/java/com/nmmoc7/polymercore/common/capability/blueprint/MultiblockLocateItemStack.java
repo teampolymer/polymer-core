@@ -62,7 +62,7 @@ public class MultiblockLocateItemStack implements IMultiblockLocateHandler {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MultiblockLocateItemStack that = (MultiblockLocateItemStack) o;
-        return Objects.equals(stack, that.stack);
+        return ItemStack.areItemsEqual(stack, that.stack);
     }
 
     @Override
