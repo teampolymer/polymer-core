@@ -9,7 +9,6 @@ import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
 import com.nmmoc7.polymercore.common.capability.blueprint.MultiblockLocateItemStack;
 import com.nmmoc7.polymercore.common.capability.blueprint.MultiblockSupplierItemStack;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.FishBucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

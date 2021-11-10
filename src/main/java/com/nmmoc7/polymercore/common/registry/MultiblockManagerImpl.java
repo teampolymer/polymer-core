@@ -17,8 +17,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MultiblockManagerImpl implements IMultiblockDefinitionManager {
-    private BiMap<ResourceLocation, IDefinedMultiblock> multiblocks = HashBiMap.create();
-    private Multimap<String, IDefinedMultiblock> tagsMap = HashMultimap.create();
+    private final BiMap<ResourceLocation, IDefinedMultiblock> multiblocks = HashBiMap.create();
+    private final Multimap<String, IDefinedMultiblock> tagsMap = HashMultimap.create();
 
 
 

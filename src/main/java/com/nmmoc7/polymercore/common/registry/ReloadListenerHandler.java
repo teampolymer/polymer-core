@@ -39,8 +39,8 @@ public class ReloadListenerHandler {
                 )
                 .addPattern(
                     "AAAAA",
-                    "A B A",
-                    "AAAAA"
+                    "AWBWA",
+                    "AAAFA"
                 )
                 .addPattern(
                     "     ",
@@ -53,6 +53,8 @@ public class ReloadListenerHandler {
                 .addPartsMap('A', new PartSpecifiedBlock(Blocks.STONE))
                 .addPartsMap('B', new PartSpecifiedBlock(Blocks.OAK_WOOD))
                 .addPartsMap('C', new PartSpecifiedBlock(Blocks.GLOWSTONE))
+                .addPartsMap('W', new PartSpecifiedBlock(Blocks.WATER))
+                .addPartsMap('F', new PartSpecifiedBlock(Blocks.FURNACE))
                 .setCoreChar('C')
                 .setType(MultiblockRegisterHandler.TYPE_FREE.get())
                 .setCanSymmetrical()

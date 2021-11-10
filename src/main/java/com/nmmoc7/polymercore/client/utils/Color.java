@@ -23,15 +23,13 @@
  */
 package com.nmmoc7.polymercore.client.utils;
 
-import java.util.function.UnaryOperator;
-
-import javax.annotation.Nonnull;
-
 import com.google.common.hash.Hashing;
-
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+
+import javax.annotation.Nonnull;
+import java.util.function.UnaryOperator;
 
 /**
  * Copied from Create

@@ -13,11 +13,11 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketLocateHandlerSync {
-    private int slot;
-    private boolean anchored;
-    private BlockPos offset;
-    private Rotation rotation;
-    private boolean flipped;
+    private final int slot;
+    private final boolean anchored;
+    private final BlockPos offset;
+    private final Rotation rotation;
+    private final boolean flipped;
 
     public PacketLocateHandlerSync(int slot, IMultiblockLocateHandler locateHandler) {
         this.slot = slot;

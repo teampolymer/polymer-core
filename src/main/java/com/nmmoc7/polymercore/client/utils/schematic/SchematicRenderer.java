@@ -10,19 +10,21 @@ import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import com.nmmoc7.polymercore.client.utils.InputUtils;
 import com.nmmoc7.polymercore.client.utils.RenderUtils;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
-import it.unimi.dsi.fastutil.doubles.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.*;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.model.data.IModelData;
 
-import java.util.*;
+import java.util.Map;
+import java.util.SortedMap;
 
 import static com.nmmoc7.polymercore.client.utils.SchematicRenderUtils.*;
 
@@ -155,7 +157,6 @@ public class SchematicRenderer {
                 BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
                 //当前检查的方块
                 BlockState current = world.getBlockState(offPos);
-
                 IMultiblockPart part = parts.get(relativePos);
                 BlockState block = pickupSampleBlock(renderTicks, part);
 

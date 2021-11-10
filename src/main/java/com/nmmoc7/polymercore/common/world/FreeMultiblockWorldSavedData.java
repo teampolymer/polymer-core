@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FreeMultiblockWorldSavedData extends WorldSavedData {
     private static final String NAME = "polymer_core_multiblock";
-    private World world;
+    private final World world;
 
     public FreeMultiblockWorldSavedData(World world) {
         super(NAME);

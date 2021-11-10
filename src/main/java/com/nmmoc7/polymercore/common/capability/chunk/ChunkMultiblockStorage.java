@@ -20,7 +20,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
      * 映射结构
      * 方块坐标->(核心坐标, Part)
      */
-    private Map<BlockPos, Tuple<UUID, IMultiblockPart>> data = new HashMap<>();
+    private final Map<BlockPos, Tuple<UUID, IMultiblockPart>> data = new HashMap<>();
 
     public ChunkMultiblockStorage(Chunk chunk) {
         this.chunk = chunk;

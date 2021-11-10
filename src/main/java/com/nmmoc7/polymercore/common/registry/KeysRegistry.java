@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class KeysRegistry {
-    private static Set<KeyBinding> allKeys = new HashSet<>();
+    private static final Set<KeyBinding> allKeys = new HashSet<>();
 
     public static void init() {
         for (KeyBinding allKey : allKeys) {

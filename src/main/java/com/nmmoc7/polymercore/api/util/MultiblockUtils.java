@@ -14,7 +14,6 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.Objects;
 
 public class MultiblockUtils {

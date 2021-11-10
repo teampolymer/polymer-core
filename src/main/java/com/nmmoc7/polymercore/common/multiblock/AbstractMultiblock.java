@@ -10,9 +10,9 @@ import net.minecraft.util.math.vector.Vector3i;
 import java.util.List;
 
 public abstract class AbstractMultiblock implements IMultiblock {
-    private List<IMultiblockComponent> components;
-    private IMachine machine;
-    private Vector3i size;
+    private final List<IMultiblockComponent> components;
+    private final IMachine machine;
+    private final Vector3i size;
     private final AttributeMap attributeMap = new AttributeMap();
 
     public AbstractMultiblock(List<IMultiblockComponent> components, IMachine machine, Vector3i size) {

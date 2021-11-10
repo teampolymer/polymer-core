@@ -2,7 +2,6 @@ package com.nmmoc7.polymercore;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.client.PolymerClient;
-import com.nmmoc7.polymercore.common.RegisterHandler;
 import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;

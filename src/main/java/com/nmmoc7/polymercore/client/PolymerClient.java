@@ -1,9 +1,7 @@
 package com.nmmoc7.polymercore.client;
 
 import com.nmmoc7.polymercore.common.registry.KeysRegistry;
-import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class PolymerClient {

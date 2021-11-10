@@ -2,7 +2,6 @@ package com.nmmoc7.polymercore.client.utils;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.nmmoc7.polymercore.client.renderer.SchematicRenderTypes;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,8 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -20,25 +21,29 @@ public class RenderUtils {
 
     public static void renderBlock(BlockState blockStateIn,
                                    IRenderTypeBuffer bufferSource,
-                                   MatrixStack matrixStackIn,
+                                   MatrixStack ms,
                                    int combinedLightIn,
                                    IModelData modelData,
                                    RenderType renderType) {
+        Minecraft mc = Minecraft.getInstance();
+        BlockRendererDispatcher dispatcher = mc.getBlockRendererDispatcher();
+        FluidState fluidState = blockStateIn.getFluidState();
+        if(fluidState.getFluid() !=  Fluids.EMPTY) {
+
+        }
         if (blockStateIn.getRenderType() == BlockRenderType.MODEL) {
-            Minecraft mc = Minecraft.getInstance();
-            BlockRendererDispatcher dispatcher = mc.getBlockRendererDispatcher();
             IBakedModel ibakedmodel = dispatcher.getModelForState(blockStateIn);
             int i = mc.getBlockColors().getColor(blockStateIn, null, null, 0);
-            float minX = (float) (i >> 16 & 255) / 255.0F;
-            float minY = (float) (i >> 8 & 255) / 255.0F;
-            float minZ = (float) (i & 255) / 255.0F;
+            float r = (float) (i >> 16 & 255) / 255.0F;
+            float g = (float) (i >> 8 & 255) / 255.0F;
+            float b = (float) (i & 255) / 255.0F;
             IVertexBuilder buffer = bufferSource.getBuffer(renderType);
             dispatcher.getBlockModelRenderer().renderModel(
-                matrixStackIn.getLast(),
+                ms.getLast(),
                 buffer,
                 blockStateIn,
                 ibakedmodel,
-                minX, minY, minZ,
+                r, g, b,
                 combinedLightIn,
                 OverlayTexture.NO_OVERLAY,
                 modelData != null ? modelData : EmptyModelData.INSTANCE);
@@ -81,6 +86,5 @@ public class RenderUtils {
         builder.pos(mat, maxX, minY, minZ).color(red, green, blue, alpha).endVertex();
 
     }
-
 
 }
