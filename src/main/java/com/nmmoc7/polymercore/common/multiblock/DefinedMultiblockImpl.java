@@ -5,8 +5,8 @@ import com.nmmoc7.polymercore.api.machine.IMachine;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
+import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
@@ -41,42 +41,43 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical) {
-        if (!canAssemble(world, corePos, rotation, isSymmetrical)) {
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical) {
+        IMultiblockAssembleRule rule = getType().createEmptyRule(coreOffset, rotation, isSymmetrical);
+        if (!canAssemble(world, coreOffset, rotation, isSymmetrical, rule)) {
             return null;
         }
-        return getType().createMultiblockIn(this, world, corePos, rotation, isSymmetrical);
+        return getType().createMultiblockIn(this, world, rule);
     }
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation) {
-        if (canAssemble(world, corePos, rotation, true)) {
-            return assemble(world, corePos, rotation, true);
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation) {
+        if (canAssemble(world, coreOffset, rotation, true)) {
+            return assemble(world, coreOffset, rotation, true);
         }
-        return assemble(world, corePos, rotation, false);
+        return assemble(world, coreOffset, rotation, false);
     }
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos) {
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset) {
         for (Rotation value : Rotation.values()) {
-            boolean result = canAssemble(world, corePos, value);
+            boolean result = canAssemble(world, coreOffset, value);
             if (result) {
-                return assemble(world, corePos, value);
+                return assemble(world, coreOffset, value);
             }
         }
         return null;
     }
 
     @Override
-    public boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical) {
+    public boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical, IMultiblockAssembleRule ruleToFill) {
         if (!canSymmetrical && isSymmetrical) {
             return false;
         }
         Map<Vector3i, IMultiblockPart> parts = getParts();
         for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
-            BlockPos testPos = PositionUtils.applyModifies(entry.getKey(), corePos, rotation, isSymmetrical);
+            BlockPos testPos = PositionUtils.applyModifies(entry.getKey(), coreOffset, rotation, isSymmetrical);
             BlockState block = world.getBlockState(testPos);
             if (entry.getValue().pickupUnit(block) != null) {
                 return false;
@@ -86,14 +87,19 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     }
 
     @Override
-    public boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation) {
-        return canAssemble(world, corePos, rotation, true) || canAssemble(world, corePos, rotation, false);
+    public boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical) {
+        return canAssemble(world, coreOffset, rotation, isSymmetrical, getType().createEmptyRule(coreOffset, rotation, isSymmetrical));
     }
 
     @Override
-    public boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos) {
+    public boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation) {
+        return canAssemble(world, coreOffset, rotation, true) || canAssemble(world, coreOffset, rotation, false);
+    }
+
+    @Override
+    public boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset) {
         for (Rotation value : Rotation.values()) {
-            boolean result = canAssemble(world, corePos, value);
+            boolean result = canAssemble(world, coreOffset, value);
             if (result) {
                 return true;
             }

@@ -14,6 +14,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.model.data.IModelData;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -81,7 +82,7 @@ public class SchematicFadeOutRenderer {
         transform.interpolateTo(percent, originalTransform, targetTransform);
 
 
-        Map<Vector3i, IMultiblockUnit> parts = multiblock.getParts();
+        Map<Vector3i, IMultiblockUnit> parts = Collections.emptyMap();
 
         Vector4f viewRelative = transformCamera(Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(), transform);
         SortedMap<Double, Vector3i> map = sortByDistance(parts, viewRelative);

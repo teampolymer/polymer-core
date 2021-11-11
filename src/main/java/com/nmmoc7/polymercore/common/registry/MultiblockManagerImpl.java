@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.registry.IMultiblockDefinitionManager;
 import net.minecraft.block.BlockState;
@@ -21,7 +22,6 @@ public class MultiblockManagerImpl implements IMultiblockDefinitionManager {
     private final Multimap<String, IDefinedMultiblock> tagsMap = HashMultimap.create();
 
 
-
     @Override
     public Optional<IDefinedMultiblock> getDefinedMultiblock(ResourceLocation location) {
         return Optional.ofNullable(multiblocks.get(location));
@@ -31,8 +31,8 @@ public class MultiblockManagerImpl implements IMultiblockDefinitionManager {
     public Collection<IDefinedMultiblock> getDefinedMultiblocksForCore(BlockState coreBlock) {
         return multiblocks.values().stream()
             .filter(it -> {
-                IMultiblockUnit core = it.getCore();
-                return core != null && core.test(coreBlock);
+                IMultiblockPart core = it.getCore();
+                return core != null && core.pickupUnit(coreBlock) != null;
             }).collect(Collectors.toList());
     }
 

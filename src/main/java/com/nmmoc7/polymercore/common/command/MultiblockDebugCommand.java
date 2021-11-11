@@ -48,7 +48,7 @@ public class MultiblockDebugCommand {
 //                        Map<BlockPos, Tuple<UUID, IMultiblockPart>> data = it.getData();
 //                    });
 //                }
-            for (BlockPos pos : multiblock.getParts().keySet()) {
+            for (BlockPos pos : multiblock.getUnits().keySet()) {
                 Tuple<UUID, IMultiblockUnit> multiblockPart = CapabilityChunkMultiblockStorage.getMultiblockPart(world, pos);
                 if (multiblockPart == null || multiblockPart.getA() != multiblock.getMultiblockId()) {
                     source.sendFeedback(new StringTextComponent("Found an invalid multiblock :" + multiblock.getMultiblockId()), true);

@@ -23,6 +23,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.model.data.IModelData;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -48,7 +49,6 @@ public class SchematicRenderer {
     private boolean animating = false;
 
 
-
     //显示绑定的多方快结构
     private IDefinedMultiblock multiblock;
     private Rotation rotation;
@@ -58,6 +58,7 @@ public class SchematicRenderer {
     public void setMultiblock(IDefinedMultiblock multiblock) {
         this.multiblock = multiblock;
     }
+
     public IDefinedMultiblock getMultiblock() {
         return multiblock;
     }
@@ -120,7 +121,7 @@ public class SchematicRenderer {
         }
         ClientWorld world = Minecraft.getInstance().world;
         int renderTicks = AnimationTickHelper.getTicks();
-        Map<Vector3i, IMultiblockUnit> parts = multiblock.getParts();
+        Map<Vector3i, IMultiblockUnit> parts = Collections.emptyMap();
         Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
 
         //转换视角

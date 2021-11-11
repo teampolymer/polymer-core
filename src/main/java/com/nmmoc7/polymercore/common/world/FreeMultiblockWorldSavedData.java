@@ -57,9 +57,13 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
                 removeAssembledMultiblock(uuid);
             } else if (!multiblocks.contains(uuid)) {
                 PolymerCore.LOG.error("Found invalidate multiblock {} in {}", uuid, corePos);
-                assembledMultiblock.disassemble();
+                assembledMultiblock.disassemble(world);
             } else {
-                assembledMultiblock.validate(true);
+                boolean invalid = assembledMultiblock.validate(world,false);
+                if(invalid) {
+                    PolymerCore.LOG.error("Found invalidate multiblock {} in {}", uuid, corePos);
+                    assembledMultiblock.disassemble(world);
+                }
             }
         }
 
@@ -69,7 +73,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         IFreeMultiblock result = assembledMultiblockMap.put(multiblock.getMultiblockId(), multiblock);
         if (result != null) {
             PolymerCore.LOG.error("Attempting to add an multiblock with existing id: {}", multiblock.getMultiblockId());
-            result.disassemble();
+            result.disassemble(world);
             removeAssembledMultiblock(result.getMultiblockId());
         }
         if (positions.containsValue(multiblock.getOffset())) {
@@ -78,7 +82,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
                 multiblock.getMultiblockId(), multiblock.getOffset(), uuid);
             IFreeMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
             if (assembledMultiblock != null) {
-                assembledMultiblock.disassemble();
+                assembledMultiblock.disassemble(world);
             }
             removeAssembledMultiblock(uuid);
         }

@@ -4,47 +4,28 @@ import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
-import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Lazy;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FreeMultiblockImpl implements IFreeMultiblock {
     private UUID multiblockId;
-    private BlockPos offset;
-    private boolean isSymmetrical;
-    private Rotation rotation;
-    private World world;
-
+    private IMultiblockAssembleRule assembleRule;
     private IDefinedMultiblock definedMultiblock;
-    private final Lazy<Map<BlockPos, IMultiblockUnit>> partMap = Lazy.concurrentOf(() -> {
-        Map<Vector3i, IMultiblockPart> parts = getOriginalMultiblock().getParts();
-        Map<BlockPos, IMultiblockUnit> result = new HashMap<>();
-        for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
-            BlockPos pos = PositionUtils.applyModifies(entry.getKey(), offset, rotation, isSymmetrical);
-            result.put(pos, entry.getValue());
-        }
-        return result;
-    });
-    private final Lazy<Collection<ChunkPos>> crossedChunks = Lazy.concurrentOf(() ->
-        partMap.get().keySet().stream().map(ChunkPos::new).collect(Collectors.toSet())
-    );
+    private Map<BlockPos, IMultiblockUnit> unitsMap;
+    private Collection<ChunkPos> crossedChunks;
+    private boolean initialized = false;
 
     @Override
     public UUID getMultiblockId() {
@@ -54,28 +35,50 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     public FreeMultiblockImpl() {
     }
 
-    public FreeMultiblockImpl(UUID multiblockId, BlockPos offset, boolean isSymmetrical, Rotation rotation, IDefinedMultiblock definedMultiblock) {
+    public FreeMultiblockImpl(UUID multiblockId, IMultiblockAssembleRule assembleRule, IDefinedMultiblock definedMultiblock) {
         this.multiblockId = multiblockId;
-        this.offset = offset;
-        this.isSymmetrical = isSymmetrical;
-        this.rotation = rotation;
+        this.assembleRule = assembleRule;
         this.definedMultiblock = definedMultiblock;
 
     }
 
-    public void setWorld(World world) {
-        this.world = world;
+    @Override
+    public boolean initialize() {
+        if (initialized) {
+            return true;
+        }
+        Map<BlockPos, IMultiblockUnit> units = assembleRule.mapParts(getOriginalMultiblock());
+        if (units == null || units.isEmpty()) {
+            return false;
+        }
+        unitsMap = Collections.unmodifiableMap(units);
+        Set<ChunkPos> posSet = units.keySet().stream()
+            .map(ChunkPos::new)
+            .collect(Collectors.toSet());
+        if (posSet.isEmpty()) {
+            return false;
+        }
+        crossedChunks = Collections.unmodifiableSet(
+            posSet
+        );
+        initialized = true;
+        return true;
+
     }
 
+
     @Override
-    public void disassemble() {
-        for (ChunkPos crossedChunk : getCrossedChunks()) {
-            world.getChunk(crossedChunk.x, crossedChunk.z).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE)
-                .ifPresent(it -> it.removeMultiblock(getMultiblockId()));
+    public void disassemble(World world) {
+        if (initialize()) {
+            for (ChunkPos crossedChunk : getCrossedChunks()) {
+                world.getChunk(crossedChunk.x, crossedChunk.z).getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE)
+                    .ifPresent(it -> it.removeMultiblock(getMultiblockId()));
+            }
         }
         FreeMultiblockWorldSavedData.get(world).removeAssembledMultiblock(multiblockId);
         PolymerCore.LOG.debug("The multiblock '{}' disassembled", multiblockId);
     }
+
 
     @Override
     public IDefinedMultiblock getOriginalMultiblock() {
@@ -84,42 +87,61 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
 
     @Override
     public BlockPos getOffset() {
-        return offset;
+        return assembleRule.getOffset();
     }
 
     @Override
     public boolean isSymmetrical() {
-        return isSymmetrical;
+        return assembleRule.isSymmetrical();
     }
 
     @Override
     public Rotation getRotation() {
-        return rotation;
+        return assembleRule.getRotation();
     }
 
     @Override
-    public Map<BlockPos, IMultiblockUnit> getParts() {
-        return partMap.get();
+    public Map<BlockPos, IMultiblockUnit> getUnits() {
+        if (!initialized) {
+            PolymerCore.LOG.error("Multiblock {} not initialized", getMultiblockId());
+            return Collections.emptyMap();
+        }
+        return unitsMap;
     }
 
     @Override
-    public boolean validate(boolean disassemble) {
-
-        boolean result = getOriginalMultiblock().canAssemble(
-            world,
-            getOffset(),
-            getRotation(),
-            isSymmetrical()
-        );
-        if(disassemble && !result) {
-            disassemble();
+    public boolean validate(World world, boolean disassemble) {
+        if (!initialize()) {
+            return false;
+        }
+        boolean result = true;
+        Map<BlockPos, IMultiblockUnit> parts = getUnits();
+        for (Map.Entry<BlockPos, IMultiblockUnit> entry : parts.entrySet()) {
+            BlockPos testPos = entry.getKey();
+            BlockState block = world.getBlockState(testPos);
+            if (entry.getValue().test(block)) {
+                result = false;
+                break;
+            }
+        }
+        if (disassemble && !result) {
+            disassemble(world);
         }
         return result;
     }
 
     @Override
+    public IMultiblockAssembleRule getAssembleRule() {
+        return assembleRule;
+    }
+
+    @Override
     public Collection<ChunkPos> getCrossedChunks() {
-        return crossedChunks.get();
+        if (!initialized) {
+            PolymerCore.LOG.error("Multiblock {} not initialized", getMultiblockId());
+            return Collections.singleton(new ChunkPos(getOffset()));
+        }
+        return crossedChunks;
     }
 
 
@@ -127,23 +149,18 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putUniqueId("uuid", multiblockId);
-        nbt.put("off", NBTUtil.writeBlockPos(offset));
-        nbt.putBoolean("symm", isSymmetrical);
-        nbt.putByte("rotation", (byte) rotation.ordinal());
         nbt.putString("define", definedMultiblock.getRegistryName().toString());
-        nbt.putString("type", definedMultiblock.getType().getRegistryName().toString());
+        nbt.put("rule", assembleRule.serializeNBT());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         this.multiblockId = nbt.getUniqueId("uuid");
-        this.offset = NBTUtil.readBlockPos(nbt.getCompound("off"));
-        this.isSymmetrical = nbt.getBoolean("symm");
-        this.rotation = Rotation.values()[nbt.getByte("rotation")];
         String define = nbt.getString("define");
         this.definedMultiblock = PolymerCoreApi.getInstance().getMultiblockManager().getDefinedMultiblock(new ResourceLocation(define))
             .orElseThrow(() -> new IllegalStateException(String.format("Could not get multiblock %s from NBT", define)));
 
+        this.assembleRule = this.definedMultiblock.getType().createRuleFromNBT(nbt.getCompound("rule"));
     }
 }

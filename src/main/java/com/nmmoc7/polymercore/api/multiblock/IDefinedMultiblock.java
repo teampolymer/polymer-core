@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
+import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import net.minecraft.util.ResourceLocation;
@@ -18,33 +19,44 @@ public interface IDefinedMultiblock extends IMultiblock {
     /**
      * 尝试组装一个多方快结构，并返回组装后的多方快
      *
-     * @param corePos       核心方块坐标
+     * @param coreOffset       核心方块坐标
      * @param rotation      多方快朝向
      * @param isSymmetrical 是否是和定义对称
      * @return 组装后的的多方块
      */
     @Nullable
-    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical);
+    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical);
 
     @Nullable
-    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation);
+    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation);
 
     @Nullable
-    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos);
+    IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset);
+
+    /**
+     * 判断一个多方快结构是否可以在指定位置组装, 并填充组装规则
+     *
+     * @param coreOffset       核心方块坐标
+     * @param rotation      朝向
+     * @param isSymmetrical 是否是和定义对称
+     * @param ruleToFill    要填充的组装规则
+     * @return 是否可以组装
+     */
+    boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical, IMultiblockAssembleRule ruleToFill);
 
     /**
      * 判断一个多方快结构是否可以在指定位置组装
      *
-     * @param corePos       核心方块坐标
+     * @param coreOffset       核心方块坐标
      * @param rotation      朝向
      * @param isSymmetrical 是否是和定义对称
      * @return 是否可以组装
      */
-    boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical);
+    boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical);
 
-    boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation);
+    boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation);
 
-    boolean canAssemble(@NotNull World world, @NotNull BlockPos corePos);
+    boolean canAssemble(@NotNull World world, @NotNull BlockPos coreOffset);
 
     /**
      * 这个结构是否可以对称

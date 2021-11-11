@@ -71,7 +71,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
 
                     IAssembledMultiblock duplicate = FreeMultiblockWorldSavedData.get(chunk.getWorld()).getAssembledMultiblock(multiblockId);
                     if (duplicate != null) {
-                        duplicate.disassemble();
+                        duplicate.disassemble(chunk.getWorld());
                     }
                 }
             }
@@ -131,10 +131,14 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
                 invalidateMultiblocks.add(uuid);
                 continue;
             }
-            addMultiblockInternal(uuid, multiblock.getParts());
+            if(!multiblock.initialize()){
+                invalidateMultiblocks.add(uuid);
+                continue;
+            }
+            addMultiblockInternal(uuid, multiblock.getUnits());
         }
-        if (PolymerCore.LOG.isDebugEnabled() && multiblocks.size() > 0) {
-            PolymerCore.LOG.debug("Initializing {} machines in chunk {}", multiblocks.size(), chunk.getPos());
+        if (PolymerCore.LOG.isInfoEnabled() && multiblocks.size() > 0) {
+            PolymerCore.LOG.info("Initializing {} machines in chunk {}", multiblocks.size(), chunk.getPos());
         }
         if (invalidateMultiblocks.size() > 0) {
             PolymerCore.LOG.warn("Initializing {} machines in chunk {} failed", invalidateMultiblocks.size(), chunk.getPos());

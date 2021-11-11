@@ -5,13 +5,12 @@ import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
-import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
+import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.multiblock.assembled.FreeMultiblockImpl;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -20,41 +19,35 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> implements IMultiblockType {
-    @Override
-    public IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical, List<Tuple<IMultiblockExtension, Integer>> appliedExtensions) {
-        return null;
-    }
 
     @Override
-    public IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical) {
+    public IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, IMultiblockAssembleRule assembleRule) {
+
         if (world.isRemote) {
             return null;
         }
         UUID uuid = UUID.randomUUID();
         FreeMultiblockImpl multiblock = new FreeMultiblockImpl(
             uuid,
-            pos,
-            isSymmetrical,
-            rotation,
+            assembleRule,
             definition
         );
 
-        multiblock.setWorld(world);
         FreeMultiblockWorldSavedData.get(world).addAssembledMultiblock(multiblock);
-
+        multiblock.initialize();
         Collection<ChunkPos> crossedChunks = multiblock.getCrossedChunks();
         for (ChunkPos chunkPos : crossedChunks) {
             Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
             LazyOptional<IChunkMultiblockStorage> capability = chunk.getCapability(CapabilityChunkMultiblockStorage.MULTIBLOCK_STORAGE);
-            capability.ifPresent(it -> it.addMultiblock(uuid, multiblock.getParts()));
+            capability.ifPresent(it -> it.addMultiblock(uuid, multiblock.getUnits()));
         }
 
         return multiblock;
     }
+
 
     @Override
     public IAssembledMultiblock createFromNBT(World world, CompoundNBT nbt) {
@@ -62,11 +55,23 @@ public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> impl
         FreeMultiblockImpl multiblock = new FreeMultiblockImpl();
         try {
             multiblock.deserializeNBT(nbt);
-            multiblock.setWorld(world);
         } catch (IllegalStateException e) {
             PolymerCore.LOG.error(e.getMessage());
             return null;
         }
         return multiblock;
     }
+
+    @Override
+    public IMultiblockAssembleRule createEmptyRule(BlockPos coreOffset, Rotation rotation, boolean isSymmetrical) {
+        return new FreeMultiblockAssembleRule(coreOffset, isSymmetrical, rotation);
+    }
+
+    @Override
+    public IMultiblockAssembleRule createRuleFromNBT(CompoundNBT nbt) {
+        IMultiblockAssembleRule rule = new FreeMultiblockAssembleRule();
+        rule.deserializeNBT(nbt);
+        return rule;
+    }
+
 }

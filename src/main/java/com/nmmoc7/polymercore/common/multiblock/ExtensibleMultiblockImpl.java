@@ -4,6 +4,7 @@ import com.nmmoc7.polymercore.api.component.IMultiblockComponent;
 import com.nmmoc7.polymercore.api.machine.IMachine;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
+import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.extension.IExtensibleMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
@@ -35,12 +36,13 @@ public class ExtensibleMultiblockImpl extends DefinedMultiblockImpl implements I
 
     @Nullable
     @Override
-    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos corePos, @NotNull Rotation rotation, boolean isSymmetrical) {
-        if (!canAssemble(world, corePos, rotation, isSymmetrical)) {
+    public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical) {
+        IMultiblockAssembleRule rule = getType().createEmptyRule(coreOffset, rotation, isSymmetrical);
+        if (!canAssemble(world, coreOffset, rotation, isSymmetrical)) {
             return null;
         }
-        List<Tuple<IMultiblockExtension, Integer>> extensions = findExtensionsFor(world, corePos, rotation, isSymmetrical);
-        return getType().createMultiblockIn(this, world, corePos, rotation, isSymmetrical, extensions);
+        List<Tuple<IMultiblockExtension, Integer>> extensions = findExtensionsFor(world, coreOffset, rotation, isSymmetrical);
+        return getType().createMultiblockIn(this, world, rule);
     }
 
 

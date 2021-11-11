@@ -64,7 +64,7 @@ public class FreeMachineUpdateHandler {
                 return;
             }
             //解除组装
-            assembledMultiblock.disassemble();
+            assembledMultiblock.disassemble(world);
         }
 
     }

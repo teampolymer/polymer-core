@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
+import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
@@ -14,19 +15,16 @@ public interface IMultiblockType extends IForgeRegistryEntry<IMultiblockType> {
     /**
      * 在指定坐标创建多方快结构，并进行一些额外操作（写ChunkData，替换方块等等）
      *
-     * @param world             世界
-     * @param pos               核心坐标
-     * @param rotation          旋转角度
-     * @param isSymmetrical     是否与定义对称
-     * @param appliedExtensions 存在的拓展
+     * @param world        世界
+     * @param assembleRule 组装的规则
      * @return 组装后的多方快结构
      */
-    IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical,
-                                            List<Tuple<IMultiblockExtension, Integer>> appliedExtensions);
-
-    IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, BlockPos pos, Rotation rotation, boolean isSymmetrical);
+    IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, IMultiblockAssembleRule assembleRule);
 
 
     IAssembledMultiblock createFromNBT(World world, CompoundNBT nbt);
+
+    IMultiblockAssembleRule createEmptyRule(BlockPos coreOffset, Rotation rotation, boolean isSymmetrical);
+    IMultiblockAssembleRule createRuleFromNBT(CompoundNBT nbt);
 
 }
