@@ -1,0 +1,30 @@
+package com.nmmoc7.polymercore.common.multiblock.part;
+
+import com.google.common.collect.ImmutableList;
+import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluid;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class UnitFluidArray extends AbstractUnit {
+    private final List<Fluid> fluids;
+
+    public UnitFluidArray(List<Fluid> fluids) {
+        super(null);
+        this.fluids = ImmutableList.copyOf(fluids);
+
+        this.samples = Collections.unmodifiableList(
+            fluids.stream()
+                .map(it -> it.getDefaultState().getBlockState())
+                .collect(Collectors.toList()));
+    }
+
+
+    @Override
+    public boolean test(BlockState block) {
+        final Fluid condition = block.getFluidState().getFluid();
+        return fluids.contains(condition);
+    }
+}

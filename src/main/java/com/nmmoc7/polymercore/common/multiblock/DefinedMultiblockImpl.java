@@ -6,6 +6,7 @@ import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
@@ -77,7 +78,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
         for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
             BlockPos testPos = PositionUtils.applyModifies(entry.getKey(), corePos, rotation, isSymmetrical);
             BlockState block = world.getBlockState(testPos);
-            if (!entry.getValue().test(block)) {
+            if (entry.getValue().pickupUnit(block) != null) {
                 return false;
             }
         }
@@ -121,11 +122,6 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     }
 
     @Override
-    public boolean canUseexternalStroage() {
-        return false;
-    }
-
-    @Override
     public DefinedMultiblockImpl setRegistryName(ResourceLocation name) {
         registryName = name;
         return this;
@@ -135,11 +131,6 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     @Override
     public ResourceLocation getRegistryName() {
         return registryName;
-    }
-
-    @Override
-    public Class<IDefinedMultiblock> getRegistryType() {
-        return IDefinedMultiblock.class;
     }
 
     @Override

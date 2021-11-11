@@ -1,6 +1,6 @@
 package com.nmmoc7.polymercore.api.capability;
 
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -17,12 +17,12 @@ public interface IChunkMultiblockStorage {
     IChunk getChunk();
 
 
-    Map<BlockPos, Tuple<UUID, IMultiblockPart>> getData();
+    Map<BlockPos, Tuple<UUID, IMultiblockUnit>> getData();
 
     @Nullable
-    Tuple<UUID, IMultiblockPart> getMultiblockPart(BlockPos pos);
+    Tuple<UUID, IMultiblockUnit> getMultiblockPart(BlockPos pos);
 
-    void addMultiblock(UUID multiblockId, Map<BlockPos, IMultiblockPart> parts);
+    void addMultiblock(UUID multiblockId, Map<BlockPos, IMultiblockUnit> parts);
 
     void removeMultiblock(UUID multiblockId, Collection<BlockPos> blocks);
 

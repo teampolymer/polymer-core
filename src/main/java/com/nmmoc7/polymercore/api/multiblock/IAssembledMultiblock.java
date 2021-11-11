@@ -1,6 +1,6 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -57,7 +57,7 @@ public interface IAssembledMultiblock extends INBTSerializable<CompoundNBT> {
      *
      * @return 所有部件
      */
-    Map<BlockPos, IMultiblockPart> getParts();
+    Map<BlockPos, IMultiblockUnit> getParts();
 
 
     boolean validate(boolean disassemble);

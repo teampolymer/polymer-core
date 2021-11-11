@@ -3,6 +3,7 @@ package com.nmmoc7.polymercore.api.multiblock;
 import com.nmmoc7.polymercore.api.component.IMultiblockComponent;
 import com.nmmoc7.polymercore.api.machine.IMachine;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.util.IAttributeProvider;
 import net.minecraft.util.math.vector.Vector3i;
 

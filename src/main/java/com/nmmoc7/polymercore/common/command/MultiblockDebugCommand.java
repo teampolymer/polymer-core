@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.command.CommandSource;
@@ -49,7 +49,7 @@ public class MultiblockDebugCommand {
 //                    });
 //                }
             for (BlockPos pos : multiblock.getParts().keySet()) {
-                Tuple<UUID, IMultiblockPart> multiblockPart = CapabilityChunkMultiblockStorage.getMultiblockPart(world, pos);
+                Tuple<UUID, IMultiblockUnit> multiblockPart = CapabilityChunkMultiblockStorage.getMultiblockPart(world, pos);
                 if (multiblockPart == null || multiblockPart.getA() != multiblock.getMultiblockId()) {
                     source.sendFeedback(new StringTextComponent("Found an invalid multiblock :" + multiblock.getMultiblockId()), true);
                 }

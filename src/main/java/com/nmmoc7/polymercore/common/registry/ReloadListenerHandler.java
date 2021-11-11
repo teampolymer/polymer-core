@@ -4,7 +4,7 @@ import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;
 import com.nmmoc7.polymercore.common.multiblock.builder.DefaultCharMarkedMultiblockBuilder;
-import com.nmmoc7.polymercore.common.multiblock.part.PartSpecifiedBlock;
+import com.nmmoc7.polymercore.common.multiblock.part.UnitSpecifiedBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.profiler.IProfiler;
@@ -50,11 +50,11 @@ public class ReloadListenerHandler {
                     "",
                     "  C"
                 )
-                .addPartsMap('A', new PartSpecifiedBlock(Blocks.STONE))
-                .addPartsMap('B', new PartSpecifiedBlock(Blocks.OAK_WOOD))
-                .addPartsMap('C', new PartSpecifiedBlock(Blocks.GLOWSTONE))
-                .addPartsMap('W', new PartSpecifiedBlock(Blocks.WATER))
-                .addPartsMap('F', new PartSpecifiedBlock(Blocks.FURNACE))
+                .addPartsMap('A', new UnitSpecifiedBlock(Blocks.STONE))
+                .addPartsMap('B', new UnitSpecifiedBlock(Blocks.OAK_WOOD))
+                .addPartsMap('C', new UnitSpecifiedBlock(Blocks.GLOWSTONE))
+                .addPartsMap('W', new UnitSpecifiedBlock(Blocks.WATER))
+                .addPartsMap('F', new UnitSpecifiedBlock(Blocks.FURNACE))
                 .setCoreChar('C')
                 .setType(MultiblockRegisterHandler.TYPE_FREE.get())
                 .setCanSymmetrical()
@@ -79,11 +79,11 @@ public class ReloadListenerHandler {
                     "  B  ",
                     "     "
                 )
-                .addPartsMap('A', new PartSpecifiedBlock(Blocks.GOLD_BLOCK))
-                .addPartsMap('B', new PartSpecifiedBlock(Blocks.OAK_WOOD))
-                .addPartsMap('C', new PartSpecifiedBlock(Blocks.DIAMOND_BLOCK))
-                .addPartsMap('D', new PartSpecifiedBlock(Blocks.GLOWSTONE))
-                .addPartsMap('E', new PartSpecifiedBlock(Blocks.QUARTZ_STAIRS))
+                .addPartsMap('A', new UnitSpecifiedBlock(Blocks.GOLD_BLOCK))
+                .addPartsMap('B', new UnitSpecifiedBlock(Blocks.OAK_WOOD))
+                .addPartsMap('C', new UnitSpecifiedBlock(Blocks.DIAMOND_BLOCK))
+                .addPartsMap('D', new UnitSpecifiedBlock(Blocks.GLOWSTONE))
+                .addPartsMap('E', new UnitSpecifiedBlock(Blocks.QUARTZ_STAIRS))
 
                 .setCoreChar('D')
                 .setType(MultiblockRegisterHandler.TYPE_FREE.get())

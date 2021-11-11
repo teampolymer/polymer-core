@@ -2,7 +2,7 @@ package com.nmmoc7.polymercore.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
 import com.nmmoc7.polymercore.client.renderer.SchematicRenderTypes;
 import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
@@ -81,7 +81,7 @@ public class SchematicFadeOutRenderer {
         transform.interpolateTo(percent, originalTransform, targetTransform);
 
 
-        Map<Vector3i, IMultiblockPart> parts = multiblock.getParts();
+        Map<Vector3i, IMultiblockUnit> parts = multiblock.getParts();
 
         Vector4f viewRelative = transformCamera(Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(), transform);
         SortedMap<Double, Vector3i> map = sortByDistance(parts, viewRelative);

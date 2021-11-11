@@ -5,6 +5,7 @@ import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IFreeMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
@@ -32,9 +33,9 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     private World world;
 
     private IDefinedMultiblock definedMultiblock;
-    private final Lazy<Map<BlockPos, IMultiblockPart>> partMap = Lazy.concurrentOf(() -> {
+    private final Lazy<Map<BlockPos, IMultiblockUnit>> partMap = Lazy.concurrentOf(() -> {
         Map<Vector3i, IMultiblockPart> parts = getOriginalMultiblock().getParts();
-        Map<BlockPos, IMultiblockPart> result = new HashMap<>();
+        Map<BlockPos, IMultiblockUnit> result = new HashMap<>();
         for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
             BlockPos pos = PositionUtils.applyModifies(entry.getKey(), offset, rotation, isSymmetrical);
             result.put(pos, entry.getValue());
@@ -97,7 +98,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     }
 
     @Override
-    public Map<BlockPos, IMultiblockPart> getParts() {
+    public Map<BlockPos, IMultiblockUnit> getParts() {
         return partMap.get();
     }
 

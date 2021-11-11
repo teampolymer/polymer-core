@@ -9,11 +9,12 @@ import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
 import com.nmmoc7.polymercore.api.multiblock.builder.ICharMarkedMultiblockBuilder;
 import com.nmmoc7.polymercore.api.multiblock.builder.IMultiblockBuilder;
 import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockCore;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.common.multiblock.DefinedMultiblockImpl;
 import com.nmmoc7.polymercore.common.multiblock.ExtensibleMultiblockImpl;
+import com.nmmoc7.polymercore.common.multiblock.part.DefaultMultiblockPart;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3i;
 
@@ -22,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblockBuilder {
-    private Map<Character, IMultiblockPart> partsMap;
+    private Map<Character, IMultiblockUnit> partsMap;
     private char[][][] pattern;
     private IMultiblockType type;
     private IMachine machine;
@@ -36,7 +37,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
     private final List<String[]> patternAlternative = new ArrayList<>();
 
     @Override
-    public ICharMarkedMultiblockBuilder setPartsMap(Map<Character, IMultiblockPart> partsMap) {
+    public ICharMarkedMultiblockBuilder setPartsMap(Map<Character, IMultiblockUnit> partsMap) {
         this.partsMap = partsMap;
         return this;
     }
@@ -70,7 +71,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
     }
 
     @Override
-    public ICharMarkedMultiblockBuilder addPartsMap(char ch, IMultiblockPart part) {
+    public ICharMarkedMultiblockBuilder addPartsMap(char ch, IMultiblockUnit part) {
         if (partsMap == null) {
             partsMap = new HashMap<>();
         }
@@ -98,7 +99,7 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
             setPattern(patternAlternative.toArray(new String[0][0]));
         }
         Vector3i coreOffset = null;
-        Map<Vector3i, IMultiblockPart> resolvedParts = new HashMap<>();
+        Map<Vector3i, IMultiblockUnit> resolvedParts = new HashMap<>();
         int maxX = 0, maxY = 0, maxZ = 0;
         for (int y = 0; y < pattern.length; y++) {
             maxY = Math.max(y, maxY);
@@ -115,11 +116,11 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
                     if (coreChar != null && ch == coreChar) {
                         coreOffset = postion;
                     }
-                    IMultiblockPart part = partsMap.get(ch);
+                    IMultiblockUnit part = partsMap.get(ch);
                     if (part == null) {
                         throw new MultiblockBuilderException("Could not find MultiblockPart matching char: " + ch);
                     }
-                    if (coreChar == null && part instanceof IMultiblockCore) {
+                    if (coreChar == null) {
                         if (coreOffset != null) {
                             throw new MultiblockBuilderException("There are more than one multiblock core in the structure!");
                         }
@@ -145,7 +146,9 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
                         raw.getZ() - copy.getZ()
                     );
                 }
-                , Map.Entry::getValue));
+                , it -> {
+                    return new DefaultMultiblockPart(Collections.singletonList(new DefaultMultiblockPart.DefaultPartEntry(Collections.emptyList(), it.getValue())), Collections.emptyList());
+                }));
 
         Vector3i size = new Vector3i(maxX, maxY, maxZ);
 

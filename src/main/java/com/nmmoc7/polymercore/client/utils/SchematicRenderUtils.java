@@ -1,7 +1,7 @@
 package com.nmmoc7.polymercore.client.utils;
 
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.doubles.DoubleComparators;
@@ -22,7 +22,7 @@ public final class SchematicRenderUtils {
         return EmptyModelData.INSTANCE;
     }
 
-    public static BlockState pickupSampleBlock(int renderTicks, IMultiblockPart part) {
+    public static BlockState pickupSampleBlock(int renderTicks, IMultiblockUnit part) {
         //获取显示的样本
         List<BlockState> sampleBlocks = part.getSampleBlocks();
         int i = (renderTicks) / 20 % sampleBlocks.size();
@@ -44,7 +44,7 @@ public final class SchematicRenderUtils {
         return viewRelative;
     }
 
-    public static SortedMap<Double, Vector3i> sortByDistance(Map<Vector3i, IMultiblockPart> parts, Vector4f viewRelative) {
+    public static SortedMap<Double, Vector3i> sortByDistance(Map<Vector3i, IMultiblockUnit> parts, Vector4f viewRelative) {
 
         Double2ObjectRBTreeMap<Vector3i> map = new Double2ObjectRBTreeMap<>(DoubleComparators.OPPOSITE_COMPARATOR);
         for (Vector3i relativePos : parts.keySet()) {

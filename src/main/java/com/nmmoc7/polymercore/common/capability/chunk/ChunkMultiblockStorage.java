@@ -3,7 +3,7 @@ package com.nmmoc7.polymercore.common.capability.chunk;
 import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +20,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
      * 映射结构
      * 方块坐标->(核心坐标, Part)
      */
-    private final Map<BlockPos, Tuple<UUID, IMultiblockPart>> data = new HashMap<>();
+    private final Map<BlockPos, Tuple<UUID, IMultiblockUnit>> data = new HashMap<>();
 
     public ChunkMultiblockStorage(Chunk chunk) {
         this.chunk = chunk;
@@ -30,7 +30,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
     private final Chunk chunk;
     private final List<UUID> multiblocks;
 
-    public Map<BlockPos, Tuple<UUID, IMultiblockPart>> getData() {
+    public Map<BlockPos, Tuple<UUID, IMultiblockUnit>> getData() {
         return Collections.unmodifiableMap(data);
     }
 
@@ -43,26 +43,26 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
 
     @Override
     @Nullable
-    public Tuple<UUID, IMultiblockPart> getMultiblockPart(BlockPos pos) {
+    public Tuple<UUID, IMultiblockUnit> getMultiblockPart(BlockPos pos) {
         return getData().get(pos);
     }
 
     @Override
-    public void addMultiblock(UUID multiblockId, Map<BlockPos, IMultiblockPart> parts) {
+    public void addMultiblock(UUID multiblockId, Map<BlockPos, IMultiblockUnit> parts) {
         if (addMultiblockInternal(multiblockId, parts)) {
             multiblocks.add(multiblockId);
             chunk.markDirty();
         }
     }
 
-    private boolean addMultiblockInternal(UUID multiblockId, Map<BlockPos, IMultiblockPart> parts) {
+    private boolean addMultiblockInternal(UUID multiblockId, Map<BlockPos, IMultiblockUnit> parts) {
         boolean modified = false;
-        for (Map.Entry<BlockPos, IMultiblockPart> entry : parts.entrySet()) {
+        for (Map.Entry<BlockPos, IMultiblockUnit> entry : parts.entrySet()) {
             if (!isPosInChunk(entry.getKey())) {
                 continue;
             }
             modified = true;
-            Tuple<UUID, IMultiblockPart> replaced = data.put(entry.getKey(), new Tuple<>(multiblockId, entry.getValue()));
+            Tuple<UUID, IMultiblockUnit> replaced = data.put(entry.getKey(), new Tuple<>(multiblockId, entry.getValue()));
 
             if (replaced != null) {
                 if (replaced.getA() != multiblockId) {

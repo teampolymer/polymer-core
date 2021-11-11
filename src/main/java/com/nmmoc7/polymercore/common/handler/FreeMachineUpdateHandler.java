@@ -4,7 +4,7 @@ import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.capability.chunk.ChunkMultiblockCapabilityProvider;
 import com.nmmoc7.polymercore.common.world.FreeMultiblockWorldSavedData;
@@ -51,7 +51,7 @@ public class FreeMachineUpdateHandler {
             return;
         }
         IChunkMultiblockStorage it = capability.get();
-        Tuple<UUID, IMultiblockPart> part = it.getMultiblockPart(pos);
+        Tuple<UUID, IMultiblockUnit> part = it.getMultiblockPart(pos);
         if (part == null) {
             return;
         }

@@ -2,7 +2,7 @@ package com.nmmoc7.polymercore.common.capability.chunk;
 
 import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -68,7 +68,7 @@ public class CapabilityChunkMultiblockStorage {
         return capability.resolve();
     }
 
-    public static Tuple<UUID, IMultiblockPart> getMultiblockPart(World world, BlockPos pos) {
+    public static Tuple<UUID, IMultiblockUnit> getMultiblockPart(World world, BlockPos pos) {
 
         IChunkMultiblockStorage storage = getCapability(world, pos).orElse(null);
         if (storage == null) {

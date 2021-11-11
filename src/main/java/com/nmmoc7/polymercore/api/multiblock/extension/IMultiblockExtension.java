@@ -1,6 +1,6 @@
 package com.nmmoc7.polymercore.api.multiblock.extension;
 
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -14,7 +14,7 @@ public interface IMultiblockExtension extends IForgeRegistryEntry<IMultiblockExt
      *
      * @return 多方快结构的部件
      */
-    Map<Vector3i, IMultiblockPart> getParts();
+    Map<Vector3i, IMultiblockUnit> getParts();
 
     /**
      * 获取多方快结构的拓展点

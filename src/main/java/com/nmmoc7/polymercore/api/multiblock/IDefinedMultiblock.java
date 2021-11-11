@@ -1,6 +1,8 @@
 package com.nmmoc7.polymercore.api.multiblock;
 
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
@@ -12,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
-public interface IDefinedMultiblock extends IMultiblock, IForgeRegistryEntry<IDefinedMultiblock> {
+public interface IDefinedMultiblock extends IMultiblock {
     /**
      * 尝试组装一个多方快结构，并返回组装后的多方快
      *
@@ -72,11 +74,10 @@ public interface IDefinedMultiblock extends IMultiblock, IForgeRegistryEntry<IDe
      */
     Collection<String> getTags();
 
-    /**
-     * 获取多方块是否允许使用外部存储
-     * 例如箱子一类 如果设置为否则只能使用本mod机械存储
-     * @return 是或否
-     */
-    boolean canUseexternalStroage();
+    IDefinedMultiblock setRegistryName(ResourceLocation name);
+
+    @Nullable
+    ResourceLocation getRegistryName();
+
 
 }

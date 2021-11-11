@@ -2,7 +2,7 @@ package com.nmmoc7.polymercore.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
 import com.nmmoc7.polymercore.client.renderer.SchematicRenderTypes;
@@ -120,7 +120,7 @@ public class SchematicRenderer {
         }
         ClientWorld world = Minecraft.getInstance().world;
         int renderTicks = AnimationTickHelper.getTicks();
-        Map<Vector3i, IMultiblockPart> parts = multiblock.getParts();
+        Map<Vector3i, IMultiblockUnit> parts = multiblock.getParts();
         Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
 
         //转换视角
@@ -157,7 +157,7 @@ public class SchematicRenderer {
                 BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
                 //当前检查的方块
                 BlockState current = world.getBlockState(offPos);
-                IMultiblockPart part = parts.get(relativePos);
+                IMultiblockUnit part = parts.get(relativePos);
                 BlockState block = pickupSampleBlock(renderTicks, part);
 
                 IModelData modelData = findModelData(block, relativePos, multiblock);

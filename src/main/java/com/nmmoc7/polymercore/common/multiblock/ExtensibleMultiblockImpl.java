@@ -7,6 +7,7 @@ import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
 import com.nmmoc7.polymercore.api.multiblock.extension.IExtensibleMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
