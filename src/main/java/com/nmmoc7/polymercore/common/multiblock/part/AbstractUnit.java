@@ -11,7 +11,9 @@ public abstract class AbstractUnit implements IMultiblockUnit {
     protected List<BlockState> samples;
 
     public AbstractUnit(List<BlockState> samples) {
-        this.samples = Collections.unmodifiableList(samples);
+        if (samples != null) {
+            this.samples = Collections.unmodifiableList(samples);
+        }
     }
 
 

@@ -81,7 +81,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
         for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
             BlockPos testPos = PositionUtils.applyModifies(entry.getKey(), coreOffset, rotation, isSymmetrical);
             BlockState block = world.getBlockState(testPos);
-            IPartChoice choice = entry.getValue().pickupUnit(block);
+            IPartChoice choice = entry.getValue().pickupChoice(block);
             if (choice == null) {
                 return false;
             }
@@ -136,7 +136,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
 
     @Override
     public Collection<IPartLimitConfig> getLimitConfigs() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.nmmoc7.polymercore.client.utils;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
+import com.nmmoc7.polymercore.client.utils.multiblock.ISampleProvider;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.doubles.DoubleComparators;
 import net.minecraft.block.BlockState;
@@ -12,9 +13,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.*;
 
 public final class SchematicRenderUtils {
 
@@ -22,11 +21,9 @@ public final class SchematicRenderUtils {
         return EmptyModelData.INSTANCE;
     }
 
-    public static BlockState pickupSampleBlock(int renderTicks, IMultiblockUnit part) {
-        //获取显示的样本
-        List<BlockState> sampleBlocks = part.getSampleBlocks();
-        int i = (renderTicks) / 20 % sampleBlocks.size();
-        return sampleBlocks.get(i);
+    public static BlockState pickupSampleBlock(int renderTicks, ISampleProvider part) {
+        int i = (renderTicks) / 20;
+        return part.getSample(i);
     }
 
     @NotNull
@@ -44,10 +41,10 @@ public final class SchematicRenderUtils {
         return viewRelative;
     }
 
-    public static SortedMap<Double, Vector3i> sortByDistance(Map<Vector3i, IMultiblockUnit> parts, Vector4f viewRelative) {
+    public static SortedMap<Double, Vector3i> sortByDistance(Collection<Vector3i> positions, Vector4f viewRelative) {
 
         Double2ObjectRBTreeMap<Vector3i> map = new Double2ObjectRBTreeMap<>(DoubleComparators.OPPOSITE_COMPARATOR);
-        for (Vector3i relativePos : parts.keySet()) {
+        for (Vector3i relativePos : positions) {
             double distanceSq = relativePos.distanceSq(viewRelative.getX(), viewRelative.getY(), viewRelative.getZ(), true);
             map.put(distanceSq, relativePos);
         }

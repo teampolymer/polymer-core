@@ -14,13 +14,13 @@ import java.util.List;
  */
 public interface IMultiblockPart {
     @Nullable
-    IPartChoice pickupUnit(BlockState possible);
+    IPartChoice pickupChoice(BlockState possible);
 
     @Nullable
-    IPartChoice pickupUnit(@Nullable String type);
+    IPartChoice pickupChoice(@Nullable String type);
 
     @Nullable
-    IPartChoice pickupDefaultUnit();
+    IPartChoice defaultChoice();
 
     /**
      * 当前坐标所有可能的Entry

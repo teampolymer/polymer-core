@@ -27,7 +27,7 @@ public class DefaultMultiblockPart implements IMultiblockPart {
     }
 
     @Override
-    public IPartChoice pickupUnit(BlockState possible) {
+    public IPartChoice pickupChoice(BlockState possible) {
         for (IPartChoice choice : choiceMap.values()) {
             if (choice.getUnit().test(possible)) {
                 return choice;
@@ -37,12 +37,12 @@ public class DefaultMultiblockPart implements IMultiblockPart {
     }
 
     @Override
-    public @Nullable IPartChoice pickupUnit(@Nullable String type) {
+    public @Nullable IPartChoice pickupChoice(@Nullable String type) {
         return choiceMap.get(type);
     }
 
     @Override
-    public @Nullable IPartChoice pickupDefaultUnit() {
+    public @Nullable IPartChoice defaultChoice() {
         return choiceMap.get(null);
     }
 

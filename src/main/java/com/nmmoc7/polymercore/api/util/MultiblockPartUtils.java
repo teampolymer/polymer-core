@@ -59,7 +59,7 @@ public class MultiblockPartUtils {
             Collection<IPartChoice> samples = partEntry.getValue().sampleChoices();
             //不变的部分
             if (samples.size() <= 0) {
-                IPartChoice defaultChoice = partEntry.getValue().pickupDefaultUnit();
+                IPartChoice defaultChoice = partEntry.getValue().defaultChoice();
                 if (defaultChoice == null) {
                     throw new IllegalArgumentException("The part choice has nether sample nor default choices");
                 }

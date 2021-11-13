@@ -84,6 +84,9 @@ public class SchematicTransform {
     public int getFlip() {
         return this.flip > 0 ? 1 : -1;
     }
+    public boolean isFlipped() {
+        return this.flip > 0;
+    }
 
     public boolean similarTo(SchematicTransform another) {
         if (another == null) {

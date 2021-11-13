@@ -8,6 +8,8 @@ import com.nmmoc7.polymercore.client.renderer.SchematicRenderTypes;
 import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import com.nmmoc7.polymercore.client.utils.RenderUtils;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
+import com.nmmoc7.polymercore.client.utils.multiblock.ISampleProvider;
+import com.nmmoc7.polymercore.client.utils.multiblock.SchematicMultiblock;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.vector.Vector3i;
@@ -35,7 +37,7 @@ public class SchematicFadeOutRenderer {
     private SchematicTransform targetTransform;
 
     //显示绑定的多方快结构
-    private IDefinedMultiblock multiblock;
+    private SchematicMultiblock schematicMultiblock;
 
     private int animatingTicks = 0;
     private int totalAnimatingTicks = 10;
@@ -45,19 +47,22 @@ public class SchematicFadeOutRenderer {
     }
 
     public void fadeOut(SchematicRenderer mainRenderer, int animatingTicks) {
+        if(mainRenderer == null || mainRenderer.getMultiblock() == null) {
+            return;
+        }
         this.originalTransform = mainRenderer.getTransform().copy().shrink(0.94f);
         this.targetTransform = originalTransform.copy().shrink(0.1f);
-        this.multiblock = mainRenderer.getMultiblock();
+        this.schematicMultiblock = mainRenderer.getSchematicMultiblock();
         this.animatingTicks = animatingTicks;
         this.totalAnimatingTicks = animatingTicks;
     }
 
     public boolean isActivated() {
-        return animatingTicks > 0 && multiblock != null;
+        return animatingTicks > 0 && schematicMultiblock != null;
     }
 
     public void clear() {
-        this.multiblock = null;
+        this.schematicMultiblock = null;
         this.originalTransform = null;
         this.targetTransform = null;
     }
@@ -82,10 +87,10 @@ public class SchematicFadeOutRenderer {
         transform.interpolateTo(percent, originalTransform, targetTransform);
 
 
-        Map<Vector3i, IMultiblockUnit> parts = Collections.emptyMap();
+        Map<Vector3i, ISampleProvider> parts = schematicMultiblock.getSamples(transform.isFlipped());
 
         Vector4f viewRelative = transformCamera(Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(), transform);
-        SortedMap<Double, Vector3i> map = sortByDistance(parts, viewRelative);
+        SortedMap<Double, Vector3i> map = sortByDistance(parts.keySet(), viewRelative);
 
         ms.push();
         transform.applyEntirely(ms);
@@ -97,7 +102,7 @@ public class SchematicFadeOutRenderer {
 
             //获取显示的样本
             BlockState block = pickupSampleBlock(renderTicks, parts.get(relativePos));
-            IModelData modelData = findModelData(block, relativePos, multiblock);
+            IModelData modelData = findModelData(block, relativePos, schematicMultiblock.getOriginalMultiblock());
             //渲染投影
             RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData, SchematicRenderTypes.TRANSPARENT_BLOCK);
 

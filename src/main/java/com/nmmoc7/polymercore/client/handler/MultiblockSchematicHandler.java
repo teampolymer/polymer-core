@@ -364,6 +364,7 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
 
         fadeOutRenderer.tick();
+        renderer.tick(mc.world);
 
 
         Tuple<Integer, Optional<IMultiblockLocateHandler>> locateHandlerWithSlot = findLocateHandler();
