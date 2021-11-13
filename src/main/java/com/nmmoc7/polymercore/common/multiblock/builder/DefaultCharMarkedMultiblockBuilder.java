@@ -11,6 +11,7 @@ import com.nmmoc7.polymercore.api.multiblock.builder.IMultiblockBuilder;
 import com.nmmoc7.polymercore.api.multiblock.extension.IMultiblockExtension;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
+import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
 import com.nmmoc7.polymercore.api.registry.PolymerCoreRegistries;
 import com.nmmoc7.polymercore.common.multiblock.DefinedMultiblockImpl;
 import com.nmmoc7.polymercore.common.multiblock.ExtensibleMultiblockImpl;
@@ -147,7 +148,9 @@ public class DefaultCharMarkedMultiblockBuilder implements ICharMarkedMultiblock
                     );
                 }
                 , it -> {
-                    return new DefaultMultiblockPart(Collections.singletonList(new DefaultMultiblockPart.DefaultPartEntry(Collections.emptyList(), it.getValue())), Collections.emptyList());
+                    ArrayList<IPartChoice> list = new ArrayList<>();
+                    list.add(new DefaultMultiblockPart.DefaultPartChoice(null, it.getValue()));
+                    return new DefaultMultiblockPart(list);
                 }));
 
         Vector3i size = new Vector3i(maxX, maxY, maxZ);

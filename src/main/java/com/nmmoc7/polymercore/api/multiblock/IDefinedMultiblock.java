@@ -3,6 +3,7 @@ package com.nmmoc7.polymercore.api.multiblock;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
+import com.nmmoc7.polymercore.api.multiblock.part.IPartLimitConfig;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -85,6 +86,11 @@ public interface IDefinedMultiblock extends IMultiblock {
      * @return string tag
      */
     Collection<String> getTags();
+
+    /**
+     * 获取多方快结构部件限制
+     */
+    Collection<IPartLimitConfig> getLimitConfigs();
 
     IDefinedMultiblock setRegistryName(ResourceLocation name);
 

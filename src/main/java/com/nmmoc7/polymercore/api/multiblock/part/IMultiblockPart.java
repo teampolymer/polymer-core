@@ -1,7 +1,9 @@
 package com.nmmoc7.polymercore.api.multiblock.part;
 
 import net.minecraft.block.BlockState;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -11,21 +13,23 @@ import java.util.List;
  * 同时数量等也会有所限制
  */
 public interface IMultiblockPart {
-    PartEntry pickupUnit(BlockState possible);
+    @Nullable
+    IPartChoice pickupUnit(BlockState possible);
+
+    @Nullable
+    IPartChoice pickupUnit(@Nullable String type);
+
+    @Nullable
+    IPartChoice pickupDefaultUnit();
 
     /**
      * 当前坐标所有可能的Entry
      */
-    List<PartEntry> entries();
+    Collection<IPartChoice> choices();
 
     /**
      * 投影组件时的默认标签
      */
-    List<String> defaultTags();
+    Collection<IPartChoice> sampleChoices();
 
-    interface PartEntry {
-        IMultiblockUnit getUnit();
-
-        List<String> getTags();
-    }
 }

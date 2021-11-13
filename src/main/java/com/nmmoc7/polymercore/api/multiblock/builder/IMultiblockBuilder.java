@@ -47,6 +47,6 @@ public interface IMultiblockBuilder {
      * @param canSymmetrical 是否允许对称
      */
     IMultiblockBuilder setCanSymmetrical(boolean canSymmetrical);
-    ICharMarkedMultiblockBuilder addTags(String... tags);
+    IMultiblockBuilder addTags(String... tags);
 
 }

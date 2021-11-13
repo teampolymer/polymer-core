@@ -7,6 +7,8 @@ import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
+import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
+import com.nmmoc7.polymercore.api.multiblock.part.IPartLimitConfig;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
@@ -79,9 +81,14 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
         for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
             BlockPos testPos = PositionUtils.applyModifies(entry.getKey(), coreOffset, rotation, isSymmetrical);
             BlockState block = world.getBlockState(testPos);
-            if (entry.getValue().pickupUnit(block) != null) {
+            IPartChoice choice = entry.getValue().pickupUnit(block);
+            if (choice == null) {
                 return false;
             }
+            if(choice.getType() != null) {
+                ruleToFill.makeChoice(entry.getKey(), choice);
+            }
+
         }
         return true;
     }
@@ -125,6 +132,11 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     @Override
     public Collection<String> getTags() {
         return Collections.unmodifiableList(this.tags);
+    }
+
+    @Override
+    public Collection<IPartLimitConfig> getLimitConfigs() {
+        return null;
     }
 
     @Override

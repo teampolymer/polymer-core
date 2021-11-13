@@ -3,9 +3,11 @@ package com.nmmoc7.polymercore.api.multiblock.assembled;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
+import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.Map;
@@ -35,4 +37,8 @@ public interface IMultiblockAssembleRule extends INBTSerializable<CompoundNBT> {
     Rotation getRotation();
 
     Map<BlockPos, IMultiblockUnit> mapParts(IDefinedMultiblock originalMultiblock);
+
+    void makeChoice(Vector3i key, IPartChoice choice);
+
+    String getChoiceType(Vector3i relativePos);
 }
