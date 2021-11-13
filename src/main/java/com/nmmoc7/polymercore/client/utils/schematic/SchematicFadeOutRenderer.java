@@ -1,11 +1,10 @@
 package com.nmmoc7.polymercore.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
-import com.nmmoc7.polymercore.client.renderer.SchematicRenderTypes;
+import com.nmmoc7.polymercore.client.renderer.CustomRenderTypes;
 import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
+import com.nmmoc7.polymercore.client.utils.GhostBlockUtils;
 import com.nmmoc7.polymercore.client.utils.RenderUtils;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
 import com.nmmoc7.polymercore.client.utils.multiblock.ISampleProvider;
@@ -16,7 +15,6 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.model.data.IModelData;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -47,7 +45,7 @@ public class SchematicFadeOutRenderer {
     }
 
     public void fadeOut(SchematicRenderer mainRenderer, int animatingTicks) {
-        if(mainRenderer == null || mainRenderer.getMultiblock() == null) {
+        if (mainRenderer == null || mainRenderer.getMultiblock() == null) {
             return;
         }
         this.originalTransform = mainRenderer.getTransform().copy().shrink(0.94f);
@@ -104,7 +102,7 @@ public class SchematicFadeOutRenderer {
             BlockState block = pickupSampleBlock(renderTicks, parts.get(relativePos));
             IModelData modelData = findModelData(block, relativePos, schematicMultiblock.getOriginalMultiblock());
             //渲染投影
-            RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData, SchematicRenderTypes.TRANSPARENT_BLOCK);
+            RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, false);
 
             ms.pop();
         }

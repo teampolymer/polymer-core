@@ -43,6 +43,10 @@ public class CustomRenderTypeBuffer implements IRenderTypeBuffer {
         var0.put(p_228486_1_, new BufferBuilder(p_228486_1_.getBufferSize()));
     }
 
+    public Impl getImpl() {
+        return impl;
+    }
+
     private final IRenderTypeBuffer.Impl impl;
 
     public CustomRenderTypeBuffer() {
@@ -60,6 +64,7 @@ public class CustomRenderTypeBuffer implements IRenderTypeBuffer {
     public @NotNull IVertexBuilder getBuffer(@NotNull RenderType renderType) {
         return impl.getBuffer(renderType);
     }
+
 
     public void finish() {
         impl.finish();

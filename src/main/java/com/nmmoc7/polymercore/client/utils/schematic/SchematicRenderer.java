@@ -1,16 +1,15 @@
 package com.nmmoc7.polymercore.client.utils.schematic;
 
-import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
-import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartLimitConfig;
 import com.nmmoc7.polymercore.api.util.PositionUtils;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
-import com.nmmoc7.polymercore.client.renderer.SchematicRenderTypes;
+import com.nmmoc7.polymercore.client.renderer.CustomRenderTypes;
 import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
+import com.nmmoc7.polymercore.client.utils.GhostBlockUtils;
 import com.nmmoc7.polymercore.client.utils.InputUtils;
 import com.nmmoc7.polymercore.client.utils.RenderUtils;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
@@ -23,7 +22,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -189,10 +187,8 @@ public class SchematicRenderer {
 
                 //获取显示的样本
                 BlockState block = pickupSampleBlock(renderTicks, samples.get(relativePos));
-                IModelData modelData = findModelData(block, relativePos, multiblock);
                 //渲染投影
-                RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData, SchematicRenderTypes.TRANSPARENT_BLOCK);
-
+                RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, false);
                 ms.pop();
             }
 
@@ -205,8 +201,6 @@ public class SchematicRenderer {
                 ISampleProvider sample = samples.get(relativePos);
                 BlockState block = pickupSampleBlock(renderTicks, sample);
 
-                IModelData modelData = findModelData(block, relativePos, multiblock);
-
                 ms.push();
 
                 //渲染投影
@@ -216,7 +210,7 @@ public class SchematicRenderer {
 
                         transform.applyPartially(ms);
                         //渲染错误的方块
-                        RenderUtils.renderCube(ms, buffer.getBuffer(SchematicRenderTypes.CUBE_NO_DEPTH),
+                        RenderUtils.renderCube(ms, buffer.getBuffer(CustomRenderTypes.CUBE_NO_DEPTH),
                             0.15f, 0.15f, 0.15f,
                             0.85f, 0.85f, 0.85f,
                             0.9f, 0.3f, 0.25f, 0.4f);
@@ -228,13 +222,7 @@ public class SchematicRenderer {
                         ms.translate(0.03f, 0.03f, 0.03f);
                         ms.scale(0.94f, 0.94f, 0.94f);
 
-                        RenderType renderType;
-                        if (offPos.equals(hovering))
-                            renderType = SchematicRenderTypes.TRANSPARENT_BLOCK_DYNAMIC;
-                        else
-                            renderType = SchematicRenderTypes.TRANSPARENT_BLOCK;
-
-                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, modelData, renderType);
+                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, offPos.equals(hovering));
 
                     }
 

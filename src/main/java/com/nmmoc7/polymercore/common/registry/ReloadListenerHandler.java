@@ -54,7 +54,7 @@ public class ReloadListenerHandler {
                 .addPartsMap('B', new UnitSpecifiedBlock(Blocks.OAK_WOOD))
                 .addPartsMap('C', new UnitSpecifiedBlock(Blocks.GLOWSTONE))
                 .addPartsMap('W', new UnitSpecifiedBlock(Blocks.WATER))
-                .addPartsMap('F', new UnitSpecifiedBlock(Blocks.FURNACE))
+                .addPartsMap('F', new UnitSpecifiedBlock(Blocks.CHEST))
                 .setCoreChar('C')
                 .setType(MultiblockRegisterHandler.TYPE_FREE.get())
                 .setCanSymmetrical()

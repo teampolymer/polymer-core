@@ -8,10 +8,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class SchematicRenderTypes extends RenderType {
-    public SchematicRenderTypes(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+public class CustomRenderTypes extends RenderType {
+    public CustomRenderTypes(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
@@ -22,6 +23,25 @@ public class SchematicRenderTypes extends RenderType {
             .depthTest(DEPTH_ALWAYS)
             .alpha(DEFAULT_ALPHA)
             .writeMask(COLOR_DEPTH_WRITE)
+            .build(true));
+
+    public static final RenderType CUBE_NORMAL = makeType("cube_normal",
+        DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256,
+        RenderType.State.getBuilder()
+            .transparency(TRANSLUCENT_TRANSPARENCY)
+            .alpha(DEFAULT_ALPHA)
+            .writeMask(COLOR_DEPTH_WRITE)
+            .build(true));
+
+    public static final RenderType FLUID = makeType("polymer_fluid",
+        DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, true,
+        RenderType.State.getBuilder()
+            .texture(BLOCK_SHEET_MIPPED)
+            .transparency(TRANSLUCENT_TRANSPARENCY)
+            .shadeModel(SHADE_ENABLED)
+            .alpha(DEFAULT_ALPHA)
+            .lightmap(LIGHTMAP_ENABLED)
+            .overlay(OVERLAY_ENABLED)
             .build(true));
 
     /**
@@ -85,6 +105,29 @@ public class SchematicRenderTypes extends RenderType {
             .overlay(OVERLAY_ENABLED)
             .writeMask(COLOR_DEPTH_WRITE)
             .build(true));
+
+    public static RenderType getEntityTransparent(ResourceLocation locationIn) {
+        RenderType.State state = RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(locationIn, false, false))
+            .transparency(getConstTransparency(0.3f))
+            .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
+            .alpha(DEFAULT_ALPHA)
+            .lightmap(LIGHTMAP_ENABLED)
+            .overlay(OVERLAY_ENABLED)
+            .build(true);
+        return makeType("entity_transparent", DefaultVertexFormats.ENTITY, 7, 256, true, false, state);
+    }
+    public static RenderType getEntityTransparentDynamic(ResourceLocation locationIn) {
+        RenderType.State state = RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(locationIn, false, false))
+            .transparency(getDynamicTransparency(0.6f, 1.0f, 30))
+            .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
+            .alpha(DEFAULT_ALPHA)
+            .lightmap(LIGHTMAP_ENABLED)
+            .overlay(OVERLAY_ENABLED)
+            .build(true);
+        return makeType("entity_transparent_dynamic", DefaultVertexFormats.ENTITY, 7, 256, true, false, state);
+    }
 
 
 }
