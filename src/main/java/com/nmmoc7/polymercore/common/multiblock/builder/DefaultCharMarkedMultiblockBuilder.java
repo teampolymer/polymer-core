@@ -88,18 +88,18 @@ public class DefaultCharMarkedMultiblockBuilder extends AbstractMultiblockBuilde
         int maxX = 0, maxY = 0, maxZ = 0;
         for (int y = 0; y < pattern.length; y++) {
             maxY = Math.max(y, maxY);
-            for (int x = 0; x < pattern[y].length; x++) {
-                char[] chars = pattern[y][x];
-                maxX = Math.max(x, maxX);
-                for (int z = 0; z < chars.length; z++) {
-                    Vector3i postion = new Vector3i(x, y, z);
-                    char ch = chars[z];
+            for (int z = 0; z < pattern[y].length; z++) {
+                char[] chars = pattern[y][z];
+                maxZ = Math.max(z, maxZ);
+                for (int x = 0; x < chars.length; x++) {
+                    Vector3i position = new Vector3i(x, y, z);
+                    char ch = chars[x];
                     if (ch == ' ') {
                         continue;
                     }
-                    maxZ = Math.max(z, maxZ);
+                    maxX = Math.max(x, maxX);
                     if (coreChar != null && ch == coreChar) {
-                        coreOffset = postion;
+                        coreOffset = position;
                     }
                     IMultiblockPart part = partsMap.get(ch);
                     if (part == null) {
@@ -109,9 +109,9 @@ public class DefaultCharMarkedMultiblockBuilder extends AbstractMultiblockBuilde
                         if (coreOffset != null) {
                             throw new MultiblockBuilderException("There are more than one multiblock core in the structure!");
                         }
-                        coreOffset = postion;
+                        coreOffset = position;
                     }
-                    resolvedParts.put(postion, part);
+                    resolvedParts.put(position, part);
                 }
             }
         }
