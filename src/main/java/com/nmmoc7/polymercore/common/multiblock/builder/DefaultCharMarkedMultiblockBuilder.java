@@ -78,7 +78,7 @@ public class DefaultCharMarkedMultiblockBuilder extends AbstractMultiblockBuilde
 //            throw new MultiblockBuilderException("'Machine' can not be null");
         }
         if (type == null) {
-            type = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(PolymerCoreApi.MOD_ID, "free"));
+            type = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(PolymerCoreApi.MOD_ID, "type_free"));
         }
         if (pattern == null) {
             setPatterns(patternAlternative.toArray(new String[0][0]));

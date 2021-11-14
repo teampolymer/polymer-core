@@ -94,7 +94,9 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
     public void removeAssembledMultiblock(UUID multiblockId) {
         assembledMultiblockMap.remove(multiblockId);
         BlockPos remove = positions.remove(multiblockId);
-        chunksMultiblocks.remove(new ChunkPos(remove), multiblockId);
+        if(remove != null) {
+            chunksMultiblocks.remove(new ChunkPos(remove), multiblockId);
+        }
         markDirty();
     }
 
@@ -108,7 +110,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
                 continue;
             }
             assembledMultiblockMap.put(assembledMultiblock.getMultiblockId(), assembledMultiblock);
-            positions.put(assembledMultiblock.getMultiblockId(), assembledMultiblock.getOffset());
+            positions.put(assembledMultiblock.getMultiblockId(), assembledMultiblock.getOffset().toImmutable());
             chunksMultiblocks.put(new ChunkPos(assembledMultiblock.getOffset()), assembledMultiblock.getMultiblockId());
         }
         if (PolymerCore.LOG.isDebugEnabled() && assembledMultiblockMap.size() > 0) {

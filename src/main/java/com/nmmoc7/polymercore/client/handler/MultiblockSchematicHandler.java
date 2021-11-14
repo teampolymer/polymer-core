@@ -192,6 +192,9 @@ public class MultiblockSchematicHandler implements IRenderer {
     }
 
     public void flip() {
+        if(!currentMultiblock.canSymmetrical()) {
+            return;
+        }
         locateHandler.flip();
         lastTraceResult = null;
     }

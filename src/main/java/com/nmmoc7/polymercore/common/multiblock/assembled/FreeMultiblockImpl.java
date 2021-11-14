@@ -151,6 +151,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
         nbt.putUniqueId("uuid", multiblockId);
         nbt.putString("define", definedMultiblock.getRegistryName().toString());
         nbt.put("rule", assembleRule.serializeNBT());
+        nbt.putString("type", definedMultiblock.getType().getRegistryName().toString());
         return nbt;
     }
 

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 public class SingleChoicePart implements IMultiblockPart {
     private final IPartChoice choice;
@@ -23,7 +24,7 @@ public class SingleChoicePart implements IMultiblockPart {
 
     @Override
     public @Nullable IPartChoice pickupChoice(@Nullable String type) {
-        return choice.getType().equals(type) ? choice : null;
+        return Objects.equals(choice.getType(), type) ? choice : null;
     }
 
     @Override

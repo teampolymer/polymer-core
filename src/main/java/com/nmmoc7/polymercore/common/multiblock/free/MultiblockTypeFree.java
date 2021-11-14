@@ -37,7 +37,10 @@ public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> impl
         );
 
         FreeMultiblockWorldSavedData.get(world).addAssembledMultiblock(multiblock);
-        multiblock.initialize();
+        if (!multiblock.initialize()) {
+            multiblock.disassemble(world);
+            return null;
+        }
         Collection<ChunkPos> crossedChunks = multiblock.getCrossedChunks();
         for (ChunkPos chunkPos : crossedChunks) {
             Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
