@@ -11,11 +11,11 @@ import java.util.List;
 
 public abstract class AbstractMultiblock implements IMultiblock {
     private final List<IMultiblockComponent> components;
-    private final IMachine machine;
+    private final String machine;
     private final Vector3i size;
     private final AttributeMap attributeMap = new AttributeMap();
 
-    public AbstractMultiblock(List<IMultiblockComponent> components, IMachine machine, Vector3i size) {
+    public AbstractMultiblock(List<IMultiblockComponent> components, String machine, Vector3i size) {
         this.components = components;
         this.machine = machine;
         this.size = size;
@@ -28,7 +28,7 @@ public abstract class AbstractMultiblock implements IMultiblock {
     }
 
     @Override
-    public IMachine getMachine() {
+    public String getMachine() {
         return machine;
     }
 

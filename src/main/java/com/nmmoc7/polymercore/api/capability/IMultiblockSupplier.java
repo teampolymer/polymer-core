@@ -20,7 +20,7 @@ public interface IMultiblockSupplier {
         }
         return PolymerCoreApi.getInstance()
             .getMultiblockManager()
-            .getDefinedMultiblock(registryName)
+            .findById(registryName)
             .orElse(null);
     }
 

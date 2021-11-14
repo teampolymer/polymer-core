@@ -83,7 +83,7 @@ public class BlueprintItem extends Item {
         if (this.isInGroup(group)) {
             for (IDefinedMultiblock multiblock : PolymerCoreApi.getInstance()
                 .getMultiblockManager()
-                .getDefinedMultiblocks()) {
+                .findAll()) {
                 ItemStack stack = new ItemStack(this);
                 LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblock.MULTIBLOCK_SUPPLIER);
                 capability.ifPresent(it -> {

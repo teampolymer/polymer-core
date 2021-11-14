@@ -5,6 +5,7 @@ import com.nmmoc7.polymercore.api.machine.IMachine;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IMultiblockType;
+import com.nmmoc7.polymercore.api.multiblock.MultiblockDirection;
 import com.nmmoc7.polymercore.api.multiblock.assembled.IMultiblockAssembleRule;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
@@ -30,14 +31,15 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     private final IMultiblockType type;
     private final boolean canSymmetrical;
     private final List<String> tags;
+    private Collection<IPartLimitConfig> limitConfigs;
 
-    public DefinedMultiblockImpl(List<IMultiblockComponent> components, IMachine machine, Vector3i size, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical, List<String> tags) {
+    public DefinedMultiblockImpl(List<IMultiblockComponent> components, String machine, Vector3i size, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical, List<String> tags, Collection<IPartLimitConfig> limitConfigs) {
         super(components, machine, size);
         this.partsMap = partsMap;
         this.type = type;
         this.canSymmetrical = canSymmetrical;
         this.tags = tags;
-
+        this.limitConfigs = limitConfigs;
     }
 
 
@@ -81,11 +83,11 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
         for (Map.Entry<Vector3i, IMultiblockPart> entry : parts.entrySet()) {
             BlockPos testPos = PositionUtils.applyModifies(entry.getKey(), coreOffset, rotation, isSymmetrical);
             BlockState block = world.getBlockState(testPos);
-            IPartChoice choice = entry.getValue().pickupChoice(block);
+            IPartChoice choice = entry.getValue().pickupChoice(block, MultiblockDirection.get(rotation, isSymmetrical));
             if (choice == null) {
                 return false;
             }
-            if(choice.getType() != null) {
+            if (choice.getType() != null) {
                 ruleToFill.makeChoice(entry.getKey(), choice);
             }
 
@@ -136,7 +138,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
 
     @Override
     public Collection<IPartLimitConfig> getLimitConfigs() {
-        return Collections.emptyList();
+        return limitConfigs;
     }
 
     @Override

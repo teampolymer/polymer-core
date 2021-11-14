@@ -4,8 +4,8 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 
 public interface IPartBuilder {
-    IPartBuilder setDefaultPart(IMultiblockUnit unit);
-    IPartBuilder addChoice(String type, IMultiblockUnit unit);
-    IPartBuilder addChoice(String type, IMultiblockUnit unit, boolean canBeSample);
+    IPartBuilder defaultPart(IMultiblockUnit unit);
+    IPartBuilder choice(String type, IMultiblockUnit unit);
+    IPartBuilder choice(String type, IMultiblockUnit unit, boolean canBeSample);
     IMultiblockPart build();
 }

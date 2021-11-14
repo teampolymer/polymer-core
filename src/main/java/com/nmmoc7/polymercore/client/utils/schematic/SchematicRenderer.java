@@ -2,6 +2,7 @@ package com.nmmoc7.polymercore.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
+import com.nmmoc7.polymercore.api.multiblock.MultiblockDirection;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartLimitConfig;
@@ -147,7 +148,7 @@ public class SchematicRenderer {
             BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
             //当前检查的方块
             BlockState current = world.getBlockState(offPos);
-            IPartChoice choice = part.pickupChoice(current);
+            IPartChoice choice = part.pickupChoice(current, MultiblockDirection.get(rotation, isSymmetrical));
             //找不到choice了，表示当前位置不合法
             if (choice == null) {
                 notEmptyAreas.put(entry.getKey(), current.getBlock() == Blocks.AIR);

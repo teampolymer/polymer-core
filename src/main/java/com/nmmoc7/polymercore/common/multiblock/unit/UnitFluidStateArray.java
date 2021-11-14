@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.common.multiblock.part;
+package com.nmmoc7.polymercore.common.multiblock.unit;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;

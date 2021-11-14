@@ -25,7 +25,7 @@ public interface IMultiblock extends IAttributeProvider {
      *
      * @return 机械
      */
-    IMachine getMachine();
+    String getMachine();
 
 
     /**

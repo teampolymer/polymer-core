@@ -7,17 +7,9 @@ import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartLimitConfig;
-import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;
-import com.nmmoc7.polymercore.common.multiblock.assembled.AbstractAssembleRule;
-import com.nmmoc7.polymercore.common.multiblock.builder.DefaultCharMarkedMultiblockBuilder;
 import com.nmmoc7.polymercore.common.multiblock.builder.DefaultPartBuilder;
-import com.nmmoc7.polymercore.common.multiblock.free.FreeMultiblockAssembleRule;
-import com.nmmoc7.polymercore.common.multiblock.free.MultiblockTypeFree;
-import com.nmmoc7.polymercore.common.multiblock.part.AbstractUnit;
-import com.nmmoc7.polymercore.common.multiblock.part.UnitSpecifiedBlock;
+import com.nmmoc7.polymercore.common.multiblock.unit.AbstractUnit;
 import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -27,8 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MultiblockPartUtilsTest {
 
@@ -60,51 +50,51 @@ public class MultiblockPartUtilsTest {
         Map<Vector3i, IMultiblockPart> partMap = new HashMap<>();
         List<IPartLimitConfig> partLimitConfigs = new ArrayList<>();
         partMap.put(new Vector3i(0, 0, 0), new DefaultPartBuilder()
-            .setDefaultPart(new UnitFake("stone"))
-            .addChoice("out", new UnitFake("gold"))
+            .defaultPart(new UnitFake("stone"))
+            .choice("out", new UnitFake("gold"))
             .build());
 
         partMap.put(new Vector3i(0, 1, 0), new DefaultPartBuilder()
-            .setDefaultPart(new UnitFake("stone"))
-            .addChoice("out", new UnitFake("gold"))
-            .addChoice("in", new UnitFake("lapis"))
+            .defaultPart(new UnitFake("stone"))
+            .choice("out", new UnitFake("gold"))
+            .choice("in", new UnitFake("lapis"))
             .build());
         partMap.put(new Vector3i(0, 2, 0), new DefaultPartBuilder()
-            .setDefaultPart(new UnitFake("stone"))
-            .addChoice("out", new UnitFake("gold"))
+            .defaultPart(new UnitFake("stone"))
+            .choice("out", new UnitFake("gold"))
             .build());
         partMap.put(new Vector3i(0, -1, 0), new DefaultPartBuilder()
-            .setDefaultPart(new UnitFake("stone"))
-            .addChoice("out", new UnitFake("gold"))
+            .defaultPart(new UnitFake("stone"))
+            .choice("out", new UnitFake("gold"))
             .build());
 
         Random random = new Random();
         for (int i = 100; i < 200; i++) {
             IPartBuilder builder = new DefaultPartBuilder()
-                .setDefaultPart(new UnitFake("stone"));
+                .defaultPart(new UnitFake("stone"));
             if (random.nextFloat() > 0.6) {
-                builder.addChoice("out", new UnitFake("gold"));
+                builder.choice("out", new UnitFake("gold"));
             }
             if (random.nextFloat() > 0.6) {
-                builder.addChoice("in", new UnitFake("gold"));
+                builder.choice("in", new UnitFake("gold"));
             }
             if (random.nextFloat() > 0.9) {
-                builder.addChoice("energy", new UnitFake("energyPort"));
+                builder.choice("energy", new UnitFake("energyPort"));
             }
             IMultiblockPart part = builder.build();
             partMap.put(new Vector3i(i, -1, 0), part);
         }
         for (int i = 100; i < 200; i++) {
             IPartBuilder builder = new DefaultPartBuilder()
-                .setDefaultPart(new UnitFake("stone"));
+                .defaultPart(new UnitFake("stone"));
             if (random.nextFloat() > 0.5) {
-                builder.addChoice("energy", new UnitFake("energyPort"));
+                builder.choice("energy", new UnitFake("energyPort"));
             }
             if (random.nextFloat() > 0.7) {
-                builder.addChoice("mana", new UnitFake("mana"));
+                builder.choice("mana", new UnitFake("mana"));
             }
             if (random.nextFloat() > 0.7) {
-                builder.addChoice("monitor", new UnitFake("monitor"));
+                builder.choice("monitor", new UnitFake("monitor"));
             }
             IMultiblockPart part = builder.build();
             partMap.put(new Vector3i(-5, -1, i), part);

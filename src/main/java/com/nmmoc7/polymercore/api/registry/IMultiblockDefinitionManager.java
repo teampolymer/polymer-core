@@ -8,12 +8,12 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface IMultiblockDefinitionManager {
-    Optional<IDefinedMultiblock> getDefinedMultiblock(ResourceLocation location);
+    Optional<IDefinedMultiblock> findById(ResourceLocation location);
 
-    Collection<IDefinedMultiblock> getDefinedMultiblocksForCore(BlockState coreBlock);
+    Collection<IDefinedMultiblock> findByCore(BlockState coreBlock);
 
-    Collection<IDefinedMultiblock> getDefinedMultiblocks();
+    Collection<IDefinedMultiblock> findAll();
 
-    Collection<IDefinedMultiblock> getDefinedMultiblocks(String tag);
-    void addDefinedMultiblock(IDefinedMultiblock multiblock);
+    Collection<IDefinedMultiblock> findByTag(String tag);
+    void register(IDefinedMultiblock multiblock);
 }

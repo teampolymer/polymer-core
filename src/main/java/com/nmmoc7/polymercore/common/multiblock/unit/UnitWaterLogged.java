@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.common.multiblock.part;
+package com.nmmoc7.polymercore.common.multiblock.unit;
 
 import com.nmmoc7.polymercore.api.multiblock.MultiblockDirection;
 import com.nmmoc7.polymercore.api.multiblock.part.IDirectionUnit;

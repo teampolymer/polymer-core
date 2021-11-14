@@ -1,5 +1,7 @@
 package com.nmmoc7.polymercore.common.multiblock.part;
 
+import com.nmmoc7.polymercore.api.exceptions.MultiblockBuilderException;
+import com.nmmoc7.polymercore.api.multiblock.MultiblockDirection;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockUnit;
 import com.nmmoc7.polymercore.api.multiblock.part.IPartChoice;
@@ -19,17 +21,22 @@ public class DefaultMultiblockPart implements IMultiblockPart {
         this.sampleChoices = new ArrayList<>();
         this.choiceMap = new HashMap<>();
         for (IPartChoice entry : entries) {
-            this.choiceMap.put(entry.getType(), entry);
-            if (entry.canBeSample()) {
+            String type = entry.getType();
+            if (this.choiceMap.put(type, entry) != null) {
+                throw new MultiblockBuilderException("Part choices has duplicate types");
+            }
+            if (entry.canBeSample() || type == null) {
                 sampleChoices.add(entry);
             }
         }
+
     }
 
     @Override
-    public IPartChoice pickupChoice(BlockState possible) {
+    public IPartChoice pickupChoice(BlockState possible, MultiblockDirection direction) {
+
         for (IPartChoice choice : choiceMap.values()) {
-            if (choice.getUnit().test(possible)) {
+            if (choice.getUnit(direction).test(possible)) {
                 return choice;
             }
         }
@@ -56,36 +63,4 @@ public class DefaultMultiblockPart implements IMultiblockPart {
         return sampleChoices;
     }
 
-    public static class DefaultPartChoice implements IPartChoice {
-        private final String type;
-        private final IMultiblockUnit unit;
-        private final boolean sample;
-
-        public DefaultPartChoice(String type, IMultiblockUnit unit) {
-            this.type = type;
-            this.unit = unit;
-            this.sample = type != null;
-        }
-
-        public DefaultPartChoice(String type, IMultiblockUnit unit, boolean canBeSample) {
-            this.type = type;
-            this.unit = unit;
-            this.sample = canBeSample;
-        }
-
-        @Override
-        public IMultiblockUnit getUnit() {
-            return unit;
-        }
-
-        @Override
-        public String getType() {
-            return type;
-        }
-
-        @Override
-        public boolean canBeSample() {
-            return sample;
-        }
-    }
 }

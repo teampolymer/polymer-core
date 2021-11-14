@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.api.multiblock.part;
 
+import com.nmmoc7.polymercore.api.multiblock.MultiblockDirection;
 import net.minecraft.block.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public interface IMultiblockPart {
     @Nullable
-    IPartChoice pickupChoice(BlockState possible);
+    IPartChoice pickupChoice(BlockState possible, MultiblockDirection direction);
 
     @Nullable
     IPartChoice pickupChoice(@Nullable String type);

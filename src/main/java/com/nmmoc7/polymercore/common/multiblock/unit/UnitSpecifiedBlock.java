@@ -1,7 +1,9 @@
-package com.nmmoc7.polymercore.common.multiblock.part;
+package com.nmmoc7.polymercore.common.multiblock.unit;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+
+import java.util.Collections;
 
 public class UnitSpecifiedBlock extends AbstractUnit {
     private final Block block;
@@ -9,7 +11,7 @@ public class UnitSpecifiedBlock extends AbstractUnit {
     public UnitSpecifiedBlock(Block block) {
         super(null);
         this.block = block;
-        this.samples = block.getStateContainer().getValidStates();
+        this.samples = Collections.singletonList(block.getDefaultState());
     }
 
     @Override

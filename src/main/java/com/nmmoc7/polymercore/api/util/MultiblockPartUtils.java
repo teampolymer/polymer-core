@@ -17,9 +17,25 @@ import java.util.*;
 
 public class MultiblockPartUtils {
     public static BlockState withDirection(BlockState origin, MultiblockDirection direction) {
-        return origin
-            .rotate(direction.getRotation())
-            .mirror(direction.isFlipped() ? Mirror.FRONT_BACK : Mirror.NONE);
+        switch (direction) {
+            case NONE:
+            case CLOCKWISE_90:
+            case CLOCKWISE_180:
+            case COUNTERCLOCKWISE_90:
+            default:
+                return origin
+                    .rotate(direction.getRotation());
+            case NONE_FLIPPED:
+            case CLOCKWISE_180_FLIPPED:
+                return origin
+                    .rotate(direction.getRotation())
+                    .mirror(Mirror.FRONT_BACK);
+            case CLOCKWISE_90_FLIPPED:
+            case COUNTERCLOCKWISE_90_FLIPPED:
+                return origin
+                    .rotate(direction.getRotation())
+                    .mirror(Mirror.LEFT_RIGHT);
+        }
     }
 
     private static class PartTypeInfo {

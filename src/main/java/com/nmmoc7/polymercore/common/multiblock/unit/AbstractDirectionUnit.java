@@ -1,4 +1,4 @@
-package com.nmmoc7.polymercore.common.multiblock.part;
+package com.nmmoc7.polymercore.common.multiblock.unit;
 
 import com.nmmoc7.polymercore.api.multiblock.MultiblockDirection;
 import com.nmmoc7.polymercore.api.multiblock.part.IDirectionUnit;
@@ -8,7 +8,6 @@ import java.util.List;
 
 public abstract class AbstractDirectionUnit extends AbstractUnit implements IDirectionUnit {
     private final MultiblockDirection direction;
-    protected List<BlockState> samples;
 
     public AbstractDirectionUnit(List<BlockState> samples, MultiblockDirection direction) {
         super(samples);
