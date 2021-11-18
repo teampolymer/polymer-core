@@ -1,0 +1,63 @@
+{
+  "registry_name": "polymer-core:test_machine",
+  "format": "char_pattern",
+  "symmetrical": true,
+  "parts": {
+    "A": {
+      "elements": [
+        {
+          "block": "minecraft:stone_bricks"
+        },
+        {
+          "tag": "forge:glass"
+        }
+      ]
+    },
+    "B": {
+      "block": {
+        "name": "minecraft:furnace",
+        "properties": {
+          "facing": "south"
+        }
+      }
+    },
+    "C": [
+      {
+        "block": "minecraft:iron_block"
+      },
+      {
+        "block": "minecraft:gold_block",
+        "type": "gold_upgrade",
+        "sample": true
+      }
+    ],
+    "D": {
+      "block": "minecraft:redstone_block"
+    },
+    "E": {
+      "fluid": "minecraft:water"
+    }
+  },
+  "core": "B",
+  "patterns": [
+    [
+      "ACCCA",
+      "AAAAA",
+      "ACCCD"
+    ],
+    [
+      "ACCCA",
+      "AEDEA",
+      "ACBCD"
+    ],
+    [
+      "A   A",
+      "  D",
+      "A   A"
+    ],
+    [
+      "",
+      "  D"
+    ]
+  ]
+}
