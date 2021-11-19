@@ -5,6 +5,7 @@ import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
 import com.nmmoc7.polymercore.api.capability.IMultiblockSupplier;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.util.MultiblockUtils;
+import com.nmmoc7.polymercore.client.gui.schematic.SchematicViewOverlay;
 import com.nmmoc7.polymercore.client.renderer.CustomRenderTypeBuffer;
 import com.nmmoc7.polymercore.client.renderer.IRenderer;
 import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
@@ -14,7 +15,6 @@ import com.nmmoc7.polymercore.client.utils.schematic.SchematicRenderer;
 import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
 import com.nmmoc7.polymercore.common.network.ModNetworking;
 import com.nmmoc7.polymercore.common.network.PacketLocateHandlerSync;
-import com.nmmoc7.polymercore.common.registry.KeysRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -37,6 +37,11 @@ public class MultiblockSchematicHandler implements IRenderer {
     private MultiblockSchematicHandler() {
         renderer = new SchematicRenderer();
         fadeOutRenderer = new SchematicFadeOutRenderer();
+        viewOverlay = new SchematicViewOverlay(() -> {
+            sync();
+            lastTraceResult = null;
+            transformAnimated();
+        });
     }
 
     private boolean enabled = false;
@@ -59,6 +64,9 @@ public class MultiblockSchematicHandler implements IRenderer {
     private SchematicTransform originalTransform;
     private int animatingTicks = 0;
     private int totalAnimatingTicks = DEFAULT_TOTAL_ANIMATION_TICK;
+
+    //Overlay
+    private final SchematicViewOverlay viewOverlay;
 
     //其他
     private BlockPos lastTrackPos = null;
@@ -95,30 +103,23 @@ public class MultiblockSchematicHandler implements IRenderer {
                     lastTrackPos = tracePos;
                     transformAnimated(6);
                 }
+
+                if (!viewOverlay.currentAction().shouldHideSchematic()) {
+                    renderer.render(ms, buffer, pt);
+                }
+            } else {
+                renderer.render(ms, buffer, pt);
             }
 
-            renderer.render(ms, buffer, pt);
         }
 
     }
 
-    public void anchorIn(BlockPos pos) {
-        if (locateHandler == null) {
-            return;
+
+    public void renderOverlay(MatrixStack ms, float pt) {
+        if(locateHandler != null) {
+            viewOverlay.renderOverlay(ms, pt);
         }
-        if (pos == null) {
-            locateHandler.setOffset(BlockPos.ZERO);
-            locateHandler.setAnchored(false);
-            sync();
-            return;
-        }
-        locateHandler.setOffset(pos);
-        locateHandler.setAnchored(true);
-        sync();
-
-
-        transformAnimated();
-
     }
 
     public void fadeOutCurrent() {
@@ -177,26 +178,8 @@ public class MultiblockSchematicHandler implements IRenderer {
 
     }
 
-
-    public void rotate(int dir) {
-        if (locateHandler == null) {
-            return;
-        }
-        int current = locateHandler.getRotation().ordinal();
-        int index = ((dir + current) % 4 + 4) % 4;
-        Rotation rotation = Rotation.values()[index];
-        locateHandler.setRotation(rotation);
-        sync();
-        lastTraceResult = null;
-        transformAnimated();
-    }
-
-    public void flip() {
-        if(!currentMultiblock.canSymmetrical()) {
-            return;
-        }
-        locateHandler.flip();
-        lastTraceResult = null;
+    public IDefinedMultiblock getCurrentMultiblock() {
+        return currentMultiblock;
     }
 
     public void sync() {
@@ -250,32 +233,14 @@ public class MultiblockSchematicHandler implements IRenderer {
     public void onKeyInput(int key, boolean pressed) {
         if (!activating())
             return;
-        if (!pressed)
-            return;
-        Minecraft mc = Minecraft.getInstance();
+        viewOverlay.handleKeyInput(locateHandler, key, pressed);
 
     }
 
     public void onMouseInput(int button, boolean pressed) {
         if (!activating())
             return;
-        if (!pressed || button != 1)
-            return;
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player.isSneaking())
-            return;
-
-        if (KeysRegistry.TOOL_CTRL_KEY.isKeyDown()) {
-            flip();
-            transformAnimated();
-        } else {
-            BlockPos tracePos = findTracePos();
-            if (locateHandler.getOffset().equals(tracePos)) {
-                anchorIn(null);
-            } else {
-                anchorIn(tracePos);
-            }
-        }
+        viewOverlay.handleMouseInput(locateHandler, button, pressed);
     }
 
 
@@ -289,7 +254,7 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
         Minecraft mc = Minecraft.getInstance();
 
-        final int distance = 16;
+        final int distance = 32;
 
         Vector3d start = mc.player.getEyePosition(AnimationTickHelper.getPartialTicks());
         Vector3d direction = mc.player.getLook(AnimationTickHelper.getPartialTicks());
@@ -333,12 +298,7 @@ public class MultiblockSchematicHandler implements IRenderer {
     public boolean onMouseScrolled(double delta) {
         if (!activating())
             return false;
-        if (KeysRegistry.TOOL_CTRL_KEY.isKeyDown()) {
-            int dir = MathHelper.clamp((int) delta, -1, 1);
-            rotate(dir);
-            return true;
-        }
-        return false;
+        return viewOverlay.handleMouseScrolled(locateHandler, delta);
     }
 
 
@@ -368,12 +328,13 @@ public class MultiblockSchematicHandler implements IRenderer {
 
         fadeOutRenderer.tick();
         renderer.tick(mc.world);
+        viewOverlay.update(locateHandler);
 
 
         Tuple<Integer, Optional<IMultiblockLocateHandler>> locateHandlerWithSlot = findLocateHandler();
         Optional<IMultiblockLocateHandler> locateHandler = locateHandlerWithSlot.getB();
         if (locateHandler.isPresent()) {
-            if (this.handleSlot != locateHandlerWithSlot.getA() || !locateHandler.get().equals(this.locateHandler)) {
+            if (this.handleSlot != locateHandlerWithSlot.getA() || !locateHandler.get().equalsIgnoringSetting(this.locateHandler)) {
                 //上一个没有手持控制器也没有后台渲染的蓝图
                 boolean fade = this.locateHandler == null && !renderBackground;
                 this.locateHandler = locateHandler.get();

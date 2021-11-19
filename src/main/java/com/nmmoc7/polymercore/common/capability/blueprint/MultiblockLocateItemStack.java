@@ -2,10 +2,14 @@ package com.nmmoc7.polymercore.common.capability.blueprint;
 
 import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
 public class MultiblockLocateItemStack implements IMultiblockLocateHandler {
@@ -15,46 +19,57 @@ public class MultiblockLocateItemStack implements IMultiblockLocateHandler {
 
     private final ItemStack stack;
 
+    private CompoundNBT getOrCreateSettingTag() {
+        return stack.getOrCreateChildTag("locate");
+    }
+
     @Override
     public boolean isAnchored() {
-        return stack.getOrCreateTag().getBoolean("anchored");
+        return getOrCreateSettingTag().getBoolean("anchored");
     }
 
     @Override
     public void setAnchored(boolean anchored) {
-        stack.getOrCreateTag().putBoolean("anchored", anchored);
+        getOrCreateSettingTag().putBoolean("anchored", anchored);
     }
 
 
     @Override
     public BlockPos getOffset() {
-        return NBTUtil.readBlockPos(stack.getOrCreateChildTag("offset"));
+        INBT offset = getOrCreateSettingTag().get("offset");
+        if (offset instanceof CompoundNBT) {
+            return NBTUtil.readBlockPos((CompoundNBT) offset);
+        }
+        return BlockPos.ZERO;
     }
 
     @Override
     public void setOffset(BlockPos offset) {
-        stack.getOrCreateTag().put("offset", NBTUtil.writeBlockPos(offset));
+        if (offset == null) {
+            offset = BlockPos.ZERO;
+        }
+        getOrCreateSettingTag().put("offset", NBTUtil.writeBlockPos(offset));
     }
 
     @Override
     public Rotation getRotation() {
-        byte rotation = stack.getOrCreateTag().getByte("rotation");
+        byte rotation = getOrCreateSettingTag().getByte("rotation");
         return Rotation.values()[(rotation % 4 + 4) % 4];
     }
 
     @Override
     public void setRotation(Rotation rotation) {
-        stack.getOrCreateTag().putByte("rotation", (byte) rotation.ordinal());
+        getOrCreateSettingTag().putByte("rotation", (byte) rotation.ordinal());
     }
 
     @Override
     public boolean isFlipped() {
-        return stack.getOrCreateTag().getBoolean("flipped");
+        return getOrCreateSettingTag().getBoolean("flipped");
     }
 
     @Override
     public void setFlipped(boolean flipped) {
-        stack.getOrCreateTag().putBoolean("flipped", flipped);
+        getOrCreateSettingTag().putBoolean("flipped", flipped);
     }
 
     @Override
@@ -62,7 +77,46 @@ public class MultiblockLocateItemStack implements IMultiblockLocateHandler {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MultiblockLocateItemStack that = (MultiblockLocateItemStack) o;
-        return ItemStack.areItemsEqual(stack, that.stack);
+        return ItemStack.areItemStackTagsEqual(stack, that.stack);
+    }
+
+    @Override
+    public boolean equalsIgnoringSetting(IMultiblockLocateHandler other) {
+        if (!(other instanceof MultiblockLocateItemStack)) {
+            return false;
+        }
+        ItemStack stackA = this.stack;
+        ItemStack stackB = ((MultiblockLocateItemStack) other).stack;
+        if (stackA.isEmpty())
+            return stackB.isEmpty();
+        if (stackB.isEmpty())
+            return false;
+        CompoundNBT tagA = stackA.getTag();
+        CompoundNBT tagB = stackB.getTag();
+        if (tagA == null)
+            return tagB == null;
+        if (tagB == null)
+            return false;
+
+        if (tagA.size() != tagB.size()) {
+            return false;
+        }
+        for (String key : tagA.keySet()) {
+            if ("locate".equals(key)) {
+                continue;
+            }
+            INBT value = tagA.get(key);
+            if (value == null) {
+                if (!(tagB.get(key) == null && tagB.contains(key)))
+                    return false;
+            } else {
+                if (!value.equals(tagB.get(key)))
+                    return false;
+            }
+        }
+
+
+        return true;
     }
 
     @Override

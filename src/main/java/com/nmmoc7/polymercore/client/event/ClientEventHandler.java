@@ -11,6 +11,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -74,6 +75,21 @@ public class ClientEventHandler {
         buffer.finish();
         ms.pop();
 
+    }
+
+
+    @SubscribeEvent
+    public static void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+        if (isGameNotReady())
+            return;
+        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+            return;
+        }
+        float pt = event.getPartialTicks();
+        MatrixStack ms = event.getMatrixStack();
+        ms.push();
+        MultiblockSchematicHandler.INSTANCE.renderOverlay(ms, pt);
+        ms.pop();
     }
 
     private static void tickRenders(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {

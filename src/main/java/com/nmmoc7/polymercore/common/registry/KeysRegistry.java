@@ -35,4 +35,5 @@ public class KeysRegistry {
         "key.message", KeyConflictContext.IN_GAME,
         InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_G
     );
+
 }

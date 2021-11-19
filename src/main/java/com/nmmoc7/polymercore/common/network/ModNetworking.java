@@ -32,5 +32,11 @@ public class ModNetworking {
             .decoder(PacketLocateHandlerSync::new)
             .consumer(PacketLocateHandlerSync::handler)
             .add();
+
+        INSTANCE.messageBuilder(PacketAssembleMultiblock.class, nextID())
+            .encoder(PacketAssembleMultiblock::toBytes)
+            .decoder(PacketAssembleMultiblock::new)
+            .consumer(PacketAssembleMultiblock::handler)
+            .add();
     }
 }

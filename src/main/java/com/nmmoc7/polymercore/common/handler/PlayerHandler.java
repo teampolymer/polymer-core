@@ -25,15 +25,5 @@ public class PlayerHandler {
         if (world.isRemote) {
             return;
         }
-        ItemStack heldItem = e.getPlayer().getHeldItem(e.getHand());
-
-        LazyOptional<IMultiblockSupplier> multiblockSupplier = heldItem.getCapability(CapabilityMultiblock.MULTIBLOCK_SUPPLIER);
-        multiblockSupplier.ifPresent(it -> {
-            IDefinedMultiblock multiblock = it.getMultiblock();
-            IAssembledMultiblock assemble = multiblock.assemble(world, e.getPos());
-            if (assemble != null) {
-                e.getPlayer().sendMessage(new StringTextComponent("Multiblock Assembled"), Util.DUMMY_UUID);
-            }
-        });
     }
 }

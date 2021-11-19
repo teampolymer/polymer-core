@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public enum GuiResources {
+public enum GuiResources implements IGuiResource{
 
     TOOLBAR_BACKGROUND("overlay.png", 0, 0, 16, 16),
     ;
@@ -54,9 +54,10 @@ public enum GuiResources {
         screen.blit(ms, x, y, startX, startY, width, height);
     }
 
-    public void draw(MatrixStack ms, int x, int y, Color c) {
+    @OnlyIn(Dist.CLIENT)
+    public void draw(MatrixStack ms, int zLevel, int x, int y, Color c) {
         bind();
-        PolymerGuiUtils.drawColoredTexturedModalRect(ms, c, x, y, startX, startY, width, height, 0);
+        PolymerGuiUtils.drawColoredTexturedModalRect(ms, c, x, y, startX, startY, width, height, zLevel, 256, 256);
     }
 
 }

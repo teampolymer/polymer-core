@@ -27,6 +27,8 @@ public interface IMultiblockLocateHandler {
 
     void setAnchored(boolean anchored);
 
+    boolean equalsIgnoringSetting(IMultiblockLocateHandler other);
+
     default void reset() {
         setRotation(Rotation.NONE);
         setAnchored(false);

@@ -8,9 +8,9 @@ import net.minecraft.util.math.vector.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 public class PolymerGuiUtils {
-    public static void drawColoredTexturedModalRect(MatrixStack ms, Color c, int x, int y, int u, int v, int width, int height, float zLevel) {
-        final float uScale = 1f / 0x100;
-        final float vScale = 1f / 0x100;
+    public static void drawColoredTexturedModalRect(MatrixStack ms, Color c, int x, int y, int u, int v, int width, int height, float zLevel, int textureWidth, int textureHeight) {
+        final float uScale = 1f / textureWidth;
+        final float vScale = 1f / textureHeight;
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder wr = tessellator.getBuffer();

@@ -3,8 +3,25 @@
   "error.blueprint.no_core": "[PolymerCore] Blueprint lacks core",
   "itemGroup.polymer": "polymer-core",
   "tile.polymer.machine_base": "machine_base_test",
-  "gui.toolmenu.cycle": "[Mouse Wheel] To select",
   "name.polymer.multiblock.internal.unknown": "Unknown",
+
+  "chat.polymer.info.multiblock.assemble.success": "Multiblock Assembled",
+  "chat.polymer.info.multiblock.assemble.failed": "Could not Assemble Multiblock",
+
+  "gui.polymer.toolmenu.cycle": "[Mouse Wheel] To select",
+  "gui.polymer.toolmenu.focusKey": "Hold [%1$s] to focus",
+
+  "gui.polymer.locator.control.rotate.title": "Rotate",
+  "gui.polymer.locator.control.rotate.description_1": "Rotate",
+  "gui.polymer.locator.control.anchor.title": "Anchor",
+  "gui.polymer.locator.control.flip.title": "Flip",
+  "gui.polymer.locator.control.layer.title": "Choose Layer",
+  "gui.polymer.locator.control.extension.title": "Choose Extension",
+  "gui.polymer.locator.control.assemble.title": "Assemble",
+  "gui.polymer.locator.control.move_x.title": "Move X",
+  "gui.polymer.locator.control.move_y.title": "Move Y",
+  "gui.polymer.locator.control.move_z.title": "Move Z",
+
   "name.polymer.multiblock.polymer-core.test_machine": "Test Machine",
   "name.polymer.multiblock.polymer-core.test_machine_2": "Test Machine 2"
 }
