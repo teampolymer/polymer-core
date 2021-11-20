@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public enum GuiResources implements IGuiResource{
+public enum GuiResources implements IGuiResource {
 
     TOOLBAR_BACKGROUND("overlay.png", 0, 0, 16, 16),
     ;
@@ -19,6 +19,27 @@ public enum GuiResources implements IGuiResource{
 
     public final ResourceLocation location;
     public int width, height;
+
+    public ResourceLocation getLocation() {
+        return location;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public int getStartY() {
+        return startY;
+    }
+
     public int startX, startY;
 
     GuiResources(String location, int width, int height) {
@@ -49,9 +70,9 @@ public enum GuiResources implements IGuiResource{
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void draw(MatrixStack ms, AbstractGui screen, int x, int y) {
+    public void draw(MatrixStack ms, int zLevel, int x, int y) {
         bind();
-        screen.blit(ms, x, y, startX, startY, width, height);
+        AbstractGui.blit(ms, x, y, zLevel, startX, startY, width, height, 256, 256);
     }
 
     @OnlyIn(Dist.CLIENT)

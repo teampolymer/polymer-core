@@ -31,6 +31,32 @@ public enum Icons implements IGuiResource {
 
     public static final ResourceLocation location = new ResourceLocation(PolymerCoreApi.MOD_ID, "textures/misc/icons.png");
     public static final int width = 16, height = 16;
+
+    @Override
+    public ResourceLocation getLocation() {
+        return location;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
+    public int getStartX() {
+        return startX;
+    }
+
+    @Override
+    public int getStartY() {
+        return startY;
+    }
+
     public final int startX, startY;
 
     @OnlyIn(Dist.CLIENT)
@@ -41,18 +67,14 @@ public enum Icons implements IGuiResource {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void draw(MatrixStack ms, AbstractGui screen, int x, int y) {
-        draw(ms, screen.getBlitOffset(), x, y);
-    }
-
-
-    @OnlyIn(Dist.CLIENT)
+    @Override
     public void draw(MatrixStack ms, int zLevel, int x, int y) {
         bind();
         AbstractGui.blit(ms, x, y, zLevel, startX, startY, width, height, 256, 256);
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Override
     public void draw(MatrixStack ms, int zLevel, int x, int y, Color c) {
         bind();
         PolymerGuiUtils.drawColoredTexturedModalRect(ms, c, x, y, startX, startY, width, height, zLevel, 256, 256);

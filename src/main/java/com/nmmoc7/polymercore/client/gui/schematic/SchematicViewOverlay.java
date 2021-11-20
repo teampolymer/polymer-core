@@ -1,15 +1,19 @@
 package com.nmmoc7.polymercore.client.gui.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
+import com.nmmoc7.polymercore.client.resources.GuiResources;
+import com.nmmoc7.polymercore.client.resources.IGuiResource;
+import com.nmmoc7.polymercore.client.utils.Color;
 import com.nmmoc7.polymercore.client.utils.schematic.control.*;
 import com.nmmoc7.polymercore.common.registry.KeysRegistry;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
@@ -17,6 +21,8 @@ import java.util.Locale;
 
 /**
  * 蓝图控制的窗口
+ * Modified from create
+ * Copyright (c) 2019 simibubi
  */
 public class SchematicViewOverlay extends Screen {
 
@@ -48,7 +54,7 @@ public class SchematicViewOverlay extends Screen {
         }
 
 
-        w = Math.max(actions.length * 50 + 30, 220);
+        w = Math.max(actions.length * 40 + 30, 220);
         h = 30;
     }
 
@@ -66,33 +72,34 @@ public class SchematicViewOverlay extends Screen {
         ms.push();
         ms.translate(0, -yOffset, focused ? 100 : 0);
 
-//        AllGuiTextures gray = AllGuiTextures.HUD_BACKGROUND;
-//        RenderSystem.enableBlend();
-//        RenderSystem.color4f(1, 1, 1, focused ? 7 / 8f : 1 / 2f);
-//
-//        Minecraft.getInstance()
-//            .getTextureManager()
-//            .bindTexture(gray.location);
-//        blit(ms, x - 15, y, gray.startX, gray.startY, w, h, gray.width, gray.height);
-//
-//        float toolTipAlpha = yOffset / 10;
-//        List<ITextComponent> toolTip = currentAction().getDescription();
-//        int stringAlphaComponent = ((int) (toolTipAlpha * 0xFF)) << 24;
-//
-//        if (toolTipAlpha > 0.25f) {
-//            RenderSystem.color4f(.7f, .7f, .8f, toolTipAlpha);
-//            blit(ms, x - 15, y + 33, gray.startX, gray.startY, w, h + 22, gray.width, gray.height);
-//            RenderSystem.color4f(1, 1, 1, 1);
-//
-//            if (toolTip.size() > 0)
-//                font.drawText(ms, toolTip.get(0), x - 10, y + 38, 0xEEEEEE + stringAlphaComponent);
-//            if (toolTip.size() > 1)
-//                font.drawText(ms, toolTip.get(1), x - 10, y + 50, 0xCCDDFF + stringAlphaComponent);
-//            if (toolTip.size() > 2)
-//                font.drawText(ms, toolTip.get(2), x - 10, y + 60, 0xCCDDFF + stringAlphaComponent);
-//            if (toolTip.size() > 3)
-//                font.drawText(ms, toolTip.get(3), x - 10, y + 72, 0xCCCCDD + stringAlphaComponent);
-//        }
+        IGuiResource gray = GuiResources.TOOLBAR_BACKGROUND;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(1, 1, 1, focused ? 3 / 4f : .3f);
+
+        Minecraft.getInstance()
+            .getTextureManager()
+            .bindTexture(gray.getLocation());
+        blit(ms, x - 15, y, gray.getStartX(), gray.getStartY(), w, h, gray.getWidth(), gray.getHeight());
+
+        float toolTipAlpha = yOffset / 10;
+        List<ITextComponent> toolTip = currentAction().getDescription();
+        int stringAlphaComponent = ((int) (toolTipAlpha * 0xFF)) << 24;
+
+        if (toolTipAlpha > 0.25f) {
+            RenderSystem.color4f(.7f, .7f, .8f, toolTipAlpha);
+            blit(ms, x - 15, y, gray.getStartX(), gray.getStartY(), w, h + 22, gray.getWidth(), gray.getHeight());
+            RenderSystem.color4f(1, 1, 1, 1);
+
+            if (toolTip.size() > 0)
+                font.drawText(ms, toolTip.get(0), x - 10, y + 38, 0xEEEEEE + stringAlphaComponent);
+            if (toolTip.size() > 1)
+                font.drawText(ms, toolTip.get(1), x - 10, y + 50, 0xCCDDFF + stringAlphaComponent);
+            if (toolTip.size() > 2)
+                font.drawText(ms, toolTip.get(2), x - 10, y + 60, 0xCCDDFF + stringAlphaComponent);
+            if (toolTip.size() > 3)
+                font.drawText(ms, toolTip.get(3), x - 10, y + 72, 0xCCCCDD + stringAlphaComponent);
+        }
 
         RenderSystem.color4f(1, 1, 1, 1);
         if (actions.length > 1) {
@@ -109,6 +116,7 @@ public class SchematicViewOverlay extends Screen {
             x += 65;
         }
 
+
         for (int i = 0; i < actions.length; i++) {
             ms.push();
 
@@ -116,22 +124,23 @@ public class SchematicViewOverlay extends Screen {
             if (i == current) {
                 ms.translate(0, -10, 0);
                 drawCenteredString(ms, font, actions[i]
-                    .getName(), x + i * 50 + 24, y + 28, 0xCCDDFF);
+                    .getName(), x + i * 40 + 24, y + 28, 0xCCDDFF);
                 alpha = 1;
             }
-            RenderSystem.color4f(0, 0, 0, alpha);
-            actions[i]
-                .getIcon()
-                .draw(ms, this, x + i * 50 + 16, y + 12);
-            RenderSystem.color4f(1, 1, 1, alpha);
-            actions[i]
-                .getIcon()
-                .draw(ms, this, x + i * 50 + 16, y + 11);
+            IGuiResource icon = actions[i]
+                .getIcon();
 
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0, 0, 0, alpha * .2f);
+            icon.draw(ms, 0, x + i * 40 + 17, y + 12);
+            RenderSystem.color4f(1, 1, 1, alpha);
+            icon.draw(ms, 0, x + i * 40 + 16, y + 11);
             ms.pop();
         }
 
-        RenderSystem.enableBlend();
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
         ms.pop();
     }
 
