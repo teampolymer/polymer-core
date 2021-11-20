@@ -17,6 +17,7 @@ public abstract class ControlAction {
 
     protected ControlAction(IGuiResource icon) {
         this.icon = icon;
+        this.enabled = true;
     }
 
 

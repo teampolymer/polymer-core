@@ -68,7 +68,7 @@ public class PacketAssembleMultiblock {
                     .getMultiblockManager()
                     .findById(new ResourceLocation(multiblockId))
                     .ifPresent(it -> {
-                        IAssembledMultiblock assemble = it.assemble(player.world, offset, rotation, flipped);
+                        IAssembledMultiblock assemble = it.assemble(player.world, offset);
 
                         if (assemble != null) {
                             player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.success"), Util.DUMMY_UUID);

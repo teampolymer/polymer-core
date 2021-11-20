@@ -1,9 +1,43 @@
 {
   "item.polymer-core.blueprint": "蓝图 [%s]",
-  "error.blueprint.no_core": "[PolymerCore] 蓝图缺少core",
+  "error.blueprint.no_core": "[PolymerCore] 蓝图缺少核心",
   "itemGroup.polymer": "polymer-core",
   "tile.polymer.machine_base": "基础测试机械方块",
-  "gui.toolmenu.cycle": "[鼠标滚轮] 来选择",
   "name.polymer.multiblock.internal.unknown": "未知",
-  "name.polymer.multiblock.polymer-core.test_machine": "测试机械"
+
+  "chat.polymer.info.multiblock.assemble.success": "多方快结构组装成功",
+  "chat.polymer.info.multiblock.assemble.failed": "无法组装多方快结构",
+
+  "gui.polymer.toolmenu.cycle": "[鼠标滚轮] 进行选择",
+  "gui.polymer.toolmenu.focusKey": "按住 [%1$s] 进行选择",
+
+  "gui.polymer.locator.control.misc.disabled": "这个操作当前被禁用！",
+  "gui.polymer.locator.control.rotate.title": "旋转",
+  "gui.polymer.locator.control.rotate.description_1": "旋转多方快结构",
+  "gui.polymer.locator.control.rotate.description_2": "按住 [Alt]，使用 [鼠标滚轮] 进行旋转",
+  "gui.polymer.locator.control.anchor.title": "锚定",
+  "gui.polymer.locator.control.anchor.description_1": "将多方快结构投影锚定再某个坐标",
+  "gui.polymer.locator.control.anchor.description_2": "[鼠标右键] 任意方法来锚定",
+  "gui.polymer.locator.control.anchor.description_3": "[鼠标右键] 空气取消锚定",
+  "gui.polymer.locator.control.flip.title": "翻转",
+  "gui.polymer.locator.control.flip.description_1": "翻转结构",
+  "gui.polymer.locator.control.flip.description_2": "[Alt]+[鼠标右键] 来翻转结构",
+  "gui.polymer.locator.control.flip.description_3": "只有被标记为‘对称放置’的结构才能被翻转",
+  "gui.polymer.locator.control.layer.title": "层选择",
+  "gui.polymer.locator.control.extension.title": "拓展选择",
+  "gui.polymer.locator.control.assemble.title": "组装",
+  "gui.polymer.locator.control.assemble.description_1": "组装多方快结构",
+  "gui.polymer.locator.control.assemble.description_2": "[鼠标右键] 中心方块来组装多方快结构",
+  "gui.polymer.locator.control.assemble.description_3": "如果多方快结构没有锚定，会隐藏投影",
+  "gui.polymer.locator.control.move_x.title": "X轴移动",
+  "gui.polymer.locator.control.move_x.description_1": "沿着X轴移动多方快结构",
+  "gui.polymer.locator.control.move_common.description_2": "按住 [Alt]，使用 [鼠标滚轮] 进行移动",
+  "gui.polymer.locator.control.move_common.description_3": "只有在锚定的时候才能使用移动",
+  "gui.polymer.locator.control.move_y.title": "Y轴移动",
+  "gui.polymer.locator.control.move_y.description_1": "沿着Y轴移动多方快结构",
+  "gui.polymer.locator.control.move_z.title": "Z轴移动",
+  "gui.polymer.locator.control.move_z.description_1": "沿着Z轴移动多方快结构",
+
+  "name.polymer.multiblock.polymer-core.test_machine": "测试机械",
+  "name.polymer.multiblock.polymer-core.test_machine_2": "Test Machine 2"
 }

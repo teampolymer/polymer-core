@@ -117,12 +117,15 @@ public class MultiblockSchematicHandler implements IRenderer {
 
 
     public void renderOverlay(MatrixStack ms, float pt) {
-        if(locateHandler != null) {
+        if (locateHandler != null) {
             viewOverlay.renderOverlay(ms, pt);
         }
     }
 
     public void fadeOutCurrent() {
+        if (activating() && this.locateHandler != null && !this.locateHandler.isAnchored() && viewOverlay.currentAction().shouldHideSchematic()) {
+            return;
+        }
         fadeOutRenderer.fadeOut(renderer);
     }
 

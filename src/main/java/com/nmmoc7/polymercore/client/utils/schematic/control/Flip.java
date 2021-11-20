@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.client.utils.schematic.control;
 
+import com.google.common.collect.Lists;
 import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
 import com.nmmoc7.polymercore.client.resources.Icons;
 import com.nmmoc7.polymercore.common.registry.KeysRegistry;
@@ -9,6 +10,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Flip extends ControlAction {
@@ -22,9 +24,15 @@ public class Flip extends ControlAction {
         return new TranslationTextComponent("gui.polymer.locator.control.flip.title");
     }
 
+    private final List<ITextComponent> description = Lists.newArrayList(
+        new TranslationTextComponent("gui.polymer.locator.control.flip.description_1"),
+        new TranslationTextComponent("gui.polymer.locator.control.flip.description_2"),
+        new TranslationTextComponent("gui.polymer.locator.control.flip.description_3")
+    );
+
     @Override
     public List<ITextComponent> getDescription() {
-        return super.getDescription();
+        return Collections.unmodifiableList(description);
     }
 
     @Override

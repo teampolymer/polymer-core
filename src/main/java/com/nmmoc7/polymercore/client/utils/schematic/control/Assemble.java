@@ -1,5 +1,6 @@
 package com.nmmoc7.polymercore.client.utils.schematic.control;
 
+import com.google.common.collect.Lists;
 import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.client.handler.MultiblockSchematicHandler;
@@ -12,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,9 +28,20 @@ public class Assemble extends ControlAction {
         return new TranslationTextComponent("gui.polymer.locator.control.assemble.title");
     }
 
+    private final List<ITextComponent> description = Lists.newArrayList(
+        new TranslationTextComponent("gui.polymer.locator.control.assemble.description_1"),
+        new TranslationTextComponent("gui.polymer.locator.control.assemble.description_2"),
+        new TranslationTextComponent("gui.polymer.locator.control.assemble.description_3")
+    );
+
     @Override
     public List<ITextComponent> getDescription() {
-        return super.getDescription();
+        return Collections.unmodifiableList(description);
+    }
+
+    @Override
+    public boolean shouldHideSchematic() {
+        return true;
     }
 
     @Override
