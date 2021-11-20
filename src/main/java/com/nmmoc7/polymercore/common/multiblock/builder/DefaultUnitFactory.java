@@ -10,6 +10,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -40,47 +41,51 @@ public class DefaultUnitFactory implements IUnitFactory {
     }
 
     @Override
-    public <T> IMultiblockUnit createByTag(ITag<T> tag) {
-        ResourceLocation id = BlockTags.getCollection().getDirectIdFromTag((ITag<Block>) tag);
-        if (id == null) {
-            if (FluidTags.getCollection().getDirectIdFromTag((ITag<Fluid>) tag) == null) {
-                return null;
-            }
-            List<Fluid> elements = (List<Fluid>) tag.getAllElements();
-            if (elements.isEmpty()) {
-                return null;
-            }
-            if (elements.size() == 1) {
-                return createByFluid(elements.get(0));
-            }
-            return new UnitFluidArray(elements);
-
-        } else {
-            List<Block> elements = (List<Block>) tag.getAllElements();
-            if (elements.isEmpty()) {
-                return null;
-            }
-            if (elements.size() == 1) {
-                return createByBlock(elements.get(0));
-            }
-            return new UnitBlockArray(elements);
+    public IMultiblockUnit createByBlockTag(ITag<Block> tag) {
+        List<Block> elements = tag.getAllElements();
+        if (elements.isEmpty()) {
+            return null;
         }
+        if (elements.size() == 1) {
+            return createByBlock(elements.get(0));
+        }
+        return new UnitBlockArray(elements);
+    }
 
+    @Override
+    public IMultiblockUnit createByFluidTag(ITag<Fluid> tag) {
+        List<Fluid> elements = tag.getAllElements();
+        if (elements.isEmpty()) {
+            return null;
+        }
+        if (elements.size() == 1) {
+            return createByFluid(elements.get(0));
+        }
+        return new UnitFluidArray(elements);
     }
 
     @Override
     public IMultiblockUnit createByTag(String tag) {
-        ResourceLocation location = ResourceLocation.tryCreate(tag);
-        if (location == null) {
-            return null;
-        }
-        ITag<Block> blockTag = BlockTags.getCollection().get(location);
-        if (blockTag != null) {
-            return createByTag(blockTag);
-        }
-        ITag<Fluid> fluidTag = FluidTags.getCollection().get(location);
-        if (fluidTag != null) {
-            return createByTag(fluidTag);
+        if (tag.startsWith("block:")) {
+            ResourceLocation location = ResourceLocation.tryCreate(tag.substring("block:".length()));
+            if (location == null) {
+                return null;
+            }
+//            ITag<Block> blockTag = BlockTags.getCollection().get(location);
+            ITag<Block> blockTag = TagCollectionManager.getManager().getBlockTags().get(location);
+            if (blockTag != null) {
+                return createByBlockTag(blockTag);
+            }
+
+        } else if (tag.startsWith("fluid:")) {
+            ResourceLocation location = ResourceLocation.tryCreate(tag.substring("fluid:".length()));
+            if (location == null) {
+                return null;
+            }
+            ITag<Fluid> fluidTag = TagCollectionManager.getManager().getFluidTags().get(location);
+            if (fluidTag != null) {
+                return createByFluidTag(fluidTag);
+            }
         }
         return null;
     }

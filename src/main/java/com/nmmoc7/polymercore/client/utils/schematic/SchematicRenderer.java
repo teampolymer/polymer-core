@@ -1,6 +1,7 @@
 package com.nmmoc7.polymercore.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.MultiblockDirection;
 import com.nmmoc7.polymercore.api.multiblock.part.IMultiblockPart;
@@ -230,6 +231,9 @@ public class SchematicRenderer {
                 ms.pop();
 
             }
+
+            RenderSystem.disableDepthTest();
+            RenderSystem.depthFunc(515);
             buffer.finish();
         }
 

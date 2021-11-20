@@ -9,7 +9,7 @@
           "block": "minecraft:stone_bricks"
         },
         {
-          "tag": "forge:glass"
+          "tag": "block:forge:glass"
         }
       ]
     },

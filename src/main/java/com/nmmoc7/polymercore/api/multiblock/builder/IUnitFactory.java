@@ -20,7 +20,8 @@ public interface IUnitFactory {
 
     IMultiblockUnit createByFluid(String fluid);
 
-    <T> IMultiblockUnit createByTag(ITag<T> tag);
+    IMultiblockUnit createByBlockTag(ITag<Block> tag);
+    IMultiblockUnit createByFluidTag(ITag<Fluid> tag);
 
     IMultiblockUnit createByTag(String tag);
 

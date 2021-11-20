@@ -10,6 +10,8 @@ import com.nmmoc7.polymercore.common.network.PacketAssembleMultiblock;
 import com.nmmoc7.polymercore.common.network.PacketLocateHandlerSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -50,8 +52,12 @@ public class Assemble extends ControlAction {
             return;
         }
         IDefinedMultiblock currentMultiblock = MultiblockSchematicHandler.INSTANCE.getCurrentMultiblock();
-        if (currentMultiblock != null && currentMultiblock.getRegistryName() != null) {
-            ModNetworking.INSTANCE.sendToServer(new PacketAssembleMultiblock(currentMultiblock.getRegistryName().toString(), locateHandler));
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.objectMouseOver instanceof BlockRayTraceResult && mc.objectMouseOver.getType() == RayTraceResult.Type.BLOCK) {
+            BlockPos pos = ((BlockRayTraceResult) mc.objectMouseOver).getPos();
+            if (currentMultiblock != null && currentMultiblock.getRegistryName() != null) {
+                ModNetworking.INSTANCE.sendToServer(new PacketAssembleMultiblock(currentMultiblock.getRegistryName().toString(), pos));
+            }
         }
 
     }

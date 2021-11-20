@@ -20,42 +20,22 @@ import java.util.function.Supplier;
 
 public class PacketAssembleMultiblock {
     private final String multiblockId;
-    private final boolean anchored;
     private final BlockPos offset;
-    private final Rotation rotation;
-    private final boolean flipped;
 
-    public PacketAssembleMultiblock(String multiblockId, boolean anchored, BlockPos offset, Rotation rotation, boolean flipped) {
+    public PacketAssembleMultiblock(String multiblockId, BlockPos offset) {
         this.multiblockId = multiblockId;
-        this.anchored = anchored;
         this.offset = offset;
-        this.rotation = rotation;
-        this.flipped = flipped;
-    }
-
-    public PacketAssembleMultiblock(String multiblockId, IMultiblockLocateHandler locateHandler) {
-        this.multiblockId = multiblockId;
-        this.anchored = locateHandler.isAnchored();
-        this.offset = locateHandler.getOffset();
-        this.rotation = locateHandler.getRotation();
-        this.flipped = locateHandler.isFlipped();
     }
 
     public PacketAssembleMultiblock(PacketBuffer buffer) {
         this.multiblockId = buffer.readString();
-        this.anchored = buffer.readBoolean();
         this.offset = buffer.readBlockPos();
-        this.rotation = buffer.readEnumValue(Rotation.class);
-        this.flipped = buffer.readBoolean();
     }
 
 
     public void toBytes(PacketBuffer buffer) {
         buffer.writeString(multiblockId);
-        buffer.writeBoolean(anchored);
         buffer.writeBlockPos(offset);
-        buffer.writeEnumValue(rotation);
-        buffer.writeBoolean(flipped);
     }
 
     public void handler(Supplier<NetworkEvent.Context> ctx) {
@@ -64,18 +44,20 @@ public class PacketAssembleMultiblock {
                 ServerPlayerEntity player = ctx.get().getSender();
                 if (player == null)
                     return;
-                PolymerCoreApi.getInstance()
-                    .getMultiblockManager()
-                    .findById(new ResourceLocation(multiblockId))
-                    .ifPresent(it -> {
-                        IAssembledMultiblock assemble = it.assemble(player.world, offset);
+                if (player.world.isBlockLoaded(offset)) {
+                    PolymerCoreApi.getInstance()
+                        .getMultiblockManager()
+                        .findById(new ResourceLocation(multiblockId))
+                        .ifPresent(it -> {
+                            IAssembledMultiblock assemble = it.assemble(player.world, offset);
 
-                        if (assemble != null) {
-                            player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.success"), Util.DUMMY_UUID);
-                        } else {
-                            player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.failed"), Util.DUMMY_UUID);
-                        }
-                    });
+                            if (assemble != null) {
+                                player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.success"), Util.DUMMY_UUID);
+                            } else {
+                                player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.failed"), Util.DUMMY_UUID);
+                            }
+                        });
+                }
 
             });
         }

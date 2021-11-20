@@ -22,6 +22,7 @@ public class MultiblockReloadListener implements IFutureReloadListener {
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+
         return stage.markCompleteAwaitingOthers(Void.TYPE)
             .thenRunAsync(() -> {
                     try {
@@ -30,7 +31,7 @@ public class MultiblockReloadListener implements IFutureReloadListener {
                         e.printStackTrace();
                     }
                 }
-                , backgroundExecutor);
+                , gameExecutor);
     }
 
 
