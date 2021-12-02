@@ -15,11 +15,14 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class FreeMultiblockImpl implements IFreeMultiblock {
+    private static final Logger LOG = LogManager.getLogger();
     private UUID multiblockId;
     private IMultiblockAssembleRule assembleRule;
     private IDefinedMultiblock definedMultiblock;
@@ -76,7 +79,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
             }
         }
         FreeMultiblockWorldSavedData.get(world).removeAssembledMultiblock(multiblockId);
-        PolymerCore.LOG.debug("The multiblock '{}' disassembled", multiblockId);
+        LOG.debug("The multiblock '{}' disassembled", multiblockId);
     }
 
 
@@ -103,7 +106,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     @Override
     public Map<BlockPos, IMultiblockUnit> getUnits() {
         if (!initialized) {
-            PolymerCore.LOG.error("Multiblock {} not initialized", getMultiblockId());
+            LOG.error("Multiblock {} not initialized", getMultiblockId());
             return Collections.emptyMap();
         }
         return unitsMap;
@@ -138,7 +141,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     @Override
     public Collection<ChunkPos> getCrossedChunks() {
         if (!initialized) {
-            PolymerCore.LOG.error("Multiblock {} not initialized", getMultiblockId());
+            LOG.error("Multiblock {} not initialized", getMultiblockId());
             return Collections.singleton(new ChunkPos(getOffset()));
         }
         return crossedChunks;

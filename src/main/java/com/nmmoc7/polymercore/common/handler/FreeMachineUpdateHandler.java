@@ -23,6 +23,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = PolymerCoreApi.MOD_ID)
 public class FreeMachineUpdateHandler {
+    private static final Logger LOG = LogManager.getLogger();
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
@@ -59,7 +62,7 @@ public class FreeMachineUpdateHandler {
         if (!test) {
             IAssembledMultiblock assembledMultiblock = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblock(part.getA());
             if (assembledMultiblock == null) {
-                PolymerCore.LOG.warn("The multiblock '{}' 's block in {} is invalid!", part.getA(), pos);
+                LOG.warn("The multiblock '{}' 's block in {} is invalid!", part.getA(), pos);
                 it.removeMultiblock(part.getA());
                 return;
             }

@@ -1,6 +1,5 @@
 package com.nmmoc7.polymercore.common.multiblock.free;
 
-import com.nmmoc7.polymercore.PolymerCore;
 import com.nmmoc7.polymercore.api.capability.IChunkMultiblockStorage;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
@@ -17,12 +16,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.UUID;
 
 public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> implements IMultiblockType {
-
+    private static final Logger LOG = LogManager.getLogger();
     @Override
     public IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, IMultiblockAssembleRule assembleRule) {
 
@@ -59,7 +60,7 @@ public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> impl
         try {
             multiblock.deserializeNBT(nbt);
         } catch (IllegalStateException e) {
-            PolymerCore.LOG.error(e.getMessage());
+            LOG.error(e.getMessage());
             return null;
         }
         return multiblock;

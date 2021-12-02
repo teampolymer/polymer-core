@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FreeMultiblockWorldSavedData extends WorldSavedData {
+    private static final Logger LOG = LogManager.getLogger();
     private static final String NAME = "polymer_core_multiblock";
     private final World world;
 
@@ -53,15 +56,15 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             BlockPos corePos = positions.get(uuid);
             IFreeMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
             if (assembledMultiblock == null) {
-                PolymerCore.LOG.error("Multiblock {} in {} has no entry, this should not happen!", uuid, corePos);
+                LOG.error("Multiblock {} in {} has no entry, this should not happen!", uuid, corePos);
                 removeAssembledMultiblock(uuid);
             } else if (!multiblocks.contains(uuid)) {
-                PolymerCore.LOG.error("Found invalidate multiblock {} in {}", uuid, corePos);
+                LOG.error("Found invalidate multiblock {} in {}", uuid, corePos);
                 assembledMultiblock.disassemble(world);
             } else {
                 boolean invalid = assembledMultiblock.validate(world,false);
                 if(invalid) {
-                    PolymerCore.LOG.error("Found invalidate multiblock {} in {}", uuid, corePos);
+                    LOG.error("Found invalidate multiblock {} in {}", uuid, corePos);
                     assembledMultiblock.disassemble(world);
                 }
             }
@@ -72,13 +75,13 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
     public void addAssembledMultiblock(IFreeMultiblock multiblock) {
         IFreeMultiblock result = assembledMultiblockMap.put(multiblock.getMultiblockId(), multiblock);
         if (result != null) {
-            PolymerCore.LOG.error("Attempting to add an multiblock with existing id: {}", multiblock.getMultiblockId());
+            LOG.error("Attempting to add an multiblock with existing id: {}", multiblock.getMultiblockId());
             result.disassemble(world);
             removeAssembledMultiblock(result.getMultiblockId());
         }
         if (positions.containsValue(multiblock.getOffset())) {
             UUID uuid = positions.inverse().get(multiblock.getOffset());
-            PolymerCore.LOG.error("Attempting to add an multiblock {} to position {} where there are another multiblock {}",
+            LOG.error("Attempting to add an multiblock {} to position {} where there are another multiblock {}",
                 multiblock.getMultiblockId(), multiblock.getOffset(), uuid);
             IFreeMultiblock assembledMultiblock = getAssembledMultiblock(uuid);
             if (assembledMultiblock != null) {
@@ -113,8 +116,8 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             positions.put(assembledMultiblock.getMultiblockId(), assembledMultiblock.getOffset().toImmutable());
             chunksMultiblocks.put(new ChunkPos(assembledMultiblock.getOffset()), assembledMultiblock.getMultiblockId());
         }
-        if (PolymerCore.LOG.isDebugEnabled() && assembledMultiblockMap.size() > 0) {
-            PolymerCore.LOG.debug("Loaded {} machines in world {}", assembledMultiblockMap.size(), world.getDimensionKey());
+        if (LOG.isDebugEnabled() && assembledMultiblockMap.size() > 0) {
+            LOG.debug("Loaded {} machines in world {}", assembledMultiblockMap.size(), world.getDimensionKey());
         }
     }
 
@@ -125,8 +128,8 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             listNBT.add(value.serializeNBT());
         }
         compound.put("assembled_multiblocks", listNBT);
-        if (PolymerCore.LOG.isDebugEnabled() && listNBT.size() > 0) {
-            PolymerCore.LOG.debug("Saving {} machines in world {}", listNBT.size(), world.getDimensionKey());
+        if (LOG.isDebugEnabled() && listNBT.size() > 0) {
+            LOG.debug("Saving {} machines in world {}", listNBT.size(), world.getDimensionKey());
         }
         return compound;
     }

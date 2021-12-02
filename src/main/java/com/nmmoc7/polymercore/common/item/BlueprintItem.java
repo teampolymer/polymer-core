@@ -5,7 +5,7 @@ import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
 import com.nmmoc7.polymercore.api.capability.IMultiblockSupplier;
 import com.nmmoc7.polymercore.api.multiblock.IDefinedMultiblock;
 import com.nmmoc7.polymercore.common.PolymerItemGroup;
-import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
+import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblockItem;
 import com.nmmoc7.polymercore.common.capability.blueprint.MultiblockLocateItemStack;
 import com.nmmoc7.polymercore.common.capability.blueprint.MultiblockSupplierItemStack;
 import net.minecraft.client.resources.I18n;
@@ -42,19 +42,22 @@ public class BlueprintItem extends Item {
             @NotNull
             @Override
             public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-                if (CapabilityMultiblock.MULTIBLOCK_SUPPLIER == cap) {
+                if (CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER == cap) {
                     return SUPPLIER.cast();
                 }
-                if (CapabilityMultiblock.MULTIBLOCK_LOCATE_HANDLER == cap) {
+                if (CapabilityMultiblockItem.MULTIBLOCK_LOCATE_HANDLER == cap) {
                     return LOCATOR.cast();
                 }
                 return LazyOptional.empty();
             }
+
+
         };
     }
 
+
     public IDefinedMultiblock getMultiblock(ItemStack stack) {
-        LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblock.MULTIBLOCK_SUPPLIER);
+        LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
         if (!capability.isPresent()) {
             return null;
         }
@@ -85,7 +88,7 @@ public class BlueprintItem extends Item {
                 .getMultiblockManager()
                 .findAll()) {
                 ItemStack stack = new ItemStack(this);
-                LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblock.MULTIBLOCK_SUPPLIER);
+                LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
                 capability.ifPresent(it -> {
                     if (it instanceof IMultiblockSupplier.Mutable) {
                         ((IMultiblockSupplier.Mutable) it).setMultiblockRegistryName(multiblock.getRegistryName());

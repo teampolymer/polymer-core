@@ -1,7 +1,7 @@
 package com.nmmoc7.polymercore.common.network;
 
 import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
-import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
+import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblockItem;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -57,7 +57,7 @@ public class PacketLocateHandlerSync {
                     stack = player.inventory.getStackInSlot(slot);
                 }
 
-                stack.getCapability(CapabilityMultiblock.MULTIBLOCK_LOCATE_HANDLER).ifPresent(it -> {
+                stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_LOCATE_HANDLER).ifPresent(it -> {
                     it.setAnchored(anchored);
                     it.setOffset(offset);
                     it.setRotation(rotation);

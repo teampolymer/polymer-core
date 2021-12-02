@@ -1,17 +1,12 @@
 package com.nmmoc7.polymercore.common.network;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
-import com.nmmoc7.polymercore.api.capability.IMultiblockLocateHandler;
 import com.nmmoc7.polymercore.api.multiblock.IAssembledMultiblock;
-import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;

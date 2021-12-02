@@ -2,7 +2,7 @@ package com.nmmoc7.polymercore;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.client.PolymerClient;
-import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
+import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblockItem;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;
 import com.nmmoc7.polymercore.common.item.ModItems;
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(PolymerCoreApi.MOD_ID)
 public class PolymerCore {
 
-    public static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger();
 
     public PolymerCore() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -47,7 +47,7 @@ public class PolymerCore {
 
     public void registerCapabilities() {
         CapabilityChunkMultiblockStorage.register();
-        CapabilityMultiblock.register();
+        CapabilityMultiblockItem.register();
     }
 
 }

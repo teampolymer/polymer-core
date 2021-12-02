@@ -12,7 +12,7 @@ import com.nmmoc7.polymercore.client.utils.AnimationTickHelper;
 import com.nmmoc7.polymercore.client.utils.math.SchematicTransform;
 import com.nmmoc7.polymercore.client.utils.schematic.SchematicFadeOutRenderer;
 import com.nmmoc7.polymercore.client.utils.schematic.SchematicRenderer;
-import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblock;
+import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblockItem;
 import com.nmmoc7.polymercore.common.network.ModNetworking;
 import com.nmmoc7.polymercore.common.network.PacketLocateHandlerSync;
 import net.minecraft.client.Minecraft;
@@ -20,7 +20,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
@@ -367,10 +366,10 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
         int slot = mc.player.inventory.currentItem;
         ItemStack heldItem = mc.player.getHeldItem(Hand.MAIN_HAND);
-        LazyOptional<IMultiblockLocateHandler> capability = heldItem.getCapability(CapabilityMultiblock.MULTIBLOCK_LOCATE_HANDLER);
+        LazyOptional<IMultiblockLocateHandler> capability = heldItem.getCapability(CapabilityMultiblockItem.MULTIBLOCK_LOCATE_HANDLER);
         if (!capability.isPresent()) {
             ItemStack heldOffhand = mc.player.getHeldItem(Hand.OFF_HAND);
-            capability = heldOffhand.getCapability(CapabilityMultiblock.MULTIBLOCK_LOCATE_HANDLER);
+            capability = heldOffhand.getCapability(CapabilityMultiblockItem.MULTIBLOCK_LOCATE_HANDLER);
             slot = -1;
         }
         return new Tuple<>(slot, capability.resolve());
@@ -386,10 +385,10 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
         //左右手持
         ItemStack heldItem = mc.player.getHeldItem(Hand.MAIN_HAND);
-        LazyOptional<IMultiblockSupplier> multiblockSupplier = heldItem.getCapability(CapabilityMultiblock.MULTIBLOCK_SUPPLIER);
+        LazyOptional<IMultiblockSupplier> multiblockSupplier = heldItem.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
         if (!multiblockSupplier.isPresent()) {
             ItemStack heldOffhand = mc.player.getHeldItem(Hand.OFF_HAND);
-            multiblockSupplier = heldOffhand.getCapability(CapabilityMultiblock.MULTIBLOCK_SUPPLIER);
+            multiblockSupplier = heldOffhand.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
         }
 
         if (multiblockSupplier.isPresent()) {
@@ -406,7 +405,7 @@ public class MultiblockSchematicHandler implements IRenderer {
         IDefinedMultiblock firstResult = null;
         for (int i = 0; i < 9; i++) {
             ItemStack stack = inv.getStackInSlot(i);
-            multiblockSupplier = stack.getCapability(CapabilityMultiblock.MULTIBLOCK_SUPPLIER);
+            multiblockSupplier = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
 
             if (multiblockSupplier.isPresent()) {
                 IDefinedMultiblock multiblock = multiblockSupplier.resolve().get().getMultiblock();

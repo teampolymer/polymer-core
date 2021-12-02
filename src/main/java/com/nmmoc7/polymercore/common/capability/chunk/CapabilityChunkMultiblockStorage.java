@@ -16,6 +16,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +25,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CapabilityChunkMultiblockStorage {
+
+    private static final Logger LOG = LogManager.getLogger();
+
     @CapabilityInject(IChunkMultiblockStorage.class)
     public static Capability<IChunkMultiblockStorage> MULTIBLOCK_STORAGE = null;
 
@@ -35,8 +40,8 @@ public class CapabilityChunkMultiblockStorage {
                         //可恶啊，这句居然没有mcp
                         nbt.add(NBTUtil.func_240626_a_(uuid));
                     }
-                    if (PolymerCore.LOG.isDebugEnabled() && nbt.size() > 0) {
-                        PolymerCore.LOG.debug("Saving {} machines in chunk {}", nbt.size(), instance.getChunk().getPos());
+                    if (LOG.isDebugEnabled() && nbt.size() > 0) {
+                        LOG.debug("Saving {} machines in chunk {}", nbt.size(), instance.getChunk().getPos());
                     }
                     return nbt;
                 }
@@ -48,8 +53,8 @@ public class CapabilityChunkMultiblockStorage {
                     }
                     List<UUID> collect = ((ListNBT) nbt).stream().map(NBTUtil::readUniqueId).collect(Collectors.toList());
                     instance.setContainingMultiblocks(collect);
-                    if (PolymerCore.LOG.isDebugEnabled() && collect.size() > 0) {
-                        PolymerCore.LOG.debug("Loading {} machines in chunk {}", collect.size(), instance.getChunk().getPos());
+                    if (LOG.isDebugEnabled() && collect.size() > 0) {
+                        LOG.debug("Loading {} machines in chunk {}", collect.size(), instance.getChunk().getPos());
                     }
                 }
             },

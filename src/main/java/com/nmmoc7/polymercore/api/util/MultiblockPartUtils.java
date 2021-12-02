@@ -12,10 +12,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.math.vector.Vector3i;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class MultiblockPartUtils {
+    private static final Logger LOG = LogManager.getLogger();
+    
     public static BlockState withDirection(BlockState origin, MultiblockDirection direction) {
         switch (direction) {
             case NONE:
@@ -121,10 +125,10 @@ public class MultiblockPartUtils {
             PartTypeInfo info = entry.getValue();
             String type = entry.getKey();
             if (info.max >= 0 && info.max < info.current) {
-                PolymerCore.LOG.error("The current block count part type '{}''s size is more than provided multiblock max count, this may be incorrect！", type);
+                LOG.error("The current block count part type '{}''s size is more than provided multiblock max count, this may be incorrect！", type);
             }
             if (info.min > (info.current + info.sample)) {
-                PolymerCore.LOG.error("The available sample of part type '{}''s size is less than provided multiblock min count, this may be incorrect！", type);
+                LOG.error("The available sample of part type '{}''s size is less than provided multiblock min count, this may be incorrect！", type);
             }
             if (!dynamicPartTypes.contains(type)) {
 
