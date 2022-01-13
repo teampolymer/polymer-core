@@ -10,37 +10,39 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.SortedMap;
 
+import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
+
 public class CustomRenderTypeBuffer implements IRenderTypeBuffer {
 
     //Copied form net.minecraft.client.renderer.RenderTypeBuffers
     private final RegionRenderCacheBuilder fixedBuilder = new RegionRenderCacheBuilder();
     @SuppressWarnings("unchecked")
     private final SortedMap<RenderType, BufferBuilder> fixedBuffers = (SortedMap<RenderType, BufferBuilder>) Util.make(new Object2ObjectLinkedOpenHashMap(), (p_228485_1_) -> {
-        p_228485_1_.put(Atlases.getSolidBlockType(), this.fixedBuilder.getBuilder(RenderType.getSolid()));
-        p_228485_1_.put(Atlases.getCutoutBlockType(), this.fixedBuilder.getBuilder(RenderType.getCutout()));
-        p_228485_1_.put(Atlases.getBannerType(), this.fixedBuilder.getBuilder(RenderType.getCutoutMipped()));
-        p_228485_1_.put(Atlases.getTranslucentCullBlockType(), this.fixedBuilder.getBuilder(RenderType.getTranslucent()));
-        put(p_228485_1_, Atlases.getShieldType());
-        put(p_228485_1_, Atlases.getBedType());
-        put(p_228485_1_, Atlases.getShulkerBoxType());
-        put(p_228485_1_, Atlases.getSignType());
-        put(p_228485_1_, Atlases.getChestType());
-        put(p_228485_1_, RenderType.getTranslucentNoCrumbling());
-        put(p_228485_1_, RenderType.getArmorGlint());
-        put(p_228485_1_, RenderType.getArmorEntityGlint());
-        put(p_228485_1_, RenderType.getGlint());
-        put(p_228485_1_, RenderType.getGlintDirect());
-        put(p_228485_1_, RenderType.getGlintTranslucent());
-        put(p_228485_1_, RenderType.getEntityGlint());
-        put(p_228485_1_, RenderType.getEntityGlintDirect());
-        put(p_228485_1_, RenderType.getWaterMask());
-        ModelBakery.DESTROY_RENDER_TYPES.forEach((p_228488_1_) -> {
+        p_228485_1_.put(Atlases.solidBlockSheet(), this.fixedBuilder.builder(RenderType.solid()));
+        p_228485_1_.put(Atlases.cutoutBlockSheet(), this.fixedBuilder.builder(RenderType.cutout()));
+        p_228485_1_.put(Atlases.bannerSheet(), this.fixedBuilder.builder(RenderType.cutoutMipped()));
+        p_228485_1_.put(Atlases.translucentCullBlockSheet(), this.fixedBuilder.builder(RenderType.translucent()));
+        put(p_228485_1_, Atlases.shieldSheet());
+        put(p_228485_1_, Atlases.bedSheet());
+        put(p_228485_1_, Atlases.shulkerBoxSheet());
+        put(p_228485_1_, Atlases.signSheet());
+        put(p_228485_1_, Atlases.chestSheet());
+        put(p_228485_1_, RenderType.translucentNoCrumbling());
+        put(p_228485_1_, RenderType.armorGlint());
+        put(p_228485_1_, RenderType.armorEntityGlint());
+        put(p_228485_1_, RenderType.glint());
+        put(p_228485_1_, RenderType.glintDirect());
+        put(p_228485_1_, RenderType.glintTranslucent());
+        put(p_228485_1_, RenderType.entityGlint());
+        put(p_228485_1_, RenderType.entityGlintDirect());
+        put(p_228485_1_, RenderType.waterMask());
+        ModelBakery.DESTROY_TYPES.forEach((p_228488_1_) -> {
             put(p_228485_1_, p_228488_1_);
         });
     });
 
     private static void put(Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> var0, RenderType p_228486_1_) {
-        var0.put(p_228486_1_, new BufferBuilder(p_228486_1_.getBufferSize()));
+        var0.put(p_228486_1_, new BufferBuilder(p_228486_1_.bufferSize()));
     }
 
     public Impl getImpl() {
@@ -50,7 +52,7 @@ public class CustomRenderTypeBuffer implements IRenderTypeBuffer {
     private final IRenderTypeBuffer.Impl impl;
 
     public CustomRenderTypeBuffer() {
-        this.impl = IRenderTypeBuffer.getImpl(fixedBuffers, new BufferBuilder(256));
+        this.impl = IRenderTypeBuffer.immediateWithBuffers(fixedBuffers, new BufferBuilder(256));
     }
 
     private static final Lazy<CustomRenderTypeBuffer> lazyInstance
@@ -67,11 +69,11 @@ public class CustomRenderTypeBuffer implements IRenderTypeBuffer {
 
 
     public void finish() {
-        impl.finish();
+        impl.endBatch();
     }
 
     public void finish(RenderType renderType) {
-        impl.finish(renderType);
+        impl.endBatch(renderType);
     }
 }
 

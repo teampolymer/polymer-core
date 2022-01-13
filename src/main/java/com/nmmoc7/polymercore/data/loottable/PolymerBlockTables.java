@@ -14,31 +14,31 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class PolymerBlockTables extends BlockLootTables {
     @Override
     protected void addTables() {
-        registerLootTable(ModBlocks.TestBlock.get(), block -> droppingWithRestorableNbt(block));
+        add(ModBlocks.TestBlock.get(), block -> droppingWithRestorableNbt(block));
     }
 
     protected static LootTable.Builder droppingWithRestorableNbt(IItemProvider item) {
-        LootPool.Builder pool = LootPool.builder()
-            .rolls(ConstantRange.of(1))
-            .addEntry(ItemLootEntry.builder(item)
-                .acceptFunction(SaveRestorableNbt.builder()));
+        LootPool.Builder pool = LootPool.lootPool()
+            .setRolls(ConstantRange.exactly(1))
+            .add(ItemLootEntry.lootTableItem(item)
+                .apply(SaveRestorableNbt.builder()));
 
-        return LootTable.builder()
-            .addLootPool(pool);
+        return LootTable.lootTable()
+            .withPool(pool);
     }
 
     protected static LootTable.Builder droppingWithCopyNbt(IItemProvider item) {
-        LootPool.Builder pool = LootPool.builder()
-            .rolls(ConstantRange.of(1))
-            .addEntry(ItemLootEntry.builder(item)
-                .acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY)
-                    .replaceOperation("energy", "energy")
-                    .replaceOperation("items", "data.items")
+        LootPool.Builder pool = LootPool.lootPool()
+            .setRolls(ConstantRange.exactly(1))
+            .add(ItemLootEntry.lootTableItem(item)
+                .apply(CopyNbt.copyData(CopyNbt.Source.BLOCK_ENTITY)
+                    .copy("energy", "energy")
+                    .copy("items", "data.items")
                 )
             );
 
-        return LootTable.builder()
-            .addLootPool(pool);
+        return LootTable.lootTable()
+            .withPool(pool);
     }
 
 

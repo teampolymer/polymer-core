@@ -13,8 +13,8 @@ public class BlockStateUtils {
     private static final Logger LOG = LogManager.getLogger();
 
     public static BlockState getWithProperties(Block block, Map<String, String> properties) {
-        BlockState state = block.getDefaultState();
-        StateContainer<Block, BlockState> stateContainer = block.getStateContainer();
+        BlockState state = block.defaultBlockState();
+        StateContainer<Block, BlockState> stateContainer = block.getStateDefinition();
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             Property<?> property = stateContainer.getProperty(entry.getKey());
             state = withProperty(state, property, entry.getValue());
@@ -24,11 +24,11 @@ public class BlockStateUtils {
 
     public static List<BlockState> getAllMatchingProperties(Block block, Map<String, String> properties) {
         Map<Property<?>, Comparable<?>> remapped = new HashMap<>();
-        StateContainer<Block, BlockState> stateContainer = block.getStateContainer();
+        StateContainer<Block, BlockState> stateContainer = block.getStateDefinition();
         for (Map.Entry<String, String> prop : properties.entrySet()) {
             Property<?> property = stateContainer.getProperty(prop.getKey());
             if (property != null) {
-                Optional<?> optional = property.parseValue(prop.getValue());
+                Optional<?> optional = property.getValue(prop.getValue());
                 if (optional.isPresent()) {
                     remapped.put(property, property.getValueClass().cast(optional.get()));
                 } else {
@@ -38,9 +38,9 @@ public class BlockStateUtils {
         }
 
         List<BlockState> result = new ArrayList<>();
-        for (BlockState validState : block.getStateContainer().getValidStates()) {
+        for (BlockState validState : block.getStateDefinition().getPossibleStates()) {
             for (Map.Entry<Property<?>, Comparable<?>> entry : remapped.entrySet()) {
-                if (Objects.equals(entry.getValue(), validState.get(entry.getKey()))) {
+                if (Objects.equals(entry.getValue(), validState.getValue(entry.getKey()))) {
                     result.add(validState);
                 }
             }
@@ -52,9 +52,9 @@ public class BlockStateUtils {
         if (key == null) {
             return state;
         }
-        Optional<T> optional = key.parseValue(value);
+        Optional<T> optional = key.getValue(value);
         if (optional.isPresent()) {
-            return state.with(key, optional.get());
+            return state.setValue(key, optional.get());
         } else {
             LOG.warn("Unable to read property: {} with value: {} for blockstate: {}", key, value, state.toString());
             return state;

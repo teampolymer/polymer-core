@@ -15,7 +15,7 @@ public class InputEventHandler {
         int key = event.getKey();
         boolean pressed = !(event.getAction() == 0);
 
-        if (Minecraft.getInstance().currentScreen != null)
+        if (Minecraft.getInstance().screen != null)
             return;
 
 
@@ -25,7 +25,7 @@ public class InputEventHandler {
 
     @SubscribeEvent
     public static void onMouseScrolled(InputEvent.MouseScrollEvent event) {
-        if (Minecraft.getInstance().currentScreen != null)
+        if (Minecraft.getInstance().screen != null)
             return;
 
         double delta = event.getScrollDelta();
@@ -39,7 +39,7 @@ public class InputEventHandler {
 
     @SubscribeEvent
     public static void onMouseInput(InputEvent.MouseInputEvent event) {
-        if (Minecraft.getInstance().currentScreen != null)
+        if (Minecraft.getInstance().screen != null)
             return;
 
         int button = event.getButton();

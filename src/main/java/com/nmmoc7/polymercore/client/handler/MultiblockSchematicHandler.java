@@ -74,7 +74,7 @@ public class MultiblockSchematicHandler implements IRenderer {
     @Override
     public boolean isEnabled() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.world == null || mc.player == null) {
+        if (mc.level == null || mc.player == null) {
             return false;
         }
         //手持蓝图或者已经固定一个坐标就显示
@@ -259,9 +259,9 @@ public class MultiblockSchematicHandler implements IRenderer {
         final int distance = 32;
 
         Vector3d start = mc.player.getEyePosition(AnimationTickHelper.getPartialTicks());
-        Vector3d direction = mc.player.getLook(AnimationTickHelper.getPartialTicks());
+        Vector3d direction = mc.player.getViewVector(AnimationTickHelper.getPartialTicks());
         Vector3d end = start.add(direction.x * distance, direction.y * distance, direction.z * distance);
-        BlockRayTraceResult blockRayTraceResult = mc.world.rayTraceBlocks(
+        BlockRayTraceResult blockRayTraceResult = mc.level.clip(
             new RayTraceContext(start, end,
                 RayTraceContext.BlockMode.OUTLINE,
                 RayTraceContext.FluidMode.NONE,
@@ -270,8 +270,8 @@ public class MultiblockSchematicHandler implements IRenderer {
 
         RayTraceResult.Type type = blockRayTraceResult.getType();
         if (type == RayTraceResult.Type.BLOCK && !blockRayTraceResult.isInside()) {
-            BlockPos pos = blockRayTraceResult.getPos();
-            Direction face = blockRayTraceResult.getFace();
+            BlockPos pos = blockRayTraceResult.getBlockPos();
+            Direction face = blockRayTraceResult.getDirection();
 
             if (!pos.equals(lastRaytracePos) || !face.equals(lastFace) || lastTraceResult == null) {
                 lastRaytracePos = pos;
@@ -307,7 +307,7 @@ public class MultiblockSchematicHandler implements IRenderer {
     @Override
     public void update() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.world == null) {
+        if (mc.level == null) {
             enabled = false;
             return;
         }
@@ -329,7 +329,7 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
 
         fadeOutRenderer.tick();
-        renderer.tick(mc.world);
+        renderer.tick(mc.level);
         viewOverlay.update(locateHandler);
 
 
@@ -364,11 +364,11 @@ public class MultiblockSchematicHandler implements IRenderer {
         if (mc.player == null) {
             return new Tuple<>(-2, Optional.empty());
         }
-        int slot = mc.player.inventory.currentItem;
-        ItemStack heldItem = mc.player.getHeldItem(Hand.MAIN_HAND);
+        int slot = mc.player.inventory.selected;
+        ItemStack heldItem = mc.player.getItemInHand(Hand.MAIN_HAND);
         LazyOptional<IMultiblockLocateHandler> capability = heldItem.getCapability(CapabilityMultiblockItem.MULTIBLOCK_LOCATE_HANDLER);
         if (!capability.isPresent()) {
-            ItemStack heldOffhand = mc.player.getHeldItem(Hand.OFF_HAND);
+            ItemStack heldOffhand = mc.player.getItemInHand(Hand.OFF_HAND);
             capability = heldOffhand.getCapability(CapabilityMultiblockItem.MULTIBLOCK_LOCATE_HANDLER);
             slot = -1;
         }
@@ -384,10 +384,10 @@ public class MultiblockSchematicHandler implements IRenderer {
             return;
         }
         //左右手持
-        ItemStack heldItem = mc.player.getHeldItem(Hand.MAIN_HAND);
+        ItemStack heldItem = mc.player.getItemInHand(Hand.MAIN_HAND);
         LazyOptional<IMultiblockSupplier> multiblockSupplier = heldItem.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
         if (!multiblockSupplier.isPresent()) {
-            ItemStack heldOffhand = mc.player.getHeldItem(Hand.OFF_HAND);
+            ItemStack heldOffhand = mc.player.getItemInHand(Hand.OFF_HAND);
             multiblockSupplier = heldOffhand.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
         }
 
@@ -404,7 +404,7 @@ public class MultiblockSchematicHandler implements IRenderer {
         PlayerInventory inv = mc.player.inventory;
         IDefinedMultiblock firstResult = null;
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = inv.getStackInSlot(i);
+            ItemStack stack = inv.getItem(i);
             multiblockSupplier = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
 
             if (multiblockSupplier.isPresent()) {

@@ -17,13 +17,15 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import net.minecraft.resources.IFutureReloadListener.IStage;
+
 public class MultiblockReloadListener implements IFutureReloadListener {
     public static final Path MULTIBLOCK_DIR = Paths.get("polymer", "multiblock");
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
 
-        return stage.markCompleteAwaitingOthers(Void.TYPE)
+        return stage.wait(Void.TYPE)
             .thenRunAsync(() -> {
                     try {
                         doReload(resourceManager, reloadProfiler);

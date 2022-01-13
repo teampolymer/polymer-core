@@ -27,7 +27,7 @@ public class MultiblockTypeFree extends ForgeRegistryEntry<IMultiblockType> impl
     @Override
     public IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, IMultiblockAssembleRule assembleRule) {
 
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return null;
         }
         UUID uuid = UUID.randomUUID();

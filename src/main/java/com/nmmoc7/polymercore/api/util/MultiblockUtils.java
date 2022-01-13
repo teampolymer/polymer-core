@@ -42,22 +42,22 @@ public class MultiblockUtils {
         }
         if (multiblockEdgeCache == null) {
             //y
-            Vector3i d = Vector3i.NULL_VECTOR;
-            Vector3i u = Vector3i.NULL_VECTOR;
+            Vector3i d = Vector3i.ZERO;
+            Vector3i u = Vector3i.ZERO;
             int dd = 0;
             int ud = 0;
             //z
-            Vector3i n = Vector3i.NULL_VECTOR;
-            Vector3i s = Vector3i.NULL_VECTOR;
+            Vector3i n = Vector3i.ZERO;
+            Vector3i s = Vector3i.ZERO;
             int nd = 0;
             int sd = 0;
             //x
-            Vector3i w = Vector3i.NULL_VECTOR;
-            Vector3i e = Vector3i.NULL_VECTOR;
+            Vector3i w = Vector3i.ZERO;
+            Vector3i e = Vector3i.ZERO;
             int wd = 0;
             int ed = 0;
             for (Vector3i vector3i : multiblock.getParts().keySet()) {
-                int distance = vector3i.manhattanDistance(Vector3i.NULL_VECTOR);
+                int distance = vector3i.distManhattan(Vector3i.ZERO);
                 if (vector3i.getX() > e.getX() || (vector3i.getX() == e.getX() && distance < ed)) {
                     e = vector3i;
                     ed = distance;
@@ -105,15 +105,15 @@ public class MultiblockUtils {
         EnumMap<Direction, Vector3i> multiblockEdge = getMultiblockEdge(multiblock);
 
         if (face.getAxis() == Direction.Axis.Y) {
-            return hovering.offset(face).subtract(multiblockEdge.get(face.getOpposite()));
+            return hovering.relative(face).subtract(multiblockEdge.get(face.getOpposite()));
         }
 
-        Direction direction = Direction.byHorizontalIndex((face.getOpposite().getHorizontalIndex() - rotation.ordinal() + 4) % 4);
+        Direction direction = Direction.from2DDataValue((face.getOpposite().get2DDataValue() - rotation.ordinal() + 4) % 4);
         if (isFlipped && direction.getAxis() == Direction.Axis.X) {
             direction = direction.getOpposite();
         }
 
         BlockPos offset = PositionUtils.applyModifies(multiblockEdge.get(direction), BlockPos.ZERO, rotation, isFlipped);
-        return hovering.offset(face).subtract(offset);
+        return hovering.relative(face).subtract(offset);
     }
 }

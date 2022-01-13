@@ -28,7 +28,7 @@ import java.util.Locale;
  */
 public class SchematicViewOverlay extends Screen {
 
-    public final String scrollToCycle = I18n.format("gui.polymer.toolmenu.cycle");
+    public final String scrollToCycle = I18n.get("gui.polymer.toolmenu.cycle");
     public final String holdToFocus = "gui.polymer.toolmenu.focusKey";
 
     private final ControlAction[] actions;
@@ -64,14 +64,14 @@ public class SchematicViewOverlay extends Screen {
 
     public void renderOverlay(MatrixStack ms, float pt) {
         Minecraft mc = Minecraft.getInstance();
-        MainWindow mainWindow = mc.getMainWindow();
+        MainWindow mainWindow = mc.getWindow();
         if (!initialized)
-            init(mc, mainWindow.getScaledWidth(), mainWindow.getScaledHeight());
+            init(mc, mainWindow.getGuiScaledWidth(), mainWindow.getGuiScaledHeight());
 
-        int x = (mainWindow.getScaledWidth() - w) / 2 + 15;
-        int y = mainWindow.getScaledHeight() - h - 75;
+        int x = (mainWindow.getGuiScaledWidth() - w) / 2 + 15;
+        int y = mainWindow.getGuiScaledHeight() - h - 75;
 
-        ms.push();
+        ms.pushPose();
         ms.translate(0, -yOffset, focused ? 100 : 0);
 
         IGuiResource gray = GuiResources.TOOLBAR_BACKGROUND;
@@ -81,7 +81,7 @@ public class SchematicViewOverlay extends Screen {
 
         Minecraft.getInstance()
             .getTextureManager()
-            .bindTexture(gray.getLocation());
+            .bind(gray.getLocation());
         blit(ms, x - 15, y, gray.getStartX(), gray.getStartY(), w, h, gray.getWidth(), gray.getHeight());
 
         float toolTipAlpha = yOffset / 10;
@@ -104,34 +104,34 @@ public class SchematicViewOverlay extends Screen {
             int yOff = y;
             if (toolTip.size() > 0) {
                 yOff += 38;
-                font.drawText(ms, toolTip.get(0), x - 10, yOff, 0xEEEEEE + stringAlphaComponent);
+                font.draw(ms, toolTip.get(0), x - 10, yOff, 0xEEEEEE + stringAlphaComponent);
             }
             if (toolTip.size() > 1) {
                 yOff += 12;
-                font.drawText(ms, toolTip.get(1), x - 10, yOff, 0xCCDDFF + stringAlphaComponent);
+                font.draw(ms, toolTip.get(1), x - 10, yOff, 0xCCDDFF + stringAlphaComponent);
             }
             if (toolTip.size() > 2) {
                 yOff += 10;
-                font.drawText(ms, toolTip.get(2), x - 10, yOff, 0xCCDDFF + stringAlphaComponent);
+                font.draw(ms, toolTip.get(2), x - 10, yOff, 0xCCDDFF + stringAlphaComponent);
             }
             if (toolTip.size() > 3) {
                 yOff += 10;
-                font.drawText(ms, toolTip.get(3), x - 10, yOff, 0xCCDDFF + stringAlphaComponent);
+                font.draw(ms, toolTip.get(3), x - 10, yOff, 0xCCDDFF + stringAlphaComponent);
             }
             if (disabled) {
                 yOff += 12;
-                font.drawText(ms, new TranslationTextComponent("gui.polymer.locator.control.misc.disabled"), x - 10, yOff, 0xCCCCDD + stringAlphaComponent);
+                font.draw(ms, new TranslationTextComponent("gui.polymer.locator.control.misc.disabled"), x - 10, yOff, 0xCCCCDD + stringAlphaComponent);
             }
         }
 
         RenderSystem.color4f(1, 1, 1, 1);
         if (actions.length > 1) {
 
-            String keyName = KeysRegistry.TOOL_CTRL_KEY.func_238171_j_().getString().toUpperCase(Locale.ROOT);
-            int width = minecraft.getMainWindow()
-                .getScaledWidth();
+            String keyName = KeysRegistry.TOOL_CTRL_KEY.getTranslatedKeyMessage().getString().toUpperCase(Locale.ROOT);
+            int width = minecraft.getWindow()
+                .getGuiScaledWidth();
             if (!focused)
-                drawCenteredString(ms, font, I18n.format(holdToFocus, keyName), width / 2,
+                drawCenteredString(ms, font, I18n.get(holdToFocus, keyName), width / 2,
                     y - 10, 0xCCDDFF);
             else
                 drawCenteredString(ms, font, scrollToCycle, width / 2, y - 10, 0xCCDDFF);
@@ -141,7 +141,7 @@ public class SchematicViewOverlay extends Screen {
 
 
         for (int i = 0; i < actions.length; i++) {
-            ms.push();
+            ms.pushPose();
 
             float alpha = focused ? 1 : .2f;
             if (i == current) {
@@ -163,12 +163,12 @@ public class SchematicViewOverlay extends Screen {
                 RenderSystem.color4f(.7f, .7f, .7f, alpha);
             }
             icon.draw(ms, 0, x + i * 40 + 16, y + 11);
-            ms.pop();
+            ms.popPose();
         }
 
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
-        ms.pop();
+        ms.popPose();
     }
 
     public void update(IMultiblockLocateHandler locateHandler) {
@@ -197,7 +197,7 @@ public class SchematicViewOverlay extends Screen {
     }
 
     public void handleKeyInput(IMultiblockLocateHandler locateHandler, int key, boolean pressed) {
-        if (key == KeysRegistry.TOOL_CTRL_KEY.getKey().getKeyCode()) {
+        if (key == KeysRegistry.TOOL_CTRL_KEY.getKey().getValue()) {
             focused = pressed;
         }
         if (currentAction().isEnabled())
@@ -205,7 +205,7 @@ public class SchematicViewOverlay extends Screen {
     }
 
     public boolean handleMouseScrolled(IMultiblockLocateHandler locateHandler, double delta) {
-        if (KeysRegistry.TOOL_CTRL_KEY.isKeyDown()) {
+        if (KeysRegistry.TOOL_CTRL_KEY.isDown()) {
             cycleAction((int) delta);
             return true;
         }

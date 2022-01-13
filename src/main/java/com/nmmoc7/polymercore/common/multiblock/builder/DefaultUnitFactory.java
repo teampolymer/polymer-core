@@ -25,7 +25,7 @@ public class DefaultUnitFactory implements IUnitFactory {
 
     @Override
     public IMultiblockUnit createByBlock(String block) {
-        Block value = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryCreate(block));
+        Block value = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryParse(block));
         return createByBlock(value);
     }
 
@@ -36,13 +36,13 @@ public class DefaultUnitFactory implements IUnitFactory {
 
     @Override
     public IMultiblockUnit createByFluid(String fluid) {
-        Fluid value = ForgeRegistries.FLUIDS.getValue(ResourceLocation.tryCreate(fluid));
+        Fluid value = ForgeRegistries.FLUIDS.getValue(ResourceLocation.tryParse(fluid));
         return createByFluid(value);
     }
 
     @Override
     public IMultiblockUnit createByBlockTag(ITag<Block> tag) {
-        List<Block> elements = tag.getAllElements();
+        List<Block> elements = tag.getValues();
         if (elements.isEmpty()) {
             return null;
         }
@@ -54,7 +54,7 @@ public class DefaultUnitFactory implements IUnitFactory {
 
     @Override
     public IMultiblockUnit createByFluidTag(ITag<Fluid> tag) {
-        List<Fluid> elements = tag.getAllElements();
+        List<Fluid> elements = tag.getValues();
         if (elements.isEmpty()) {
             return null;
         }
@@ -67,22 +67,22 @@ public class DefaultUnitFactory implements IUnitFactory {
     @Override
     public IMultiblockUnit createByTag(String tag) {
         if (tag.startsWith("block:")) {
-            ResourceLocation location = ResourceLocation.tryCreate(tag.substring("block:".length()));
+            ResourceLocation location = ResourceLocation.tryParse(tag.substring("block:".length()));
             if (location == null) {
                 return null;
             }
 //            ITag<Block> blockTag = BlockTags.getCollection().get(location);
-            ITag<Block> blockTag = TagCollectionManager.getManager().getBlockTags().get(location);
+            ITag<Block> blockTag = TagCollectionManager.getInstance().getBlocks().getTag(location);
             if (blockTag != null) {
                 return createByBlockTag(blockTag);
             }
 
         } else if (tag.startsWith("fluid:")) {
-            ResourceLocation location = ResourceLocation.tryCreate(tag.substring("fluid:".length()));
+            ResourceLocation location = ResourceLocation.tryParse(tag.substring("fluid:".length()));
             if (location == null) {
                 return null;
             }
-            ITag<Fluid> fluidTag = TagCollectionManager.getManager().getFluidTags().get(location);
+            ITag<Fluid> fluidTag = TagCollectionManager.getInstance().getFluids().getTag(location);
             if (fluidTag != null) {
                 return createByFluidTag(fluidTag);
             }
@@ -104,7 +104,7 @@ public class DefaultUnitFactory implements IUnitFactory {
 
     @Override
     public IMultiblockUnit createByProperties(String block, Map<String, String> properties) {
-        Block value = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryCreate(block));
+        Block value = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryParse(block));
         if (value == null)
             return null;
         return createByProperties(value, properties);

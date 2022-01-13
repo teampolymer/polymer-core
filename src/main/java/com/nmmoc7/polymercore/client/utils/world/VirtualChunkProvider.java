@@ -41,11 +41,11 @@ public class VirtualChunkProvider extends AbstractChunkProvider {
         {
             this.world.onChunkUnloaded(chunk);
 
-            for (ClassInheritanceMultiMap<Entity> list : chunk.getEntityLists())
+            for (ClassInheritanceMultiMap<Entity> list : chunk.getEntitySections())
             {
-                for (Entity entity : list.getByClass(Entity.class))
+                for (Entity entity : list.find(Entity.class))
                 {
-                    this.world.removeEntityFromWorld(entity.getEntityId());
+                    this.world.removeEntityFromWorld(entity.getId());
                 }
             }
         }
@@ -74,32 +74,32 @@ public class VirtualChunkProvider extends AbstractChunkProvider {
 
 
     @Override
-    public @NotNull String makeString() {
+    public @NotNull String gatherStats() {
         return "Virtual Chunk Cache: " + this.loadedChunkSize();
     }
 
     @Override
-    public @NotNull WorldLightManager getLightManager() {
+    public @NotNull WorldLightManager getLightEngine() {
         return lightManager;
     }
 
     @Override
-    public @NotNull VirtualWorld getWorld() {
+    public @NotNull VirtualWorld getLevel() {
         return this.world;
     }
 
     @Override
-    public boolean isChunkLoaded(ChunkPos pos) {
-        return this.loadedChunks.containsKey(pos.asLong());
+    public boolean isEntityTickingChunk(ChunkPos pos) {
+        return this.loadedChunks.containsKey(pos.toLong());
     }
 
     @Override
-    public boolean chunkExists(int x, int z) {
+    public boolean hasChunk(int x, int z) {
         return this.loadedChunks.containsKey(ChunkPos.asLong(x, z));
     }
 
     @Override
-    public boolean isChunkLoaded(Entity entityIn) {
-        return this.chunkExists(MathHelper.floor(entityIn.getPosX()) >> 4, MathHelper.floor(entityIn.getPosZ()) >> 4);
+    public boolean isEntityTickingChunk(Entity entityIn) {
+        return this.hasChunk(MathHelper.floor(entityIn.getX()) >> 4, MathHelper.floor(entityIn.getZ()) >> 4);
     }
 }

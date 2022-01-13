@@ -56,7 +56,7 @@ public class UnitWaterLogged implements IDirectionUnit {
         if (!part.test(block)) {
             return false;
         }
-        return block.getFluidState().getFluid() == Fluids.WATER;
+        return block.getFluidState().getType() == Fluids.WATER;
 
     }
 

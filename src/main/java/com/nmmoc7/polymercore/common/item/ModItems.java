@@ -18,5 +18,5 @@ public class ModItems {
     public static final RegistryObject<Item> BLUEPRINT = REGISTER.register("blueprint", BlueprintItem::new);
 
 
-    public static final RegistryObject<Item> TEST_BLOCK = REGISTER.register("test_block", () -> new BlockItem(ModBlocks.TestBlock.get(), (new Item.Properties()).maxStackSize(1).group(PolymerItemGroup.INSTANCE)));
+    public static final RegistryObject<Item> TEST_BLOCK = REGISTER.register("test_block", () -> new BlockItem(ModBlocks.TestBlock.get(), (new Item.Properties()).stacksTo(1).tab(PolymerItemGroup.INSTANCE)));
 }

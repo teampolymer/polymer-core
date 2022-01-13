@@ -38,7 +38,7 @@ public class CapabilityChunkMultiblockStorage {
                     ListNBT nbt = new ListNBT();
                     for (UUID uuid : instance.getContainingMultiblocks()) {
                         //可恶啊，这句居然没有mcp
-                        nbt.add(NBTUtil.func_240626_a_(uuid));
+                        nbt.add(NBTUtil.createUUID(uuid));
                     }
                     if (LOG.isDebugEnabled() && nbt.size() > 0) {
                         LOG.debug("Saving {} machines in chunk {}", nbt.size(), instance.getChunk().getPos());
@@ -51,7 +51,7 @@ public class CapabilityChunkMultiblockStorage {
                     if (!(nbt instanceof ListNBT)) {
                         return;
                     }
-                    List<UUID> collect = ((ListNBT) nbt).stream().map(NBTUtil::readUniqueId).collect(Collectors.toList());
+                    List<UUID> collect = ((ListNBT) nbt).stream().map(NBTUtil::loadUUID).collect(Collectors.toList());
                     instance.setContainingMultiblocks(collect);
                     if (LOG.isDebugEnabled() && collect.size() > 0) {
                         LOG.debug("Loading {} machines in chunk {}", collect.size(), instance.getChunk().getPos());

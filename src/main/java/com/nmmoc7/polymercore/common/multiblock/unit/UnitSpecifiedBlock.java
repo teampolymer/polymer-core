@@ -11,12 +11,12 @@ public class UnitSpecifiedBlock extends AbstractUnit {
     public UnitSpecifiedBlock(Block block) {
         super(null);
         this.block = block;
-        this.samples = Collections.singletonList(block.getDefaultState());
+        this.samples = Collections.singletonList(block.defaultBlockState());
     }
 
     @Override
     public BlockState getSampleBlock() {
-        return block.getDefaultState();
+        return block.defaultBlockState();
     }
 
     @Override

@@ -9,7 +9,7 @@ public class UnitFluidState extends AbstractUnit {
     private final FluidState fluidState;
 
     public UnitFluidState(FluidState fluid) {
-        super(Collections.singletonList(fluid.getBlockState()));
+        super(Collections.singletonList(fluid.createLegacyBlock()));
         this.fluidState = fluid;
     }
 

@@ -33,8 +33,8 @@ public class SmeltingEnchantmentModifier extends LootModifier {
     }
 
     private static ItemStack smelt(ItemStack stack, LootContext context) {
-        return context.getWorld().getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), context.getWorld())
-            .map(FurnaceRecipe::getRecipeOutput)
+        return context.getLevel().getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(stack), context.getLevel())
+            .map(FurnaceRecipe::getResultItem)
             .filter(itemStack -> !itemStack.isEmpty())
             .map(itemStack -> ItemHandlerHelper.copyStackWithSize(itemStack, stack.getCount() * itemStack.getCount()))
             .orElse(stack);

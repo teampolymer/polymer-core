@@ -56,7 +56,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
     public void addMultiblock(UUID multiblockId, Map<BlockPos, IMultiblockUnit> parts) {
         if (addMultiblockInternal(multiblockId, parts)) {
             multiblocks.add(multiblockId);
-            chunk.markDirty();
+            chunk.markUnsaved();
         }
     }
 
@@ -74,15 +74,15 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
                     LOG.warn("Position: {} Trying to replace an existing machine part for machine '{}' to another machine '{}', this may be a mistake!",
                         entry.getKey(), replaced.getA(), multiblockId);
 
-                    IAssembledMultiblock duplicate = FreeMultiblockWorldSavedData.get(chunk.getWorld()).getAssembledMultiblock(multiblockId);
+                    IAssembledMultiblock duplicate = FreeMultiblockWorldSavedData.get(chunk.getLevel()).getAssembledMultiblock(multiblockId);
                     if (duplicate != null) {
-                        duplicate.disassemble(chunk.getWorld());
+                        duplicate.disassemble(chunk.getLevel());
                     }
                 }
             }
         }
         if (modified) {
-            chunk.markDirty();
+            chunk.markUnsaved();
         }
         return modified;
     }
@@ -95,7 +95,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
             }
         }
         if (multiblocks.remove(multiblockId)) {
-            chunk.markDirty();
+            chunk.markUnsaved();
         }
     }
 
@@ -113,7 +113,7 @@ public class ChunkMultiblockStorage implements IChunkMultiblockStorage {
     public void setContainingMultiblocks(List<UUID> uuidList) {
         this.multiblocks.clear();
         this.multiblocks.addAll(uuidList);
-        chunk.markDirty();
+        chunk.markUnsaved();
     }
 
     @Override

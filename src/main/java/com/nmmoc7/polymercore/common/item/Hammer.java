@@ -6,6 +6,6 @@ import net.minecraft.item.Item;
 
 public class Hammer extends Item implements IHammer {
     public Hammer() {
-        super(new Item.Properties().group(PolymerItemGroup.INSTANCE));
+        super(new Item.Properties().tab(PolymerItemGroup.INSTANCE));
     }
 }

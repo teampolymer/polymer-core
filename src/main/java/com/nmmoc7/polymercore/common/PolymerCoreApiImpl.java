@@ -39,7 +39,7 @@ public class PolymerCoreApiImpl implements PolymerCoreApi {
 
     @Override
     public IAssembledMultiblock findMultiblock(World world, BlockPos pos, boolean coreBlock) {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return null;
         }
         if (coreBlock) {
@@ -60,7 +60,7 @@ public class PolymerCoreApiImpl implements PolymerCoreApi {
 
     @Override
     public Collection<IFreeMultiblock> findFreeMultiblocks(World world) {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return Collections.emptyList();
         }
         return FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();

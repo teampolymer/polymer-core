@@ -63,7 +63,7 @@ public enum Icons implements IGuiResource {
     public void bind() {
         Minecraft.getInstance()
             .getTextureManager()
-            .bindTexture(location);
+            .bind(location);
     }
 
     @OnlyIn(Dist.CLIENT)

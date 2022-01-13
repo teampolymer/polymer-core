@@ -46,7 +46,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     @Nullable
     @Override
     public IAssembledMultiblock assemble(@NotNull World world, @NotNull BlockPos coreOffset, @NotNull Rotation rotation, boolean isSymmetrical) {
-        BlockPos corePos = coreOffset.toImmutable();
+        BlockPos corePos = coreOffset.immutable();
         IMultiblockAssembleRule rule = getType().createEmptyRule(corePos, rotation, isSymmetrical);
         if (!canAssemble(world, coreOffset, rotation, isSymmetrical, rule)) {
             return null;
@@ -156,6 +156,6 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
 
     @Override
     public IMultiblockPart getCore() {
-        return partsMap.get(Vector3i.NULL_VECTOR);
+        return partsMap.get(Vector3i.ZERO);
     }
 }

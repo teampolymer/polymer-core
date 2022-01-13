@@ -24,9 +24,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.item.Item.Properties;
+
 public class BlueprintItem extends Item {
     public BlueprintItem() {
-        super(new Properties().group(PolymerItemGroup.INSTANCE));
+        super(new Properties().tab(PolymerItemGroup.INSTANCE));
     }
 
     public final String UNKNOWN_MULTIBLOCK = "name.polymer.multiblock.internal.unknown";
@@ -67,23 +69,23 @@ public class BlueprintItem extends Item {
     public String getMultiblockName(ItemStack stack) {
         IDefinedMultiblock multiblock = getMultiblock(stack);
         if (multiblock == null) {
-            return I18n.format(UNKNOWN_MULTIBLOCK);
+            return I18n.get(UNKNOWN_MULTIBLOCK);
         }
         ResourceLocation registryName = multiblock.getRegistryName();
         if (registryName == null) {
-            return I18n.format(UNKNOWN_MULTIBLOCK);
+            return I18n.get(UNKNOWN_MULTIBLOCK);
         }
-        return I18n.format(NAME_MULTIBLOCK_PREFIX + registryName.getNamespace() + "." + registryName.getPath());
+        return I18n.get(NAME_MULTIBLOCK_PREFIX + registryName.getNamespace() + "." + registryName.getPath());
     }
 
     @Override
-    public @NotNull ITextComponent getDisplayName(ItemStack stack) {
-        return new TranslationTextComponent(this.getTranslationKey(stack), getMultiblockName(stack));
+    public @NotNull ITextComponent getName(ItemStack stack) {
+        return new TranslationTextComponent(this.getDescriptionId(stack), getMultiblockName(stack));
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.allowdedIn(group)) {
             for (IDefinedMultiblock multiblock : PolymerCoreApi.getInstance()
                 .getMultiblockManager()
                 .findAll()) {

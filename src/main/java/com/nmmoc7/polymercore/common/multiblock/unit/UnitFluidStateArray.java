@@ -14,7 +14,7 @@ public class UnitFluidStateArray extends AbstractUnit {
     public UnitFluidStateArray(List<FluidState> states) {
         super(null);
         stateList = ImmutableList.copyOf(states);
-        samples = Collections.unmodifiableList(stateList.stream().map(FluidState::getBlockState).collect(Collectors.toList()));
+        samples = Collections.unmodifiableList(stateList.stream().map(FluidState::createLegacyBlock).collect(Collectors.toList()));
     }
 
 

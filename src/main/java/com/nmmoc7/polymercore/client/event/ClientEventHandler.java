@@ -40,20 +40,20 @@ public class ClientEventHandler {
     }
 
     public static boolean isGameNotReady() {
-        return Minecraft.getInstance().world == null || Minecraft.getInstance().player == null;
+        return Minecraft.getInstance().level == null || Minecraft.getInstance().player == null;
     }
 
     @SubscribeEvent
     public static void onLoadWorld(WorldEvent.Load event) {
         IWorld world = event.getWorld();
-        if (world.isRemote() && world instanceof ClientWorld) {
+        if (world.isClientSide() && world instanceof ClientWorld) {
             AnimationTickHelper.reset();
         }
     }
 
     @SubscribeEvent
     public static void onUnloadWorld(WorldEvent.Unload event) {
-        if (event.getWorld().isRemote()) {
+        if (event.getWorld().isClientSide()) {
             AnimationTickHelper.reset();
         }
     }
@@ -64,16 +64,16 @@ public class ClientEventHandler {
         if (isGameNotReady())
             return;
         MatrixStack ms = event.getMatrixStack();
-        ms.push();
+        ms.pushPose();
         //坐标向玩家视角偏移
-        Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
+        Vector3d view = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         ms.translate(-view.x, -view.y, -view.z);
 
         CustomRenderTypeBuffer buffer = CustomRenderTypeBuffer.instance();
         float pt = AnimationTickHelper.getPartialTicks();
         tickRenders(ms, buffer, pt);
         buffer.finish();
-        ms.pop();
+        ms.popPose();
 
     }
 
@@ -87,9 +87,9 @@ public class ClientEventHandler {
         }
         float pt = event.getPartialTicks();
         MatrixStack ms = event.getMatrixStack();
-        ms.push();
+        ms.pushPose();
         MultiblockSchematicHandler.INSTANCE.renderOverlay(ms, pt);
-        ms.pop();
+        ms.popPose();
     }
 
     private static void tickRenders(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {

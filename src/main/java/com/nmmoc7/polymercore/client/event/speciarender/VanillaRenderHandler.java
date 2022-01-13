@@ -50,38 +50,38 @@ public class VanillaRenderHandler {
         chestSingleBottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
         chestSingleLid = new ModelRenderer(64, 64, 0, 0);
         chestSingleLid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-        chestSingleLid.rotationPointY = 9.0F;
-        chestSingleLid.rotationPointZ = 1.0F;
+        chestSingleLid.y = 9.0F;
+        chestSingleLid.z = 1.0F;
         chestSingleLatch = new ModelRenderer(64, 64, 0, 0);
         chestSingleLatch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-        chestSingleLatch.rotationPointY = 8.0F;
+        chestSingleLatch.y = 8.0F;
 
-        chestRender = CustomRenderTypes.getEntityTransparent(Atlases.CHEST_MATERIAL.getAtlasLocation());
-        chestRenderDynamic = CustomRenderTypes.getEntityTransparentDynamic(Atlases.CHEST_MATERIAL.getAtlasLocation());
+        chestRender = CustomRenderTypes.getEntityTransparent(Atlases.CHEST_LOCATION.atlasLocation());
+        chestRenderDynamic = CustomRenderTypes.getEntityTransparentDynamic(Atlases.CHEST_LOCATION.atlasLocation());
     }
 
     public static void renderChest(BlockState blockState, MatrixStack ms, int combinedLightIn, IRenderTypeBuffer bufferSource, boolean isDynamic) {
         Block block = blockState.getBlock();
         if (block instanceof AbstractChestBlock) {
-            ms.push();
-            float f = blockState.get(ChestBlock.FACING).getHorizontalAngle();
+            ms.pushPose();
+            float f = blockState.getValue(ChestBlock.FACING).toYRot();
             ms.translate(0.5D, 0.5D, 0.5D);
-            ms.rotate(Vector3f.YP.rotationDegrees(-f));
+            ms.mulPose(Vector3f.YP.rotationDegrees(-f));
             ms.translate(-0.5D, -0.5D, -0.5D);
 
             float lidAngle = 0f;
-            RenderMaterial rendermaterial = Atlases.CHEST_MATERIAL;
-            IVertexBuilder buffer = rendermaterial.getSprite().wrapBuffer(
+            RenderMaterial rendermaterial = Atlases.CHEST_LOCATION;
+            IVertexBuilder buffer = rendermaterial.sprite().wrap(
                 bufferSource.getBuffer(isDynamic ? chestRenderDynamic : chestRender)
             );
 
-            chestSingleLid.rotateAngleX = -(lidAngle * ((float) Math.PI / 2F));
-            chestSingleLatch.rotateAngleX = chestSingleLid.rotateAngleX;
+            chestSingleLid.xRot = -(lidAngle * ((float) Math.PI / 2F));
+            chestSingleLatch.xRot = chestSingleLid.xRot;
             chestSingleLid.render(ms, buffer, combinedLightIn, OverlayTexture.NO_OVERLAY);
             chestSingleLatch.render(ms, buffer, combinedLightIn, OverlayTexture.NO_OVERLAY);
             chestSingleBottom.render(ms, buffer, combinedLightIn, OverlayTexture.NO_OVERLAY);
 
-            ms.pop();
+            ms.popPose();
         }
 
     }

@@ -13,7 +13,7 @@ public class RecipeItem extends RecipeObject<Item> {
 
     @Override
     public Ingredient getIngredient() {
-        return Ingredient.fromItems(obj);
+        return Ingredient.of(obj);
     }
 
     @Override
@@ -28,19 +28,19 @@ public class RecipeItem extends RecipeObject<Item> {
 
     @Override
     public Item fromJson(JsonObject json) {
-        return Ingredient.deserializeItemList(json).getStacks().toArray(new ItemStack[0])[0].getItem();
+        return Ingredient.valueFromJson(json).getItems().toArray(new ItemStack[0])[0].getItem();
     }
 
     @Override
     public CompoundNBT toNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        new ItemStack(obj).write(nbt);
+        new ItemStack(obj).save(nbt);
         return nbt;
     }
 
     @Override
     public Item fromNBT(CompoundNBT nbt) {
-        return ItemStack.read(nbt).getItem();
+        return ItemStack.of(nbt).getItem();
     }
 
     @Override

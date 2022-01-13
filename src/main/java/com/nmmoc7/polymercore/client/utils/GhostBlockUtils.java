@@ -43,20 +43,20 @@ public class GhostBlockUtils {
         }
 
         Minecraft mc = Minecraft.getInstance();
-        BlockRendererDispatcher dispatcher = mc.getBlockRendererDispatcher();
+        BlockRendererDispatcher dispatcher = mc.getBlockRenderer();
         if (isDynamic) {
 
             if (buffersDynamic == null) {
                 buffersDynamic = initBuffers(impl, () -> AnimationTickHelper.sinCirculateIn(0.6f, 1.0f, 30));
             }
             dispatcher.renderBlock(blockStateIn, ms, buffersDynamic, combinedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
-            buffersDynamic.finish();
+            buffersDynamic.endBatch();
         } else {
             if (buffers == null) {
                 buffers = initBuffers(impl, () -> 0.4f);
             }
             dispatcher.renderBlock(blockStateIn, ms, buffers, combinedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
-            buffers.finish();
+            buffers.endBatch();
         }
 
 
@@ -64,8 +64,8 @@ public class GhostBlockUtils {
 
 
     private static IRenderTypeBuffer.Impl initBuffers(IRenderTypeBuffer.Impl original, Supplier<Float> alphaSupplier) {
-        BufferBuilder fallback = ObfuscationReflectionHelper.getPrivateValue(IRenderTypeBuffer.Impl.class, original, "field_228457_a_");
-        Map<RenderType, BufferBuilder> layerBuffers = ObfuscationReflectionHelper.getPrivateValue(IRenderTypeBuffer.Impl.class, original, "field_228458_b_");
+        BufferBuilder fallback = ObfuscationReflectionHelper.getPrivateValue(IRenderTypeBuffer.Impl.class, original, "builder");
+        Map<RenderType, BufferBuilder> layerBuffers = ObfuscationReflectionHelper.getPrivateValue(IRenderTypeBuffer.Impl.class, original, "fixedBuffers");
         Map<RenderType, BufferBuilder> remapped = new Object2ObjectLinkedOpenHashMap<>();
         Map<RenderType, RenderType> remappedTypes = new IdentityHashMap<>();
         for (Map.Entry<RenderType, BufferBuilder> e : layerBuffers.entrySet()) {
@@ -93,7 +93,7 @@ public class GhostBlockUtils {
     private static class GhostRenderType extends RenderType {
 
         private GhostRenderType(RenderType original, Supplier<Float> alphaSupplier) {
-            super(String.format("%s_%s_ghost", original.toString(), PolymerCoreApi.MOD_ID), original.getVertexFormat(), original.getDrawMode(), original.getBufferSize(), original.isUseDelegate(), true, () -> {
+            super(String.format("%s_%s_ghost", original.toString(), PolymerCoreApi.MOD_ID), original.format(), original.mode(), original.bufferSize(), original.affectsCrumbling(), true, () -> {
                 original.setupRenderState();
 
                 // Alter GL state

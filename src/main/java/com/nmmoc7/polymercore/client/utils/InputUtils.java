@@ -9,10 +9,10 @@ public class InputUtils {
 
     public static BlockPos getHoveringPos() {
         //获取玩家正在看向的方块
-        if (Minecraft.getInstance().objectMouseOver instanceof BlockRayTraceResult) {
-            BlockRayTraceResult rayTraceResult = (BlockRayTraceResult) Minecraft.getInstance().objectMouseOver;
+        if (Minecraft.getInstance().hitResult instanceof BlockRayTraceResult) {
+            BlockRayTraceResult rayTraceResult = (BlockRayTraceResult) Minecraft.getInstance().hitResult;
             if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
-                return rayTraceResult.getPos().offset(rayTraceResult.getFace());
+                return rayTraceResult.getBlockPos().relative(rayTraceResult.getDirection());
             }
         }
         return null;

@@ -53,8 +53,8 @@ public class Assemble extends ControlAction {
         }
         IDefinedMultiblock currentMultiblock = MultiblockSchematicHandler.INSTANCE.getCurrentMultiblock();
         Minecraft mc = Minecraft.getInstance();
-        if (mc.objectMouseOver instanceof BlockRayTraceResult && mc.objectMouseOver.getType() == RayTraceResult.Type.BLOCK) {
-            BlockPos pos = ((BlockRayTraceResult) mc.objectMouseOver).getPos();
+        if (mc.hitResult instanceof BlockRayTraceResult && mc.hitResult.getType() == RayTraceResult.Type.BLOCK) {
+            BlockPos pos = ((BlockRayTraceResult) mc.hitResult).getBlockPos();
             if (currentMultiblock != null && currentMultiblock.getRegistryName() != null) {
                 ModNetworking.INSTANCE.sendToServer(new PacketAssembleMultiblock(currentMultiblock.getRegistryName().toString(), pos));
             }

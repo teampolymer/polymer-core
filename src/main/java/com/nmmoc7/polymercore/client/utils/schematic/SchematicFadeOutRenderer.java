@@ -87,13 +87,13 @@ public class SchematicFadeOutRenderer {
 
         Map<Vector3i, ISampleProvider> parts = schematicMultiblock.getSamples(transform.isFlipped());
 
-        Vector4f viewRelative = transformCamera(Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(), transform);
+        Vector4f viewRelative = transformCamera(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition(), transform);
         SortedMap<Double, Vector3i> map = sortByDistance(parts.keySet(), viewRelative);
 
-        ms.push();
+        ms.pushPose();
         transform.applyEntirely(ms);
         for (Vector3i relativePos : map.values()) {
-            ms.push();
+            ms.pushPose();
 
             ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
             transform.applyPartially(ms);
@@ -104,10 +104,10 @@ public class SchematicFadeOutRenderer {
             //渲染投影
             RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, false);
 
-            ms.pop();
+            ms.popPose();
         }
         buffer.finish();
-        ms.pop();
+        ms.popPose();
 
     }
 

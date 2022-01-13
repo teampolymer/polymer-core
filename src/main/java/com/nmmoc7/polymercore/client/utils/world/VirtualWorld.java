@@ -50,7 +50,7 @@ public class VirtualWorld extends World {
 
 
     @Override
-    public @NotNull AbstractChunkProvider getChunkProvider() {
+    public @NotNull AbstractChunkProvider getChunkSource() {
         return chunkProvider;
     }
 
@@ -61,17 +61,17 @@ public class VirtualWorld extends World {
 
 
     public void onChunkUnloaded(Chunk chunkIn) {
-        this.tileEntitiesToBeRemoved.addAll(chunkIn.getTileEntityMap().values());
+        this.blockEntitiesToUnload.addAll(chunkIn.getBlockEntities().values());
 //        this.chunkProvider.getLightManager().enableLightSources(chunkIn.getPos(), false);
     }
 
     @Override
-    public boolean setBlockState(BlockPos pos, BlockState state, int flags, int recursionLeft) {
+    public boolean setBlock(BlockPos pos, BlockState state, int flags, int recursionLeft) {
         if (isOutsideBuildHeight(pos)) {
             return false;
         }
         Chunk chunk = this.getChunkAt(pos);
-        pos = pos.toImmutable(); // Forge - prevent mutable BlockPos leaks
+        pos = pos.immutable(); // Forge - prevent mutable BlockPos leaks
         BlockState oldState = chunk.setBlockState(pos, state, false);
         return oldState != null;
     }
@@ -81,13 +81,13 @@ public class VirtualWorld extends World {
     }
 
     private boolean addEntityImpl(int entityIdIn, Entity entityToSpawn) {
-        int cx = MathHelper.floor(entityToSpawn.getPosX() / 16.0D);
-        int cz = MathHelper.floor(entityToSpawn.getPosX() / 16.0D);
+        int cx = MathHelper.floor(entityToSpawn.getX() / 16.0D);
+        int cz = MathHelper.floor(entityToSpawn.getX() / 16.0D);
 
-        if (!this.chunkProvider.chunkExists(cx, cz)) {
+        if (!this.chunkProvider.hasChunk(cx, cz)) {
             return false;
         } else {
-            entityToSpawn.setEntityId(entityIdIn);
+            entityToSpawn.setId(entityIdIn);
 
             this.removeEntityFromWorld(entityIdIn);
 
@@ -108,24 +108,24 @@ public class VirtualWorld extends World {
     }
 
     private void removeEntity(Entity entityIn) {
-        entityIn.detach();
-        if (entityIn.addedToChunk) {
-            this.getChunk(entityIn.chunkCoordX, entityIn.chunkCoordZ).removeEntity(entityIn);
+        entityIn.unRide();
+        if (entityIn.inChunk) {
+            this.getChunk(entityIn.xChunk, entityIn.zChunk).removeEntity(entityIn);
         }
     }
 
     @Nullable
     @Override
-    public Entity getEntityByID(int id) {
+    public Entity getEntity(int id) {
         return this.entitiesById.get(id);
     }
 
-    public void notifyBlockUpdate(BlockPos pos, BlockState oldState, BlockState newState, int flags) {
+    public void sendBlockUpdated(BlockPos pos, BlockState oldState, BlockState newState, int flags) {
         this.worldRenderer.notifyBlockUpdate(this, pos, oldState, newState, flags);
     }
 
     @Override
-    public void markBlockRangeForRenderUpdate(BlockPos blockPosIn, BlockState oldState, BlockState newState) {
+    public void setBlocksDirty(BlockPos blockPosIn, BlockState oldState, BlockState newState) {
         this.worldRenderer.markBlockRangeForRenderUpdate(blockPosIn, oldState, newState);
     }
 
@@ -137,28 +137,28 @@ public class VirtualWorld extends World {
 
     @Override
     public Scoreboard getScoreboard() {
-        return this.mc.world != null ? this.mc.world.getScoreboard() : null;
+        return this.mc.level != null ? this.mc.level.getScoreboard() : null;
     }
 
     @Override
     public RecipeManager getRecipeManager() {
-        return this.mc.world != null ? this.mc.world.getRecipeManager() : null;
+        return this.mc.level != null ? this.mc.level.getRecipeManager() : null;
     }
 
     @Override
-    public DynamicRegistries func_241828_r() {
-        return this.mc.world != null ? this.mc.world.func_241828_r() : null;
+    public DynamicRegistries registryAccess() {
+        return this.mc.level != null ? this.mc.level.registryAccess() : null;
     }
 
     @Override
-    public ITagCollectionSupplier getTags() {
-        return this.mc.world != null ? this.mc.world.getTags() : null;
+    public ITagCollectionSupplier getTagManager() {
+        return this.mc.level != null ? this.mc.level.getTagManager() : null;
     }
 
     //无操作的项目
 
     @Override
-    public @NotNull List<? extends PlayerEntity> getPlayers() {
+    public @NotNull List<? extends PlayerEntity> players() {
         return Collections.emptyList();
     }
 
@@ -168,18 +168,18 @@ public class VirtualWorld extends World {
     }
 
     @Override
-    public @NotNull Biome getNoiseBiomeRaw(int x, int y, int z) {
+    public @NotNull Biome getUncachedNoiseBiome(int x, int y, int z) {
         return BiomeRegistry.THE_VOID;
     }
 
     @Override
-    public @NotNull ITickList<Block> getPendingBlockTicks() {
-        return EmptyTickList.get();
+    public @NotNull ITickList<Block> getBlockTicks() {
+        return EmptyTickList.empty();
     }
 
     @Override
-    public @NotNull ITickList<Fluid> getPendingFluidTicks() {
-        return EmptyTickList.get();
+    public @NotNull ITickList<Fluid> getLiquidTicks() {
+        return EmptyTickList.empty();
     }
 
     @Nullable
@@ -189,27 +189,27 @@ public class VirtualWorld extends World {
     }
 
     @Override
-    public void registerMapData(MapData mapDataIn) {
+    public void setMapData(MapData mapDataIn) {
 
     }
 
     @Override
-    public int getNextMapId() {
+    public int getFreeMapId() {
         return 0;
     }
 
     @Override
-    public float func_230487_a_(Direction p_230487_1_, boolean p_230487_2_) {
+    public float getShade(Direction p_230487_1_, boolean p_230487_2_) {
         return 0;
     }
 
     @Override
-    public int getLightFor(LightType lightTypeIn, BlockPos blockPosIn) {
+    public int getBrightness(LightType lightTypeIn, BlockPos blockPosIn) {
         return 0xF;
     }
 
     @Override
-    public int getLightSubtracted(BlockPos blockPosIn, int amount) {
+    public int getRawBrightness(BlockPos blockPosIn, int amount) {
         return 0xF;
     }
 
@@ -230,27 +230,27 @@ public class VirtualWorld extends World {
     }
 
     @Override
-    public void addOptionalParticle(IParticleData particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+    public void addAlwaysVisibleParticle(IParticleData particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 
     }
 
     @Override
-    public void addOptionalParticle(IParticleData particleData, boolean ignoreRange, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+    public void addAlwaysVisibleParticle(IParticleData particleData, boolean ignoreRange, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 
     }
 
     @Override
-    public void playEvent(int type, BlockPos pos, int data) {
+    public void levelEvent(int type, BlockPos pos, int data) {
 
     }
 
     @Override
-    public void playEvent(@Nullable PlayerEntity player, int type, BlockPos pos, int data) {
+    public void levelEvent(@Nullable PlayerEntity player, int type, BlockPos pos, int data) {
 
     }
 
     @Override
-    public void sendBlockBreakProgress(int breakerId, BlockPos pos, int progress) {
+    public void destroyBlockProgress(int breakerId, BlockPos pos, int progress) {
 
     }
 
@@ -265,17 +265,17 @@ public class VirtualWorld extends World {
     }
 
     @Override
-    public void playSound(double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay) {
+    public void playLocalSound(double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay) {
 
     }
 
     @Override
-    public void playMovingSound(@Nullable PlayerEntity playerIn, Entity entityIn, SoundEvent eventIn, SoundCategory categoryIn, float volume, float pitch) {
+    public void playSound(@Nullable PlayerEntity playerIn, Entity entityIn, SoundEvent eventIn, SoundCategory categoryIn, float volume, float pitch) {
 
     }
 
     @Override
-    public void playBroadcastSound(int id, BlockPos pos, int data) {
+    public void globalLevelEvent(int id, BlockPos pos, int data) {
 
     }
 }

@@ -34,7 +34,7 @@ public class DefaultPartListMultiblockBuilder extends AbstractMultiblockBuilder<
         if (type == null) {
             type = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(PolymerCoreApi.MOD_ID, "type_free"));
         }
-        if (parts.get(Vector3i.NULL_VECTOR) == null) {
+        if (parts.get(Vector3i.ZERO) == null) {
             throw new MultiblockBuilderException("Could not find a multiblock core in the structure!");
         }
 

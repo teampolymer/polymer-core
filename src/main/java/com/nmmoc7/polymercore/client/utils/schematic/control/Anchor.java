@@ -42,7 +42,7 @@ public class Anchor extends ControlAction {
             return;
         }
 
-        if (Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown()) {
+        if (Minecraft.getInstance().options.keyShift.isDown()) {
             return;
         }
 

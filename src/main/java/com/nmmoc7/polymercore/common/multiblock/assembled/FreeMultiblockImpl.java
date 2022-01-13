@@ -151,7 +151,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putUniqueId("uuid", multiblockId);
+        nbt.putUUID("uuid", multiblockId);
         nbt.putString("define", definedMultiblock.getRegistryName().toString());
         nbt.put("rule", assembleRule.serializeNBT());
         nbt.putString("type", definedMultiblock.getType().getRegistryName().toString());
@@ -160,7 +160,7 @@ public class FreeMultiblockImpl implements IFreeMultiblock {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        this.multiblockId = nbt.getUniqueId("uuid");
+        this.multiblockId = nbt.getUUID("uuid");
         String define = nbt.getString("define");
         this.definedMultiblock = PolymerCoreApi.getInstance().getMultiblockManager().findById(new ResourceLocation(define))
             .orElseThrow(() -> new IllegalStateException(String.format("Could not get multiblock %s from NBT", define)));

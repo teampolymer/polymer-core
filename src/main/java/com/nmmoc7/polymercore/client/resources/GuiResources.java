@@ -66,7 +66,7 @@ public enum GuiResources implements IGuiResource {
     public void bind() {
         Minecraft.getInstance()
             .getTextureManager()
-            .bindTexture(location);
+            .bind(location);
     }
 
     @OnlyIn(Dist.CLIENT)

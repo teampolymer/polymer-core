@@ -31,7 +31,7 @@ public class PacketLocateHandlerSync {
         this.slot = buffer.readVarInt();
         this.anchored = buffer.readBoolean();
         this.offset = buffer.readBlockPos();
-        this.rotation = buffer.readEnumValue(Rotation.class);
+        this.rotation = buffer.readEnum(Rotation.class);
         this.flipped = buffer.readBoolean();
     }
 
@@ -40,7 +40,7 @@ public class PacketLocateHandlerSync {
         buffer.writeVarInt(slot);
         buffer.writeBoolean(anchored);
         buffer.writeBlockPos(offset);
-        buffer.writeEnumValue(rotation);
+        buffer.writeEnum(rotation);
         buffer.writeBoolean(flipped);
     }
 
@@ -52,9 +52,9 @@ public class PacketLocateHandlerSync {
                     return;
                 ItemStack stack;
                 if (slot == -1) {
-                    stack = player.getHeldItemOffhand();
+                    stack = player.getOffhandItem();
                 } else {
-                    stack = player.inventory.getStackInSlot(slot);
+                    stack = player.inventory.getItem(slot);
                 }
 
                 stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_LOCATE_HANDLER).ifPresent(it -> {

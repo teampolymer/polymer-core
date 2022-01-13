@@ -29,13 +29,13 @@ public final class SchematicRenderUtils {
     @NotNull
     public static Vector4f transformCamera(Vector3d view, SchematicTransform transform) {
         //转换视角
-        Matrix4f result = Matrix4f.makeTranslate(0.5f, 0.5f, 0.5f);
+        Matrix4f result = Matrix4f.createTranslateMatrix(0.5f, 0.5f, 0.5f);
         if (MathHelper.abs(transform.flip) > 0.1f) {
-            result.mul(Matrix4f.makeScale(1 / transform.flip, 1f, 1f));
+            result.multiply(Matrix4f.createScaleMatrix(1 / transform.flip, 1f, 1f));
         }
-        result.mul(Vector3f.YP.rotationDegrees(-transform.rotation));
-        result.mul(Matrix4f.makeTranslate(-0.5f, -0.5f, -0.5f));
-        result.mul(Matrix4f.makeTranslate(-transform.x, -transform.y, -transform.z));
+        result.multiply(Vector3f.YP.rotationDegrees(-transform.rotation));
+        result.multiply(Matrix4f.createTranslateMatrix(-0.5f, -0.5f, -0.5f));
+        result.multiply(Matrix4f.createTranslateMatrix(-transform.x, -transform.y, -transform.z));
         Vector4f viewRelative = new Vector4f((float) view.x, (float) view.y, (float) view.z, 1f);
         viewRelative.transform(result);
         return viewRelative;
@@ -45,7 +45,7 @@ public final class SchematicRenderUtils {
 
         Double2ObjectRBTreeMap<Vector3i> map = new Double2ObjectRBTreeMap<>(DoubleComparators.OPPOSITE_COMPARATOR);
         for (Vector3i relativePos : positions) {
-            double distanceSq = relativePos.distanceSq(viewRelative.getX(), viewRelative.getY(), viewRelative.getZ(), true);
+            double distanceSq = relativePos.distSqr(viewRelative.x(), viewRelative.y(), viewRelative.z(), true);
             map.put(distanceSq, relativePos);
         }
         return map;

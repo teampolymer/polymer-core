@@ -20,8 +20,8 @@ public class SaveRestorableNbt extends LootFunction {
 
     //写入Nbt的主要实现
     @Override
-    protected ItemStack doApply(ItemStack stack, LootContext context) {
-        TileEntity tileEntity = context.get(LootParameters.BLOCK_ENTITY);
+    protected ItemStack run(ItemStack stack, LootContext context) {
+        TileEntity tileEntity = context.getParamOrNull(LootParameters.BLOCK_ENTITY);
         if (tileEntity instanceof IRestorableTileEntity) {
             CompoundNBT tagCompound = new CompoundNBT();
             ((IRestorableTileEntity) tileEntity).writeRestorableToNBT(tagCompound);
@@ -31,13 +31,13 @@ public class SaveRestorableNbt extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return LootRegistries.SAVE_RESTORABLE_NBT;
     }
 
     //没有额外参数，可以直接这样创建一个默认的builder，如果方法有参数的话还需要自己实现一个Builder类
     public static LootFunction.Builder<?> builder() {
-        return builder(SaveRestorableNbt::new);
+        return simpleBuilder(SaveRestorableNbt::new);
     }
 
     public static class Serializer extends LootFunction.Serializer<SaveRestorableNbt> {

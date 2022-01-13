@@ -17,14 +17,14 @@ public class UnitFluidArray extends AbstractUnit {
 
         this.samples = Collections.unmodifiableList(
             fluids.stream()
-                .map(it -> it.getDefaultState().getBlockState())
+                .map(it -> it.defaultFluidState().createLegacyBlock())
                 .collect(Collectors.toList()));
     }
 
 
     @Override
     public boolean test(BlockState block) {
-        final Fluid condition = block.getFluidState().getFluid();
+        final Fluid condition = block.getFluidState().getType();
         return fluids.contains(condition);
     }
 }

@@ -23,13 +23,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 
 public class VirtualChunk extends Chunk {
-    private static final BlockState AIR = Blocks.AIR.getDefaultState();
+    private static final BlockState AIR = Blocks.AIR.defaultBlockState();
 
     private final long timeCreated;
     private boolean isEmpty = true;
 
     public VirtualChunk(VirtualWorld world, ChunkPos pos) {
-        super(world, pos, new BiomeContainer(world.func_241828_r().getRegistry(Registry.BIOME_KEY),
+        super(world, pos, new BiomeContainer(world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY),
             Util.make(new Biome[BiomeContainer.BIOMES_SIZE],
                 (biomes) -> Arrays.fill(biomes, BiomeRegistry.THE_VOID))));
         this.timeCreated = world.getGameTime();
@@ -80,36 +80,36 @@ public class VirtualChunk extends Chunk {
         } else {
             Block newBlock = state.getBlock();
             Block oldBlock = oldState.getBlock();
-            this.getHeightmap(Heightmap.Type.MOTION_BLOCKING).update(x, y, z, state);
-            this.getHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(x, y, z, state);
-            this.getHeightmap(Heightmap.Type.OCEAN_FLOOR).update(x, y, z, state);
-            this.getHeightmap(Heightmap.Type.WORLD_SURFACE).update(x, y, z, state);
+            this.getOrCreateHeightmapUnprimed(Heightmap.Type.MOTION_BLOCKING).update(x, y, z, state);
+            this.getOrCreateHeightmapUnprimed(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(x, y, z, state);
+            this.getOrCreateHeightmapUnprimed(Heightmap.Type.OCEAN_FLOOR).update(x, y, z, state);
+            this.getOrCreateHeightmapUnprimed(Heightmap.Type.WORLD_SURFACE).update(x, y, z, state);
 
             if ((oldBlock != newBlock || !state.hasTileEntity()) && oldState.hasTileEntity()) {
 //                this.world.removeTileEntity(pos);
             }
 
-            if (!chunksection.getBlockState(x, y & 15, z).matchesBlock(newBlock)) {
+            if (!chunksection.getBlockState(x, y & 15, z).is(newBlock)) {
                 return null;
             } else {
                 if (oldState.hasTileEntity()) {
-                    TileEntity tileentity = this.getTileEntity(pos, Chunk.CreateEntityType.CHECK);
+                    TileEntity tileentity = this.getBlockEntity(pos, Chunk.CreateEntityType.CHECK);
                     if (tileentity != null) {
-                        tileentity.updateContainingBlockInfo();
+                        tileentity.clearCache();
                     }
                 }
 
                 if (state.hasTileEntity()) {
-                    TileEntity te = this.getTileEntity(pos, Chunk.CreateEntityType.CHECK);
+                    TileEntity te = this.getBlockEntity(pos, Chunk.CreateEntityType.CHECK);
                     if (te == null) {
-                        te = state.createTileEntity(this.getWorld());
+                        te = state.createTileEntity(this.getLevel());
 //                        this.world.setTileEntity(pos, te);
                     } else {
-                        te.updateContainingBlockInfo();
+                        te.clearCache();
                     }
                 }
 
-                this.markDirty();
+                this.markUnsaved();
                 return oldState;
             }
         }

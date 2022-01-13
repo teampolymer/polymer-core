@@ -97,7 +97,7 @@ public class MultiblockPartUtils {
                 }
             }
             //可选的其他部分
-            String coordinates = partEntry.getKey().getCoordinatesAsString();
+            String coordinates = partEntry.getKey().toShortString();
             positions.put(coordinates, 1);
             Set<String> types = new HashSet<>();
 

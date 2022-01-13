@@ -13,9 +13,11 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class TestBlock extends Block {
     public TestBlock() {
-        super(Properties.create(Material.ROCK));
+        super(Properties.of(Material.STONE));
     }
 
 //    @Override

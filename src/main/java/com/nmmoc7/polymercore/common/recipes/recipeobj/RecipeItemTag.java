@@ -16,7 +16,7 @@ public class RecipeItemTag extends RecipeObject<ITag.INamedTag<Item>> {
 
     @Override
     public Ingredient getIngredient() {
-        return Ingredient.fromTag(obj);
+        return Ingredient.of(obj);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class RecipeItemTag extends RecipeObject<ITag.INamedTag<Item>> {
     @Override
     public ITag.INamedTag<Item> fromJson(JsonObject json) {
         ResourceLocation name = new ResourceLocation(json.get("tag").getAsString());
-        return (ITag.INamedTag<Item>) ItemTags.getAllTags().stream().filter(tag -> tag.getName().equals(name)).toArray()[0];
+        return (ITag.INamedTag<Item>) ItemTags.getWrappers().stream().filter(tag -> tag.getName().equals(name)).toArray()[0];
     }
 
     @Override
@@ -46,7 +46,7 @@ public class RecipeItemTag extends RecipeObject<ITag.INamedTag<Item>> {
 
     @Override
     public ITag.INamedTag<Item> fromNBT(CompoundNBT nbt) {
-        return (ITag.INamedTag<Item>) ItemTags.getCollection().get(new ResourceLocation(nbt.getString("tag")));
+        return (ITag.INamedTag<Item>) ItemTags.getAllTags().getTag(new ResourceLocation(nbt.getString("tag")));
     }
 
     @Override

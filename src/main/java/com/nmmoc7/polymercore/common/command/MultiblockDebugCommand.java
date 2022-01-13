@@ -28,7 +28,7 @@ public class MultiblockDebugCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("multiblock").requires(it -> {
-                return it.hasPermissionLevel(3);
+                return it.hasPermission(3);
             }).then(Commands.literal("checkall").executes(it -> {
                 return checkAll(it.getSource());
             }))
@@ -37,7 +37,7 @@ public class MultiblockDebugCommand {
 
     private static int checkAll(CommandSource source) throws CommandSyntaxException {
         MinecraftServer server = source.getServer();
-        ServerWorld world = source.getWorld();
+        ServerWorld world = source.getLevel();
 
         Collection<IFreeMultiblock> multiblocks = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();
         for (IFreeMultiblock multiblock : multiblocks) {
@@ -51,12 +51,12 @@ public class MultiblockDebugCommand {
             for (BlockPos pos : multiblock.getUnits().keySet()) {
                 Tuple<UUID, IMultiblockUnit> multiblockPart = CapabilityChunkMultiblockStorage.getMultiblockPart(world, pos);
                 if (multiblockPart == null || multiblockPart.getA() != multiblock.getMultiblockId()) {
-                    source.sendFeedback(new StringTextComponent("Found an invalid multiblock :" + multiblock.getMultiblockId()), true);
+                    source.sendSuccess(new StringTextComponent("Found an invalid multiblock :" + multiblock.getMultiblockId()), true);
                 }
             }
 
         }
-        source.sendFeedback(new StringTextComponent("Check fininshed"), true);
+        source.sendSuccess(new StringTextComponent("Check fininshed"), true);
         return 0;
     }
 }

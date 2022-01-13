@@ -33,6 +33,6 @@ public class MoveY extends MoveAbstract {
 
     @Override
     public BlockPos doMove(BlockPos current, int move) {
-        return current.add(0, move, 0);
+        return current.offset(0, move, 0);
     }
 }

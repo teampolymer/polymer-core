@@ -122,7 +122,7 @@ public class DefaultCharMarkedMultiblockBuilder extends AbstractMultiblockBuilde
         Map<Vector3i, IMultiblockPart> result = resolvedParts.entrySet().stream()
             .collect(Collectors.toMap(it -> {
                 Vector3i raw = it.getKey();
-                if (copy.equals(Vector3i.NULL_VECTOR)) {
+                if (copy.equals(Vector3i.ZERO)) {
                     return raw;
                 }
                 return new Vector3i(

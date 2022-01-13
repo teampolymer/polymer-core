@@ -7,9 +7,9 @@ public interface IRenderer {
         if (!isEnabled()) {
             return;
         }
-        ms.push();
+        ms.pushPose();
         doRender(ms, buffer, pt);
-        ms.pop();
+        ms.popPose();
     }
 
     boolean isEnabled();

@@ -19,7 +19,7 @@ public class UnitBlockArray extends AbstractUnit {
         super(null);
         this.blocks = ImmutableList.copyOf(blocks);
         this.samples = blocks.stream()
-            .map(Block::getDefaultState)
+            .map(Block::defaultBlockState)
             .collect(Collectors.toList());
     }
 

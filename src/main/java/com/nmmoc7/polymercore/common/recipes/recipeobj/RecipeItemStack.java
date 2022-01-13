@@ -12,12 +12,12 @@ public class RecipeItemStack extends RecipeObject<ItemStack> {
 
     @Override
     public Ingredient getIngredient() {
-        return Ingredient.fromStacks(obj);
+        return Ingredient.of(obj);
     }
 
     @Override
     public boolean matches(ItemStack obj) {
-        return ItemStack.areItemStacksEqual(this.obj, obj);
+        return ItemStack.matches(this.obj, obj);
     }
 
     @Override
@@ -27,19 +27,19 @@ public class RecipeItemStack extends RecipeObject<ItemStack> {
 
     @Override
     public ItemStack fromJson(JsonObject json) {
-        return Ingredient.deserializeItemList(json).getStacks().toArray(new ItemStack[0])[0];
+        return Ingredient.valueFromJson(json).getItems().toArray(new ItemStack[0])[0];
     }
 
     @Override
     public CompoundNBT toNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        obj.write(nbt);
+        obj.save(nbt);
         return nbt;
     }
 
     @Override
     public ItemStack fromNBT(CompoundNBT nbt) {
-        return ItemStack.read(nbt);
+        return ItemStack.of(nbt);
     }
 
     @Override

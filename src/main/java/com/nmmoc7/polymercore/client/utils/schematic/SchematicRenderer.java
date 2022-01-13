@@ -168,7 +168,7 @@ public class SchematicRenderer {
         }
         int renderTicks = AnimationTickHelper.getTicks();
         Map<Vector3i, ISampleProvider> samples = getSchematicMultiblock().getSamples(transform.isFlipped());
-        Vector3d view = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
+        Vector3d view = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 
         //转换视角
         Vector4f viewRelative = transformCamera(view, transform);
@@ -176,11 +176,11 @@ public class SchematicRenderer {
         SortedMap<Double, Vector3i> map = sortByDistance(samples.keySet(), viewRelative);
 
 
-        ms.push();
+        ms.pushPose();
         if (animating) {
             transform.applyEntirely(ms);
             for (Vector3i relativePos : map.values()) {
-                ms.push();
+                ms.pushPose();
                 ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
                 transform.applyPartially(ms);
                 //稍微缩小一点点
@@ -191,7 +191,7 @@ public class SchematicRenderer {
                 BlockState block = pickupSampleBlock(renderTicks, samples.get(relativePos));
                 //渲染投影
                 RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, false);
-                ms.pop();
+                ms.popPose();
             }
 
 
@@ -203,7 +203,7 @@ public class SchematicRenderer {
                 ISampleProvider sample = samples.get(relativePos);
                 BlockState block = pickupSampleBlock(renderTicks, sample);
 
-                ms.push();
+                ms.pushPose();
 
                 //渲染投影
                 if (notEmptyAreas.containsKey(relativePos))
@@ -228,7 +228,7 @@ public class SchematicRenderer {
 
                     }
 
-                ms.pop();
+                ms.popPose();
 
             }
 
@@ -237,7 +237,7 @@ public class SchematicRenderer {
             buffer.finish();
         }
 
-        ms.pop();
+        ms.popPose();
 
     }
 }

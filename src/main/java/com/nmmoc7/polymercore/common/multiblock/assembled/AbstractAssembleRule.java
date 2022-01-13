@@ -68,7 +68,7 @@ public abstract class AbstractAssembleRule implements IMultiblockAssembleRule {
         nbt.putByte("rotation", (byte) rotation.ordinal());
         ListNBT choicesNbt = new ListNBT();
         for (Map.Entry<Vector3i, String> entry : choices.entrySet()) {
-            long longKey = BlockPos.pack(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
+            long longKey = BlockPos.asLong(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
             CompoundNBT nbtChoice = new CompoundNBT();
             nbtChoice.putLong("pos", longKey);
             nbtChoice.putString("type", entry.getValue());
@@ -91,7 +91,7 @@ public abstract class AbstractAssembleRule implements IMultiblockAssembleRule {
             CompoundNBT nbtChoice = (CompoundNBT) inbt;
             long key = nbtChoice.getLong("pos");
             String val = nbtChoice.getString("type");
-            choices.put(new Vector3i(BlockPos.unpackX(key), BlockPos.unpackY(key), BlockPos.unpackZ(key)), val);
+            choices.put(new Vector3i(BlockPos.getX(key), BlockPos.getY(key), BlockPos.getZ(key)), val);
         }
     }
 }

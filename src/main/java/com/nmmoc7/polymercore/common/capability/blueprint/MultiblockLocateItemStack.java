@@ -20,7 +20,7 @@ public class MultiblockLocateItemStack implements IMultiblockLocateHandler {
     private final ItemStack stack;
 
     private CompoundNBT getOrCreateSettingTag() {
-        return stack.getOrCreateChildTag("locate");
+        return stack.getOrCreateTagElement("locate");
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MultiblockLocateItemStack implements IMultiblockLocateHandler {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MultiblockLocateItemStack that = (MultiblockLocateItemStack) o;
-        return ItemStack.areItemStackTagsEqual(stack, that.stack);
+        return ItemStack.tagMatches(stack, that.stack);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class MultiblockLocateItemStack implements IMultiblockLocateHandler {
         if (tagA.size() != tagB.size()) {
             return false;
         }
-        for (String key : tagA.keySet()) {
+        for (String key : tagA.getAllKeys()) {
             if ("locate".equals(key)) {
                 continue;
             }

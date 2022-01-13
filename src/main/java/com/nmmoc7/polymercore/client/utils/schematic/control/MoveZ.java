@@ -34,6 +34,6 @@ public class MoveZ extends MoveAbstract {
 
     @Override
     public BlockPos doMove(BlockPos current, int move) {
-        return current.add(0, 0, move);
+        return current.offset(0, 0, move);
     }
 }

@@ -37,5 +37,5 @@ public final class MyDimensionType extends DimensionType
             1.0D, false, false, false, false, true, 256,
             DefaultBiomeMagnifier.INSTANCE,
             BlockTags.INFINIBURN_END.getName(),
-            DimensionType.THE_END_ID, 0.0F);
+            DimensionType.END_EFFECTS, 0.0F);
 }

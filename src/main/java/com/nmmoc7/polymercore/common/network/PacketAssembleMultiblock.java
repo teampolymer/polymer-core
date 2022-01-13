@@ -23,13 +23,13 @@ public class PacketAssembleMultiblock {
     }
 
     public PacketAssembleMultiblock(PacketBuffer buffer) {
-        this.multiblockId = buffer.readString();
+        this.multiblockId = buffer.readUtf();
         this.offset = buffer.readBlockPos();
     }
 
 
     public void toBytes(PacketBuffer buffer) {
-        buffer.writeString(multiblockId);
+        buffer.writeUtf(multiblockId);
         buffer.writeBlockPos(offset);
     }
 
@@ -39,17 +39,17 @@ public class PacketAssembleMultiblock {
                 ServerPlayerEntity player = ctx.get().getSender();
                 if (player == null)
                     return;
-                if (player.world.isBlockLoaded(offset)) {
+                if (player.level.hasChunkAt(offset)) {
                     PolymerCoreApi.getInstance()
                         .getMultiblockManager()
                         .findById(new ResourceLocation(multiblockId))
                         .ifPresent(it -> {
-                            IAssembledMultiblock assemble = it.assemble(player.world, offset);
+                            IAssembledMultiblock assemble = it.assemble(player.level, offset);
 
                             if (assemble != null) {
-                                player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.success"), Util.DUMMY_UUID);
+                                player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.success"), Util.NIL_UUID);
                             } else {
-                                player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.failed"), Util.DUMMY_UUID);
+                                player.sendMessage(new TranslationTextComponent("chat.polymer.info.multiblock.assemble.failed"), Util.NIL_UUID);
                             }
                         });
                 }

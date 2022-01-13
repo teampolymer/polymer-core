@@ -62,7 +62,7 @@ public class SchematicTransform {
         ms.translate(x, y, z);
 
         ms.translate(0.5f, 0.5f, 0.5f);
-        ms.rotate(Vector3f.YP.rotationDegrees(rotation));
+        ms.mulPose(Vector3f.YP.rotationDegrees(rotation));
         ms.scale(MathHelper.abs(this.flip), 1f, 1f);
         ms.translate(-0.5f, -0.5f, -0.5f);
 
@@ -93,11 +93,11 @@ public class SchematicTransform {
             return false;
         }
         //noinspection SuspiciousNameCombination
-        return epsilonEquals(x, another.x) &&
-            epsilonEquals(y, another.y) &&
-            epsilonEquals(z, another.z) &&
-            epsilonEquals(wrapDegrees(rotation), wrapDegrees(another.rotation)) &&
-            epsilonEquals(flip, another.flip);
+        return equal(x, another.x) &&
+            equal(y, another.y) &&
+            equal(z, another.z) &&
+            equal(wrapDegrees(rotation), wrapDegrees(another.rotation)) &&
+            equal(flip, another.flip);
     }
 
     public static SchematicTransform interpolate(float percent, SchematicTransform start, SchematicTransform end) {
@@ -105,7 +105,7 @@ public class SchematicTransform {
             lerp(percent, start.x, end.x),
             lerp(percent, start.y, end.y),
             lerp(percent, start.z, end.z),
-            interpolateAngle(percent, start.rotation, end.rotation),
+            rotLerp(percent, start.rotation, end.rotation),
             lerp(percent, start.flip, end.flip),
             lerp(percent, start.scale, end.scale)
         );
@@ -115,7 +115,7 @@ public class SchematicTransform {
         x = lerp(percent, start.x, target.x);
         y = lerp(percent, start.y, target.y);
         z = lerp(percent, start.z, target.z);
-        rotation = interpolateAngle(percent, start.rotation, target.rotation);
+        rotation = rotLerp(percent, start.rotation, target.rotation);
         flip = lerp(percent, start.flip, target.flip);
         scale = lerp(percent, start.scale, target.scale);
         return this;

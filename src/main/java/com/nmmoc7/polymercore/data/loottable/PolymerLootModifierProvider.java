@@ -22,9 +22,9 @@ public class PolymerLootModifierProvider extends GlobalLootModifierProvider
     {
         add("smelting", LootRegistries.SMELTING.get(), new SmeltingEnchantmentModifier(
             new ILootCondition[]{
-                MatchTool.builder(
-                    ItemPredicate.Builder.create().enchantment(
-                        new EnchantmentPredicate(Enchantments.FLAME, MinMaxBounds.IntBound.atLeast(1))))
+                MatchTool.toolMatches(
+                    ItemPredicate.Builder.item().hasEnchantment(
+                        new EnchantmentPredicate(Enchantments.FLAMING_ARROWS, MinMaxBounds.IntBound.atLeast(1))))
                     .build()
             })
         );

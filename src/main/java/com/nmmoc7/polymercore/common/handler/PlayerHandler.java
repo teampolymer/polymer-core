@@ -10,8 +10,8 @@ import net.minecraftforge.fml.common.Mod;
 public class PlayerHandler {
     @SubscribeEvent
     public static void onPlayerRightClick(PlayerInteractEvent.RightClickBlock e) {
-        World world = e.getPlayer().world;
-        if (world.isRemote) {
+        World world = e.getPlayer().level;
+        if (world.isClientSide) {
             return;
         }
     }

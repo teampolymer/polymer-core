@@ -14,7 +14,7 @@ public class RecipeBlock extends RecipeObject<Block> {
 
     @Override
     public Ingredient getIngredient() {
-        return Ingredient.fromItems(obj);
+        return Ingredient.of(obj);
     }
 
     @Override
@@ -29,19 +29,19 @@ public class RecipeBlock extends RecipeObject<Block> {
 
     @Override
     public Block fromJson(JsonObject json) {
-        return ((BlockItem) (Ingredient.deserializeItemList(json).getStacks().toArray(new ItemStack[0])[0].getItem())).getBlock();
+        return ((BlockItem) (Ingredient.valueFromJson(json).getItems().toArray(new ItemStack[0])[0].getItem())).getBlock();
     }
 
     @Override
     public CompoundNBT toNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        new ItemStack(obj).write(nbt);
+        new ItemStack(obj).save(nbt);
         return nbt;
     }
 
     @Override
     public Block fromNBT(CompoundNBT nbt) {
-        return ((BlockItem) ItemStack.read(nbt).getItem()).getBlock();
+        return ((BlockItem) ItemStack.of(nbt).getItem()).getBlock();
     }
 
     @Override

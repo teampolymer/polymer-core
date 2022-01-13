@@ -45,8 +45,8 @@ public class FreeMachineUpdateHandler {
             return;
         }
         World world = (World) event.getWorld();
-        BlockPos pos = event.getPos().toImmutable();
-        if (world.isRemote) {
+        BlockPos pos = event.getPos().immutable();
+        if (world.isClientSide) {
             return;
         }
         Optional<IChunkMultiblockStorage> capability = CapabilityChunkMultiblockStorage.getCapability(world, pos);
@@ -87,7 +87,7 @@ public class FreeMachineUpdateHandler {
     public static void onChunkLoad(ChunkEvent.Load load) {
         IChunk chunk = load.getChunk();
         IWorld world = load.getWorld();
-        if (world.isRemote()) {
+        if (world.isClientSide()) {
             return;
         }
         Set<UUID> multiblocks = new HashSet<>();

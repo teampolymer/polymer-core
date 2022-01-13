@@ -91,7 +91,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         }
         positions.put(multiblock.getMultiblockId(), multiblock.getOffset());
         chunksMultiblocks.put(new ChunkPos(multiblock.getOffset()), multiblock.getMultiblockId());
-        markDirty();
+        setDirty();
     }
 
     public void removeAssembledMultiblock(UUID multiblockId) {
@@ -100,11 +100,11 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
         if(remove != null) {
             chunksMultiblocks.remove(new ChunkPos(remove), multiblockId);
         }
-        markDirty();
+        setDirty();
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         assembledMultiblockMap.clear();
         ListNBT multiblocks = nbt.getList("assembled_multiblocks", 10);
         for (INBT multiblock : multiblocks) {
@@ -113,23 +113,23 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
                 continue;
             }
             assembledMultiblockMap.put(assembledMultiblock.getMultiblockId(), assembledMultiblock);
-            positions.put(assembledMultiblock.getMultiblockId(), assembledMultiblock.getOffset().toImmutable());
+            positions.put(assembledMultiblock.getMultiblockId(), assembledMultiblock.getOffset().immutable());
             chunksMultiblocks.put(new ChunkPos(assembledMultiblock.getOffset()), assembledMultiblock.getMultiblockId());
         }
         if (LOG.isDebugEnabled() && assembledMultiblockMap.size() > 0) {
-            LOG.debug("Loaded {} machines in world {}", assembledMultiblockMap.size(), world.getDimensionKey());
+            LOG.debug("Loaded {} machines in world {}", assembledMultiblockMap.size(), world.dimension());
         }
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         ListNBT listNBT = new ListNBT();
         for (IFreeMultiblock value : assembledMultiblockMap.values()) {
             listNBT.add(value.serializeNBT());
         }
         compound.put("assembled_multiblocks", listNBT);
         if (LOG.isDebugEnabled() && listNBT.size() > 0) {
-            LOG.debug("Saving {} machines in world {}", listNBT.size(), world.getDimensionKey());
+            LOG.debug("Saving {} machines in world {}", listNBT.size(), world.dimension());
         }
         return compound;
     }
@@ -139,7 +139,7 @@ public class FreeMultiblockWorldSavedData extends WorldSavedData {
             throw new RuntimeException("Attempted to get the data from a client world. This is wrong.");
         }
         ServerWorld world = (ServerWorld) worldIn;
-        DimensionSavedDataManager storage = world.getSavedData();
-        return storage.getOrCreate(() -> new FreeMultiblockWorldSavedData(world), NAME);
+        DimensionSavedDataManager storage = world.getDataStorage();
+        return storage.computeIfAbsent(() -> new FreeMultiblockWorldSavedData(world), NAME);
     }
 }

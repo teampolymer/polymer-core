@@ -13,13 +13,13 @@ public class PolymerGuiUtils {
         final float vScale = 1f / textureHeight;
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder wr = tessellator.getBuffer();
+        BufferBuilder wr = tessellator.getBuilder();
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
-        Matrix4f matrix = ms.getLast().getMatrix();
-        wr.pos(matrix, x        , y + height, zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).tex( u          * uScale, ((v + height) * vScale)).endVertex();
-        wr.pos(matrix, x + width, y + height, zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).tex((u + width) * uScale, ((v + height) * vScale)).endVertex();
-        wr.pos(matrix, x + width, y         , zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).tex((u + width) * uScale, ( v           * vScale)).endVertex();
-        wr.pos(matrix, x        , y         , zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).tex( u          * uScale, ( v           * vScale)).endVertex();
-        tessellator.draw();
+        Matrix4f matrix = ms.last().pose();
+        wr.vertex(matrix, x        , y + height, zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).uv( u          * uScale, ((v + height) * vScale)).endVertex();
+        wr.vertex(matrix, x + width, y + height, zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).uv((u + width) * uScale, ((v + height) * vScale)).endVertex();
+        wr.vertex(matrix, x + width, y         , zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).uv((u + width) * uScale, ( v           * vScale)).endVertex();
+        wr.vertex(matrix, x        , y         , zLevel).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()).uv( u          * uScale, ( v           * vScale)).endVertex();
+        tessellator.end();
     }
 }

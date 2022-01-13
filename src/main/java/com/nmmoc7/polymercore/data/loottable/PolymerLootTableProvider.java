@@ -28,7 +28,7 @@ public class PolymerLootTableProvider extends LootTableProvider {
 
     @Override
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
-        map.forEach((location, lootTable) -> LootTableManager.validateLootTable(validationtracker, location, lootTable));
+        map.forEach((location, lootTable) -> LootTableManager.validate(validationtracker, location, lootTable));
     }
 
     @Override
