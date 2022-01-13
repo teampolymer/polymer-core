@@ -1,7 +1,10 @@
 package com.nmmoc7.polymercore.common.network;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -15,6 +18,7 @@ public class ModNetworking {
     }
 
     public static void registerMessage() {
+        new ItemStack(Blocks.BLACK_BED, 1);
         INSTANCE = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(PolymerCoreApi.MOD_ID, "default_networking"),
             () -> VERSION,

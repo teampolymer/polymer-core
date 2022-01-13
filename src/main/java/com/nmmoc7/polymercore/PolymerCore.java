@@ -2,10 +2,12 @@ package com.nmmoc7.polymercore;
 
 import com.nmmoc7.polymercore.api.PolymerCoreApi;
 import com.nmmoc7.polymercore.client.PolymerClient;
+import com.nmmoc7.polymercore.common.block.ModBlocks;
 import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblockItem;
 import com.nmmoc7.polymercore.common.capability.chunk.CapabilityChunkMultiblockStorage;
 import com.nmmoc7.polymercore.common.handler.MultiblockRegisterHandler;
 import com.nmmoc7.polymercore.common.item.ModItems;
+import com.nmmoc7.polymercore.common.loot.LootRegistries;
 import com.nmmoc7.polymercore.common.network.ModNetworking;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +30,9 @@ public class PolymerCore {
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         MultiblockRegisterHandler.MULTIBLOCK_TYPES.register(modBus);
         ModItems.REGISTER.register(modBus);
+        ModBlocks.REGISTER.register(modBus);
+//        LootRegistries.GLM.register(modBus);
+//        LootRegistries.init();
 
         modBus.addListener(this::preInit);
 
