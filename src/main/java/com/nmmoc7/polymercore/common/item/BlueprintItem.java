@@ -9,15 +9,15 @@ import com.nmmoc7.polymercore.common.capability.blueprint.CapabilityMultiblockIt
 import com.nmmoc7.polymercore.common.capability.blueprint.MultiblockLocateItemStack;
 import com.nmmoc7.polymercore.common.capability.blueprint.MultiblockSupplierItemStack;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -52,11 +52,13 @@ public class BlueprintItem extends Item {
                 }
                 return LazyOptional.empty();
             }
-
-
         };
     }
 
+    @Override
+    public @NotNull ActionResult<ItemStack> use(@NotNull World world, PlayerEntity player, @NotNull Hand hand) {
+        return ActionResult.success(player.getItemInHand(hand));
+    }
 
     public IDefinedMultiblock getMultiblock(ItemStack stack) {
         LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
