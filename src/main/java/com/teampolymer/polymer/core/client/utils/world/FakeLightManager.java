@@ -3,7 +3,6 @@ package com.teampolymer.polymer.core.client.utils.world;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.SectionPos;
 import net.minecraft.world.LightType;
-import net.minecraft.world.chunk.IChunkLightProvider;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.lighting.IWorldLightListener;
 import net.minecraft.world.lighting.WorldLightManager;

@@ -1,9 +1,5 @@
 package com.teampolymer.polymer.core.api.multiblock.part;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
-
 /**
  * 设定多方快结构中部分可变组件的数量限制
  */

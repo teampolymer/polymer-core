@@ -25,12 +25,9 @@
  */
 package com.teampolymer.polymer.core.client.utils;
 
-import java.util.function.Function;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.matrix.MatrixStack.Entry;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
 import com.teampolymer.polymer.core.client.renderer.CustomRenderTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -51,6 +48,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.function.Function;
 
 
 @OnlyIn(Dist.CLIENT)
@@ -93,9 +92,9 @@ public class FluidRenderer {
         ms.mulPose(Vector3f.XP.rotationDegrees(direction == Direction.UP ? 0 : direction == Direction.DOWN ? 180 : 90));
         ms.translate(-0.5, -0.5, -0.5);
 
-        float h = (float) (radius);
-        float hMin = (float) (-radius);
-        float hMax = (float) (radius);
+        float h = radius;
+        float hMin = -radius;
+        float hMax = radius;
         float y = inbound ? 0 : .5f;
         float yMin = y;
         float yMax = y + MathHelper.clamp(progress * .5f - 1e-6f, 0, 1);

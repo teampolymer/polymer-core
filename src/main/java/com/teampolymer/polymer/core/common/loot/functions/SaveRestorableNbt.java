@@ -1,6 +1,7 @@
 package com.teampolymer.polymer.core.common.loot.functions;
 
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import com.teampolymer.polymer.core.common.IRestorableTileEntity;
 import com.teampolymer.polymer.core.common.loot.LootRegistries;
 import net.minecraft.item.ItemStack;

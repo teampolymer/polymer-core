@@ -30,7 +30,10 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import static com.teampolymer.polymer.core.client.utils.SchematicRenderUtils.*;
 

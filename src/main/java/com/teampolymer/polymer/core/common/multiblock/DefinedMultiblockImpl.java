@@ -30,7 +30,7 @@ public class DefinedMultiblockImpl extends AbstractMultiblock implements IDefine
     private final IMultiblockType type;
     private final boolean canSymmetrical;
     private final List<String> tags;
-    private Collection<IPartLimitConfig> limitConfigs;
+    private final Collection<IPartLimitConfig> limitConfigs;
 
     public DefinedMultiblockImpl(List<IMultiblockComponent> components, String machine, Vector3i size, Map<Vector3i, IMultiblockPart> partsMap, IMultiblockType type, boolean canSymmetrical, List<String> tags, Collection<IPartLimitConfig> limitConfigs) {
         super(components, machine, size);

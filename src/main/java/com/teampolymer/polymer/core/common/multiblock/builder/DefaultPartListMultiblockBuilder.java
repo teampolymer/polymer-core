@@ -12,7 +12,9 @@ import com.teampolymer.polymer.core.common.multiblock.ExtensibleMultiblockImpl;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3i;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DefaultPartListMultiblockBuilder extends AbstractMultiblockBuilder<IPartListMultiblockBuilder> implements IPartListMultiblockBuilder {
     private final Map<Vector3i, IMultiblockPart> parts = new HashMap<>();

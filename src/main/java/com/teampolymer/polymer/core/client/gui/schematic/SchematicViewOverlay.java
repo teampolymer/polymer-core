@@ -33,8 +33,8 @@ public class SchematicViewOverlay extends Screen {
 
     private final ControlAction[] actions;
     private int current = 0;
-    private int w;
-    private int h;
+    private final int w;
+    private final int h;
     private float yOffset = 0;
     private boolean focused = false;
 

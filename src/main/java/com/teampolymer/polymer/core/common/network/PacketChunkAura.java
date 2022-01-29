@@ -7,9 +7,9 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketChunkAura {
-    private int chunkX;
-    private int chunkZ;
-    private double aura;
+    private final int chunkX;
+    private final int chunkZ;
+    private final double aura;
 
     public PacketChunkAura(int chunkX, int chunkZ, double aura) {
         this.chunkX = chunkX;

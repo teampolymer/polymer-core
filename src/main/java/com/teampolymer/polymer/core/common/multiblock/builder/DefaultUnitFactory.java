@@ -3,8 +3,6 @@ package com.teampolymer.polymer.core.common.multiblock.builder;
 import com.teampolymer.polymer.core.api.multiblock.builder.IUnitFactory;
 import com.teampolymer.polymer.core.api.multiblock.part.IMultiblockUnit;
 import com.teampolymer.polymer.core.api.util.BlockStateUtils;
-import com.nmmoc7.polymercore.common.multiblock.unit.*;
-import com.polymerseries.polymer.core.common.multiblock.unit.*;
 import com.teampolymer.polymer.core.common.multiblock.unit.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
