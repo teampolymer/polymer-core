@@ -31,10 +31,10 @@ displayName = "Polymer Core" #mandatory
 # A text field displayed in the mod UI
 #credits="Thanks for this example mod goes to Java" #optional
 # A text field displayed in the mod UI
-authors = "DustW" #optional
+authors = "DustW WarmthDawn Huige" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
-
+Nope
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.polymer-core]] #optional
@@ -56,10 +56,3 @@ mandatory = true
 versionRange = "[1.16.5,1.17)"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.create]]
-    modId="flywheel"
-    mandatory=true
-    versionRange="[1.16-0.2.4,1.16-0.3)"
-    ordering="AFTER"
-    side="BOTH"

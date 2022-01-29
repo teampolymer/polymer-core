@@ -12,8 +12,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-group = 'com.nmmoc7'
-version = 'r1.16.5-1-1'
+version = "1.16.5-1.1.0"
+group = "com.teampolymer"
 
 java {
     archivesBaseName = 'polymer-core'
@@ -59,7 +59,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                polymercore {
+                'polymer-core' {
                     source sourceSets.main
                 }
             }
@@ -81,7 +81,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                polymercore {
+                'polymer-core' {
                     source sourceSets.main
                 }
             }
@@ -106,7 +106,7 @@ minecraft {
             args '--mod', 'polymer-core', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                polymercore {
+                'polymer-core' {
                     source sourceSets.main
                 }
             }
@@ -128,26 +128,7 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.20'
-
-    implementation 'org.jetbrains:annotations:22.0.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-
-    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-
-
-    // Real mod deobf dependency examples - these get remapped to your current mappings
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-
-    // Examples using mod jars from ./libs
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    implementation 'org.jetbrains:annotations:23.0.0'
 
 }
 
@@ -155,11 +136,11 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "polymercore",
+                "Specification-Title"     : "Polymer Core",
                 "Specification-Vendor"    : "Team Ploymer",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Version"  : "${project.version}",
                 "Implementation-Vendor"   : "DustW WarmthDawn",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
