@@ -6,13 +6,32 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.13.6'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'pl.allegro.tech.build.axion-release'
 
+scmVersion {
+    tag {
+        prefix = 'v1.16.5-'
+        branchPrefix = [
+                '1.12.2' : 'v1.12.2-'
+        ]
+    }
+    repository {
+        directory = project.projectDir // repository location
+    }
+    branchVersionCreator = [
+            'main': { version, position -> '1.16.5-' + version},
+            '1.12.2': { version, position -> '1.12.2-' + version}
+    ]
 
-version = "1.16.5-1.1.0"
+}
+
+version = scmVersion.version
+//version = "1.16.5-1.1.0"
 group = "com.teampolymer"
 
 java {
