@@ -16,7 +16,7 @@ apply plugin: 'maven-publish'
 
 scmVersion {
     tag {
-        prefix = 'v1.16.5-'
+        prefix = '1.16.5-'
     }
     repository {
         directory = project.projectDir // repository location
@@ -26,7 +26,7 @@ scmVersion {
 
 version = scmVersion.version
 //version = "1.16.5-1.1.0"
-group = "com.teampolymer"
+group = "com.github.teampolymer"
 
 java {
     archivesBaseName = 'polymer-core'
