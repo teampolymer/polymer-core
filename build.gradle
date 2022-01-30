@@ -12,6 +12,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'pl.allegro.tech.build.axion-release'
+apply plugin: 'maven-publish'
 
 scmVersion {
     tag {
@@ -25,7 +26,7 @@ scmVersion {
 
 version = scmVersion.version
 //version = "1.16.5-1.1.0"
-group = "com.teampolymer"
+group = "com.github.teampolymer"
 
 java {
     archivesBaseName = 'polymer-core'
@@ -160,3 +161,11 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+}
