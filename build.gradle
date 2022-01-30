@@ -160,7 +160,11 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar')
+if (project == project.rootProject) {
+    jar.finalizedBy('reobfJar')
+} else {
+    publish.finalizedBy('reobfJar')
+}
 
 publishing {
     publications {
