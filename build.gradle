@@ -26,7 +26,7 @@ scmVersion {
 
 version = scmVersion.version
 //version = "1.16.5-1.1.0"
-group = "com.github.teampolymer"
+group = "com.teampolymer"
 
 java {
     archivesBaseName = 'polymer-core'
