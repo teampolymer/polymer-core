@@ -18,7 +18,6 @@ public interface PolymerCoreApi {
 
     Lazy<PolymerCoreApi> INSTANCE = Lazy.of(() -> {
         try {
-            //TODO: 实现
             return (PolymerCoreApi) Class.forName("com.teampolymer.polymer.core.common.PolymerCoreApiImpl").newInstance();
         } catch (ReflectiveOperationException e) {
             LogManager.getLogger().warn("Unable to find PolymerCoreApiImpl, using a dummy");
