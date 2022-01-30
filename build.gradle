@@ -16,18 +16,11 @@ apply plugin: 'pl.allegro.tech.build.axion-release'
 scmVersion {
     tag {
         prefix = 'v1.16.5-'
-        branchPrefix = [
-                '1.12.2' : 'v1.12.2-'
-        ]
     }
     repository {
         directory = project.projectDir // repository location
     }
-    branchVersionCreator = [
-            'main': { version, position -> '1.16.5-' + version},
-            '1.12.2': { version, position -> '1.12.2-' + version}
-    ]
-
+    versionCreator = { version, _ -> '1.16.5-' + version }
 }
 
 version = scmVersion.version
