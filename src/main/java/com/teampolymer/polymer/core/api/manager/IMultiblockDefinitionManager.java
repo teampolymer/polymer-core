@@ -1,4 +1,4 @@
-package com.teampolymer.polymer.core.api.registry;
+package com.teampolymer.polymer.core.api.manager;
 
 import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
 import net.minecraft.block.BlockState;

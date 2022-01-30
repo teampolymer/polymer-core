@@ -7,7 +7,7 @@ import com.google.common.collect.Multimap;
 import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.MultiblockDirection;
 import com.teampolymer.polymer.core.api.multiblock.part.IMultiblockPart;
-import com.teampolymer.polymer.core.api.registry.IMultiblockDefinitionManager;
+import com.teampolymer.polymer.core.api.manager.IMultiblockDefinitionManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 

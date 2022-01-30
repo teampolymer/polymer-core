@@ -3,7 +3,7 @@ package com.teampolymer.polymer.core.api;
 import com.teampolymer.polymer.core.api.capability.IChunkMultiblockStorage;
 import com.teampolymer.polymer.core.api.multiblock.IAssembledMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.assembled.IFreeMultiblock;
-import com.teampolymer.polymer.core.api.registry.IMultiblockDefinitionManager;
+import com.teampolymer.polymer.core.api.manager.IMultiblockDefinitionManager;
 import com.teampolymer.polymer.core.api.stub.StubPolymerCoreApi;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

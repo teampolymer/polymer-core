@@ -37,30 +37,6 @@ public class ModNetworking {
             })))
             .add();
 
-        INSTANCE.messageBuilder(TestLoginPacket.class, nextID(), NetworkDirection.LOGIN_TO_CLIENT)
-            .loginIndex(LoginPacket::getLoginIndex, LoginPacket::setLoginIndex)
-            .encoder(TestLoginPacket::toBytes)
-            .decoder(TestLoginPacket::new)
-            .consumer((packet, ctx) -> {
-                LOG.debug("Received server login packet {}", packet.getLoginIndex());
-                packet.handler(ctx);
-                INSTANCE.reply(new LoginReplyPacket(), ctx.get());
-            })
-            .markAsLoginPacket()
-            .add();
-
-        INSTANCE.messageBuilder(PacketChunkAura.class, nextID(), NetworkDirection.PLAY_TO_CLIENT)
-            .encoder(PacketChunkAura::toBytes)
-            .decoder(PacketChunkAura::new)
-            .consumer(PacketChunkAura::handler)
-            .add();
-
-        INSTANCE.messageBuilder(PacketMultiblockDebug.class, nextID())
-            .encoder(PacketMultiblockDebug::toBytes)
-            .decoder(PacketMultiblockDebug::new)
-            .consumer(PacketMultiblockDebug::handler)
-            .add();
-
         INSTANCE.messageBuilder(PacketLocateHandlerSync.class, nextID())
             .encoder(PacketLocateHandlerSync::toBytes)
             .decoder(PacketLocateHandlerSync::new)

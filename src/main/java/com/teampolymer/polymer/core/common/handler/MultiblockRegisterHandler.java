@@ -2,7 +2,7 @@ package com.teampolymer.polymer.core.common.handler;
 
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
 import com.teampolymer.polymer.core.api.multiblock.IMultiblockType;
-import com.teampolymer.polymer.core.api.registry.PolymerCoreRegistries;
+import com.teampolymer.polymer.core.api.manager.PolymerCoreRegistries;
 import com.teampolymer.polymer.core.common.multiblock.free.MultiblockTypeFree;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;

@@ -3,7 +3,7 @@ package com.teampolymer.polymer.core.api.util;
 import com.teampolymer.polymer.core.api.multiblock.IAssembledMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.IMultiblockType;
-import com.teampolymer.polymer.core.api.registry.PolymerCoreRegistries;
+import com.teampolymer.polymer.core.api.manager.PolymerCoreRegistries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;

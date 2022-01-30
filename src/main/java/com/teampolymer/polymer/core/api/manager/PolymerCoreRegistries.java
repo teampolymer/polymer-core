@@ -1,4 +1,4 @@
-package com.teampolymer.polymer.core.api.registry;
+package com.teampolymer.polymer.core.api.manager;
 
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
 import com.teampolymer.polymer.core.api.multiblock.IMultiblockType;

@@ -2,9 +2,6 @@ package com.teampolymer.polymer.core.common.handler;
 
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
 import com.teampolymer.polymer.core.api.multiblock.assembled.IFreeMultiblock;
-import com.teampolymer.polymer.core.common.world.FreeMultiblockWorldSavedData;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,17 +18,17 @@ public class WorldTickHandler {
         if (event.phase != TickEvent.Phase.END || event.type != TickEvent.Type.WORLD || event.side != LogicalSide.SERVER) {
             return;
         }
-        World world = event.world;
-        Collection<IFreeMultiblock> multiblocks = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();
-
-        for (IFreeMultiblock multiblock : multiblocks) {
-            BlockPos offset = multiblock.getOffset();
-            Vector3i size = multiblock.getOriginalMultiblock().getSize();
-
-            if (world.isAreaLoaded(offset, Math.max(Math.max(size.getX(), size.getY()), size.getZ()))) {
-                tickMultiblock(world, multiblock);
-            }
-        }
+//        World world = event.world;
+//        Collection<IFreeMultiblock> multiblocks = FreeMultiblockWorldSavedData.get(world).getAssembledMultiblocks();
+//
+//        for (IFreeMultiblock multiblock : multiblocks) {
+//            BlockPos offset = multiblock.getOffset();
+//            Vector3i size = multiblock.getOriginalMultiblock().getSize();
+//
+//            if (world.isAreaLoaded(offset, Math.max(Math.max(size.getX(), size.getY()), size.getZ()))) {
+//                tickMultiblock(world, multiblock);
+//            }
+//        }
     }
 
 
