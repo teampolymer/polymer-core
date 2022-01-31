@@ -8,7 +8,4 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModBlocks {
     public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, PolymerCoreApi.MOD_ID);
-
-
-    public static final RegistryObject<Block> TestBlock = REGISTER.register("test_block", TestBlock::new);
 }

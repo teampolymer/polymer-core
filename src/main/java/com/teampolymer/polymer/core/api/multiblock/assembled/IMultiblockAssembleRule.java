@@ -1,6 +1,6 @@
 package com.teampolymer.polymer.core.api.multiblock.assembled;
 
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.part.IMultiblockUnit;
 import com.teampolymer.polymer.core.api.multiblock.part.IPartChoice;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +35,7 @@ public interface IMultiblockAssembleRule extends INBTSerializable<CompoundNBT> {
      */
     Rotation getRotation();
 
-    Map<BlockPos, IMultiblockUnit> mapParts(IDefinedMultiblock originalMultiblock);
+    Map<BlockPos, IMultiblockUnit> mapParts(IArchetypeMultiblock originalMultiblock);
 
     void makeChoice(Vector3i key, IPartChoice choice);
 

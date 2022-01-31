@@ -1,6 +1,6 @@
 package com.teampolymer.polymer.core.client.utils.multiblock;
 
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.MultiblockDirection;
 import com.teampolymer.polymer.core.api.multiblock.part.IMultiblockPart;
 import com.teampolymer.polymer.core.api.multiblock.part.IPartChoice;
@@ -13,11 +13,11 @@ import java.util.*;
  * 用于投影的结构（TODO: 拓展（这是第几个拓展TODO了.jpg）
  */
 public class SchematicMultiblock {
-    private final IDefinedMultiblock origin;
+    private final IArchetypeMultiblock origin;
     private Map<Vector3i, ISampleProvider> originSamples;
     private Map<Vector3i, ISampleProvider> flippedSamples;
 
-    public SchematicMultiblock(IDefinedMultiblock origin) {
+    public SchematicMultiblock(IArchetypeMultiblock origin) {
         this.origin = origin;
         this.originSamples = new HashMap<>();
         this.flippedSamples = new HashMap<>();
@@ -52,7 +52,7 @@ public class SchematicMultiblock {
         this.flippedSamples = Collections.unmodifiableMap(flippedSamples);
     }
 
-    public IDefinedMultiblock getOriginalMultiblock() {
+    public IArchetypeMultiblock getOriginalMultiblock() {
         return origin;
     }
 

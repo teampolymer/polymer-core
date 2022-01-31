@@ -1,7 +1,7 @@
 package com.teampolymer.polymer.core.api.capability;
 
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -13,13 +13,13 @@ public interface IMultiblockSupplier {
      *
      * @return
      */
-    default IDefinedMultiblock getMultiblock() {
+    default IArchetypeMultiblock getMultiblock() {
         ResourceLocation registryName = getMultiblockRegistryName();
         if (registryName == null) {
             return null;
         }
         return PolymerCoreApi.getInstance()
-            .getMultiblockManager()
+            .getArchetypeManager()
             .findById(registryName)
             .orElse(null);
     }

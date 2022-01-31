@@ -30,14 +30,21 @@ public interface IAssembledMultiblock extends INBTSerializable<CompoundNBT> {
     /**
      * 初始化多方快结构
      */
-    boolean initialize();
+    boolean tryInitialize();
+
+    /**
+     * 多方快结构是否已经初始化
+     */
+    boolean isInitialized();
+
+    void invalidate();
 
     /**
      * 获取这个多方快组装前的的结构
      *
      * @return 组装前的结构
      */
-    IDefinedMultiblock getOriginalMultiblock();
+    IArchetypeMultiblock getArchetype();
 
     /**
      * 获取方块结构的偏移量

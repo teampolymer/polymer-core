@@ -3,7 +3,7 @@ package com.teampolymer.polymer.core.common.item;
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
 import com.teampolymer.polymer.core.api.capability.IMultiblockLocateHandler;
 import com.teampolymer.polymer.core.api.capability.IMultiblockSupplier;
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.common.PolymerItemGroup;
 import com.teampolymer.polymer.core.common.capability.blueprint.CapabilityMultiblockItem;
 import com.teampolymer.polymer.core.common.capability.blueprint.MultiblockLocateItemStack;
@@ -58,7 +58,7 @@ public class BlueprintItem extends Item {
         return ActionResult.success(player.getItemInHand(hand));
     }
 
-    public IDefinedMultiblock getMultiblock(ItemStack stack) {
+    public IArchetypeMultiblock getMultiblock(ItemStack stack) {
         LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
         if (!capability.isPresent()) {
             return null;
@@ -67,7 +67,7 @@ public class BlueprintItem extends Item {
     }
 
     public String getMultiblockName(ItemStack stack) {
-        IDefinedMultiblock multiblock = getMultiblock(stack);
+        IArchetypeMultiblock multiblock = getMultiblock(stack);
         if (multiblock == null) {
             return I18n.get(UNKNOWN_MULTIBLOCK);
         }
@@ -86,8 +86,8 @@ public class BlueprintItem extends Item {
     @Override
     public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
         if (this.allowdedIn(group)) {
-            for (IDefinedMultiblock multiblock : PolymerCoreApi.getInstance()
-                .getMultiblockManager()
+            for (IArchetypeMultiblock multiblock : PolymerCoreApi.getInstance()
+                .getArchetypeManager()
                 .findAll()) {
                 ItemStack stack = new ItemStack(this);
                 LazyOptional<IMultiblockSupplier> capability = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
