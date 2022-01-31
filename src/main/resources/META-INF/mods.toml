@@ -31,11 +31,10 @@ displayName = "Polymer Core" #mandatory
 # A text field displayed in the mod UI
 #credits="Thanks for this example mod goes to Java" #optional
 # A text field displayed in the mod UI
-authors = "DustW WarmthDawn Huige" #optional
+authors = "TeamPolymer" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
-Nope
-'''
+负责提供通用Lib代码，大部分的公开API(包括子模块，用接口的方式)，大部分注册表，以及子模块通信的接口。'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.polymer-core]] #optional
 # the modid of the dependency
