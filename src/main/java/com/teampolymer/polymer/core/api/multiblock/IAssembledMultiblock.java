@@ -44,7 +44,7 @@ public interface IAssembledMultiblock extends INBTSerializable<CompoundNBT> {
      *
      * @return 组装前的结构
      */
-    IArchetypeMultiblock getOriginalMultiblock();
+    IArchetypeMultiblock getArchetype();
 
     /**
      * 获取方块结构的偏移量

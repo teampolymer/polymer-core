@@ -25,6 +25,11 @@ public interface IMultiblock extends IAttributeProvider {
      */
     String getMachine();
 
+    /**
+     * 判断该多方快结构是否是分布式结构
+     */
+    boolean isDistributedMachine();
+
 
     /**
      * 获取多方快结构的尺寸

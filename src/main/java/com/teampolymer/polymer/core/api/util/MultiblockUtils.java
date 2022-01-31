@@ -17,7 +17,7 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 public class MultiblockUtils {
-    public static IAssembledMultiblock deserializeNBT(World world, INBT nbt) {
+    public static IAssembledMultiblock deserializeNBT(INBT nbt) {
         if (!(nbt instanceof CompoundNBT)) {
             return null;
         }
@@ -27,7 +27,7 @@ public class MultiblockUtils {
         if (typeObj == null) {
             return null;
         }
-        return typeObj.createFromNBT(world, compound);
+        return typeObj.createFromNBT(compound);
     }
 
     private static EnumMap<Direction, Vector3i> multiblockEdgeCache = null;
