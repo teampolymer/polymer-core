@@ -41,7 +41,7 @@ public class PacketAssembleMultiblock {
                     return;
                 if (player.level.hasChunkAt(offset)) {
                     PolymerCoreApi.getInstance()
-                        .getMultiblockManager()
+                        .getArchetypeManager()
                         .findById(new ResourceLocation(multiblockId))
                         .ifPresent(it -> {
                             IAssembledMultiblock assemble = it.assemble(player.level, offset);

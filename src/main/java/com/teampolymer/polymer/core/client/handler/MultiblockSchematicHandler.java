@@ -3,7 +3,7 @@ package com.teampolymer.polymer.core.client.handler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teampolymer.polymer.core.api.capability.IMultiblockLocateHandler;
 import com.teampolymer.polymer.core.api.capability.IMultiblockSupplier;
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.api.util.MultiblockUtils;
 import com.teampolymer.polymer.core.client.gui.schematic.SchematicViewOverlay;
 import com.teampolymer.polymer.core.client.renderer.CustomRenderTypeBuffer;
@@ -50,7 +50,7 @@ public class MultiblockSchematicHandler implements IRenderer {
 
 
     //多方快
-    private IDefinedMultiblock currentMultiblock;
+    private IArchetypeMultiblock currentMultiblock;
 
     private IMultiblockLocateHandler locateHandler = null;
     private int handleSlot = -1;
@@ -183,7 +183,7 @@ public class MultiblockSchematicHandler implements IRenderer {
 
     }
 
-    public IDefinedMultiblock getCurrentMultiblock() {
+    public IArchetypeMultiblock getCurrentMultiblock() {
         return currentMultiblock;
     }
 
@@ -395,7 +395,7 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
 
         if (multiblockSupplier.isPresent()) {
-            IDefinedMultiblock multiblock = multiblockSupplier.resolve().get().getMultiblock();
+            IArchetypeMultiblock multiblock = multiblockSupplier.resolve().get().getMultiblock();
             if (multiblock != this.currentMultiblock) {
                 fadeOutCurrent();
                 this.currentMultiblock = multiblock;
@@ -405,13 +405,13 @@ public class MultiblockSchematicHandler implements IRenderer {
         }
 
         PlayerInventory inv = mc.player.inventory;
-        IDefinedMultiblock firstResult = null;
+        IArchetypeMultiblock firstResult = null;
         for (int i = 0; i < 9; i++) {
             ItemStack stack = inv.getItem(i);
             multiblockSupplier = stack.getCapability(CapabilityMultiblockItem.MULTIBLOCK_SUPPLIER);
 
             if (multiblockSupplier.isPresent()) {
-                IDefinedMultiblock multiblock = multiblockSupplier.resolve().get().getMultiblock();
+                IArchetypeMultiblock multiblock = multiblockSupplier.resolve().get().getMultiblock();
                 //当前多方快不存在，直接赋值结束
                 if (this.currentMultiblock == null) {
                     fadeOutCurrent();

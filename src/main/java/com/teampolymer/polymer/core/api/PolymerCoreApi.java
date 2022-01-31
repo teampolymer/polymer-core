@@ -1,13 +1,12 @@
 package com.teampolymer.polymer.core.api;
 
-import com.teampolymer.polymer.core.api.capability.IChunkMultiblockStorage;
+import com.teampolymer.polymer.core.api.manager.IWorldMultiblockManager;
 import com.teampolymer.polymer.core.api.multiblock.IAssembledMultiblock;
-import com.teampolymer.polymer.core.api.multiblock.assembled.IFreeMultiblock;
-import com.teampolymer.polymer.core.api.manager.IMultiblockDefinitionManager;
+import com.teampolymer.polymer.core.api.multiblock.assembled.IWorldMultiblock;
+import com.teampolymer.polymer.core.api.manager.IArchetypeMultiblockManager;
 import com.teampolymer.polymer.core.api.stub.StubPolymerCoreApi;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import org.apache.logging.log4j.LogManager;
 
@@ -27,6 +26,7 @@ public interface PolymerCoreApi {
 
 
     String MOD_ID = "polymer-core";
+    String POLYMER_ID = "polymer";
 
     /**
      * 获取API实例对象
@@ -46,22 +46,8 @@ public interface PolymerCoreApi {
         return 0;
     }
 
-    IMultiblockDefinitionManager getMultiblockManager();
-
-    Capability<IChunkMultiblockStorage> getChunkMultiblockCapability();
-
-    //---------------------------------------
-    // Multiblock API
-    //---------------------------------------
-
-    IAssembledMultiblock findMultiblock(World world, UUID id);
-
-    IAssembledMultiblock findMultiblock(World world, BlockPos pos, boolean coreBlock);
-
-    IAssembledMultiblock findMultiblock(World world, BlockPos pos);
-
-    Collection<IFreeMultiblock> findFreeMultiblocks(World world);
+    IArchetypeMultiblockManager getArchetypeManager();
 
 
-
+    IWorldMultiblockManager getWorldMultiblockManager();
 }

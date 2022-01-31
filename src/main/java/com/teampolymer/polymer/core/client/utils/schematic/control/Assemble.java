@@ -2,7 +2,7 @@ package com.teampolymer.polymer.core.client.utils.schematic.control;
 
 import com.google.common.collect.Lists;
 import com.teampolymer.polymer.core.api.capability.IMultiblockLocateHandler;
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.client.handler.MultiblockSchematicHandler;
 import com.teampolymer.polymer.core.client.resources.Icons;
 import com.teampolymer.polymer.core.common.network.ModNetworking;
@@ -49,7 +49,7 @@ public class Assemble extends ControlAction {
         if (!pressed || mouseButton != 1) {
             return;
         }
-        IDefinedMultiblock currentMultiblock = MultiblockSchematicHandler.INSTANCE.getCurrentMultiblock();
+        IArchetypeMultiblock currentMultiblock = MultiblockSchematicHandler.INSTANCE.getCurrentMultiblock();
         Minecraft mc = Minecraft.getInstance();
         if (mc.hitResult instanceof BlockRayTraceResult && mc.hitResult.getType() == RayTraceResult.Type.BLOCK) {
             BlockPos pos = ((BlockRayTraceResult) mc.hitResult).getBlockPos();

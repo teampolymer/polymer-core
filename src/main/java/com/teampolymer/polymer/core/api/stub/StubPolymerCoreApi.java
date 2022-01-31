@@ -3,9 +3,9 @@ package com.teampolymer.polymer.core.api.stub;
 
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
 import com.teampolymer.polymer.core.api.capability.IChunkMultiblockStorage;
+import com.teampolymer.polymer.core.api.manager.IArchetypeMultiblockManager;
 import com.teampolymer.polymer.core.api.multiblock.IAssembledMultiblock;
-import com.teampolymer.polymer.core.api.multiblock.assembled.IFreeMultiblock;
-import com.teampolymer.polymer.core.api.manager.IMultiblockDefinitionManager;
+import com.teampolymer.polymer.core.api.multiblock.assembled.IWorldMultiblock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class StubPolymerCoreApi implements PolymerCoreApi {
     @Override
-    public IMultiblockDefinitionManager getMultiblockManager() {
+    public IArchetypeMultiblockManager getArchetypeManager() {
         throw new NotImplementedException("IMultiblockDefinitionManager");
     }
 
@@ -42,7 +42,7 @@ public class StubPolymerCoreApi implements PolymerCoreApi {
     }
 
     @Override
-    public Collection<IFreeMultiblock> findFreeMultiblocks(World world) {
+    public Collection<IWorldMultiblock> findWorldMultiblocks(World world) {
         return Collections.emptyList();
     }
 }

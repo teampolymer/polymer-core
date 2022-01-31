@@ -5,6 +5,6 @@ import net.minecraft.util.math.ChunkPos;
 
 import java.util.Collection;
 
-public interface IFreeMultiblock extends IAssembledMultiblock {
+public interface IWorldMultiblock extends IAssembledMultiblock {
     Collection<ChunkPos> getCrossedChunks();
 }

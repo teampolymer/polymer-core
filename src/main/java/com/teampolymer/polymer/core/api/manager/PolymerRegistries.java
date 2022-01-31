@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
-public class PolymerCoreRegistries {
+public class PolymerRegistries {
     public static IForgeRegistry<IMultiblockType> MULTIBLOCK_TYPES =
         new RegistryBuilder<IMultiblockType>()
             .setName(new ResourceLocation(PolymerCoreApi.MOD_ID, "multiblock_type"))

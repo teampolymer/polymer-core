@@ -15,7 +15,7 @@ public interface IMultiblockType extends IForgeRegistryEntry<IMultiblockType> {
      * @param assembleRule 组装的规则
      * @return 组装后的多方快结构
      */
-    IAssembledMultiblock createMultiblockIn(IDefinedMultiblock definition, World world, IMultiblockAssembleRule assembleRule);
+    IAssembledMultiblock createMultiblockIn(IArchetypeMultiblock definition, World world, IMultiblockAssembleRule assembleRule);
 
 
     IAssembledMultiblock createFromNBT(World world, CompoundNBT nbt);

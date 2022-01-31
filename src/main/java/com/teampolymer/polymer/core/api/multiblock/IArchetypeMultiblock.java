@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
-public interface IDefinedMultiblock extends IMultiblock {
+public interface IArchetypeMultiblock extends IMultiblock {
     /**
      * 尝试组装一个多方快结构，并返回组装后的多方快
      *
@@ -90,7 +90,7 @@ public interface IDefinedMultiblock extends IMultiblock {
      */
     Collection<IPartLimitConfig> getLimitConfigs();
 
-    IDefinedMultiblock setRegistryName(ResourceLocation name);
+    IArchetypeMultiblock setRegistryName(ResourceLocation name);
 
     @Nullable
     ResourceLocation getRegistryName();

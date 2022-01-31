@@ -1,6 +1,6 @@
 package com.teampolymer.polymer.core.client.utils;
 
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.client.utils.math.SchematicTransform;
 import com.teampolymer.polymer.core.client.utils.multiblock.ISampleProvider;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectRBTreeMap;
@@ -17,7 +17,7 @@ import java.util.SortedMap;
 
 public final class SchematicRenderUtils {
 
-    public static IModelData findModelData(BlockState block, Vector3i relativePos, IDefinedMultiblock multiblock) {
+    public static IModelData findModelData(BlockState block, Vector3i relativePos, IArchetypeMultiblock multiblock) {
         return EmptyModelData.INSTANCE;
     }
 
