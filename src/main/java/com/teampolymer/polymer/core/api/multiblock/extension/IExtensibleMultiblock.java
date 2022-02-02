@@ -1,6 +1,6 @@
 package com.teampolymer.polymer.core.api.multiblock.extension;
 
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 表示一个可以拓展的多方快结构
  */
-public interface IExtensibleMultiblock extends IDefinedMultiblock {
+public interface IExtensibleMultiblock extends IArchetypeMultiblock {
     /**
      * 获取所有的拓展点
      *

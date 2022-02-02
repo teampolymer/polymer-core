@@ -2,7 +2,7 @@ package com.teampolymer.polymer.core.client.utils.schematic;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.MultiblockDirection;
 import com.teampolymer.polymer.core.api.multiblock.part.IMultiblockPart;
 import com.teampolymer.polymer.core.api.multiblock.part.IPartChoice;
@@ -58,7 +58,7 @@ public class SchematicRenderer {
 
 
     //显示绑定的多方快结构
-    private IDefinedMultiblock multiblock;
+    private IArchetypeMultiblock multiblock;
     private Rotation rotation;
     private boolean isSymmetrical;
 
@@ -72,12 +72,12 @@ public class SchematicRenderer {
     }
 
 
-    public void setMultiblock(IDefinedMultiblock multiblock) {
+    public void setMultiblock(IArchetypeMultiblock multiblock) {
         this.schematicMultiblock = null;
         this.multiblock = multiblock;
     }
 
-    public IDefinedMultiblock getMultiblock() {
+    public IArchetypeMultiblock getMultiblock() {
         return multiblock;
     }
 

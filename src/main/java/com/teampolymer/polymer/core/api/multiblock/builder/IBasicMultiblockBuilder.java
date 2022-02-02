@@ -1,7 +1,7 @@
 package com.teampolymer.polymer.core.api.multiblock.builder;
 
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 
 public interface IBasicMultiblockBuilder {
-    IDefinedMultiblock build();
+    IArchetypeMultiblock build();
 }

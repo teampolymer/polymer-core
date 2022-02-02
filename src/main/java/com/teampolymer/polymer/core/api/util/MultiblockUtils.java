@@ -1,9 +1,9 @@
 package com.teampolymer.polymer.core.api.util;
 
+import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.IAssembledMultiblock;
-import com.teampolymer.polymer.core.api.multiblock.IDefinedMultiblock;
 import com.teampolymer.polymer.core.api.multiblock.IMultiblockType;
-import com.teampolymer.polymer.core.api.registry.PolymerCoreRegistries;
+import com.teampolymer.polymer.core.api.manager.PolymerRegistries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -17,17 +17,17 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 public class MultiblockUtils {
-    public static IAssembledMultiblock deserializeNBT(World world, INBT nbt) {
+    public static IAssembledMultiblock deserializeNBT(INBT nbt) {
         if (!(nbt instanceof CompoundNBT)) {
             return null;
         }
         CompoundNBT compound = (CompoundNBT) nbt;
         String type = compound.getString("type");
-        IMultiblockType typeObj = PolymerCoreRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(type));
+        IMultiblockType typeObj = PolymerRegistries.MULTIBLOCK_TYPES.getValue(new ResourceLocation(type));
         if (typeObj == null) {
             return null;
         }
-        return typeObj.createFromNBT(world, compound);
+        return typeObj.createFromNBT(compound);
     }
 
     private static EnumMap<Direction, Vector3i> multiblockEdgeCache = null;
@@ -36,7 +36,7 @@ public class MultiblockUtils {
     /**
      * 计算一个多方快结构某个方向上最边缘的方块
      */
-    private static EnumMap<Direction, Vector3i> getMultiblockEdge(IDefinedMultiblock multiblock) {
+    private static EnumMap<Direction, Vector3i> getMultiblockEdge(IArchetypeMultiblock multiblock) {
         if (!Objects.equals(multiblock.getRegistryName(), cachedName)) {
             multiblockEdgeCache = null;
         }
@@ -101,7 +101,7 @@ public class MultiblockUtils {
     /**
      * 获取多方快放置最合适的位置
      */
-    public static BlockPos findMostSuitablePosition(IDefinedMultiblock multiblock, BlockPos hovering, Direction face, Rotation rotation, boolean isFlipped) {
+    public static BlockPos findMostSuitablePosition(IArchetypeMultiblock multiblock, BlockPos hovering, Direction face, Rotation rotation, boolean isFlipped) {
         EnumMap<Direction, Vector3i> multiblockEdge = getMultiblockEdge(multiblock);
 
         if (face.getAxis() == Direction.Axis.Y) {
