@@ -2,16 +2,19 @@ buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.13.6'
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'pl.allegro.tech.build.axion-release'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
 
 scmVersion {
@@ -49,7 +52,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'parchment', version: '2022.03.06-1.16.5'
 
     accessTransformer = file('src/main/resources/META-INF/polymer_at.cfg')
 
