@@ -15,27 +15,27 @@ public class CustomRenderTypeBuffer implements IRenderTypeBuffer {
     //Copied form net.minecraft.client.renderer.RenderTypeBuffers
     private final RegionRenderCacheBuilder fixedBuilder = new RegionRenderCacheBuilder();
     @SuppressWarnings("unchecked")
-    private final SortedMap<RenderType, BufferBuilder> fixedBuffers = (SortedMap<RenderType, BufferBuilder>) Util.make(new Object2ObjectLinkedOpenHashMap(), (p_228485_1_) -> {
-        p_228485_1_.put(Atlases.solidBlockSheet(), this.fixedBuilder.builder(RenderType.solid()));
-        p_228485_1_.put(Atlases.cutoutBlockSheet(), this.fixedBuilder.builder(RenderType.cutout()));
-        p_228485_1_.put(Atlases.bannerSheet(), this.fixedBuilder.builder(RenderType.cutoutMipped()));
-        p_228485_1_.put(Atlases.translucentCullBlockSheet(), this.fixedBuilder.builder(RenderType.translucent()));
-        put(p_228485_1_, Atlases.shieldSheet());
-        put(p_228485_1_, Atlases.bedSheet());
-        put(p_228485_1_, Atlases.shulkerBoxSheet());
-        put(p_228485_1_, Atlases.signSheet());
-        put(p_228485_1_, Atlases.chestSheet());
-        put(p_228485_1_, RenderType.translucentNoCrumbling());
-        put(p_228485_1_, RenderType.armorGlint());
-        put(p_228485_1_, RenderType.armorEntityGlint());
-        put(p_228485_1_, RenderType.glint());
-        put(p_228485_1_, RenderType.glintDirect());
-        put(p_228485_1_, RenderType.glintTranslucent());
-        put(p_228485_1_, RenderType.entityGlint());
-        put(p_228485_1_, RenderType.entityGlintDirect());
-        put(p_228485_1_, RenderType.waterMask());
+    private final SortedMap<RenderType, BufferBuilder> fixedBuffers = (SortedMap<RenderType, BufferBuilder>) Util.make(new Object2ObjectLinkedOpenHashMap(), (map) -> {
+        map.put(Atlases.solidBlockSheet(), this.fixedBuilder.builder(RenderType.solid()));
+        map.put(Atlases.cutoutBlockSheet(), this.fixedBuilder.builder(RenderType.cutout()));
+        map.put(Atlases.bannerSheet(), this.fixedBuilder.builder(RenderType.cutoutMipped()));
+        map.put(Atlases.translucentCullBlockSheet(), this.fixedBuilder.builder(RenderType.translucent()));
+        put(map, Atlases.shieldSheet());
+        put(map, Atlases.bedSheet());
+        put(map, Atlases.shulkerBoxSheet());
+        put(map, Atlases.signSheet());
+        put(map, Atlases.chestSheet());
+        put(map, RenderType.translucentNoCrumbling());
+        put(map, RenderType.armorGlint());
+        put(map, RenderType.armorEntityGlint());
+        put(map, RenderType.glint());
+        put(map, RenderType.glintDirect());
+        put(map, RenderType.glintTranslucent());
+        put(map, RenderType.entityGlint());
+        put(map, RenderType.entityGlintDirect());
+        put(map, RenderType.waterMask());
         ModelBakery.DESTROY_TYPES.forEach((p_228488_1_) -> {
-            put(p_228485_1_, p_228488_1_);
+            put(map, p_228488_1_);
         });
     });
 

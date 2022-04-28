@@ -4,13 +4,18 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
 import com.teampolymer.polymer.core.client.handler.MultiblockSchematicHandler;
 import com.teampolymer.polymer.core.client.renderer.CustomRenderTypeBuffer;
+import com.teampolymer.polymer.core.client.renderer.CustomRenderTypes;
+import com.teampolymer.polymer.core.client.shader.VanillaShaderManager;
 import com.teampolymer.polymer.core.client.utils.AnimationTickHelper;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
@@ -22,6 +27,10 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PolymerCoreApi.MOD_ID)
 @OnlyIn(Dist.CLIENT)
 public class ClientEventHandler {
+
+    private static int width = -1;
+    private static int height = -1;
+
     @SubscribeEvent
     public static void tickEnd(TickEvent.ClientTickEvent event) {
         if (isGameNotReady())
@@ -59,10 +68,29 @@ public class ClientEventHandler {
     }
 
 
+
     @SubscribeEvent
     public static void onWorldRenderLast(RenderWorldLastEvent event) {
         if (isGameNotReady())
             return;
+
+        Minecraft mc = Minecraft.getInstance();
+        MainWindow mainWindow = mc.getWindow();
+        int width = mainWindow.getWidth();
+        int height = mainWindow.getHeight();
+        if (ClientEventHandler.width != width || ClientEventHandler.height != height) {
+            ClientEventHandler.width = width;
+            ClientEventHandler.height = height;
+
+            VanillaShaderManager.forEachShader(it -> it.resize(width, height));
+        }
+
+        float pt = AnimationTickHelper.getPartialTicks();
+
+        VanillaShaderManager.forEachShader(it ->
+            it.beforeRender(pt)
+        );
+
         MatrixStack ms = event.getMatrixStack();
         ms.pushPose();
         //坐标向玩家视角偏移
@@ -70,10 +98,15 @@ public class ClientEventHandler {
         ms.translate(-view.x, -view.y, -view.z);
 
         CustomRenderTypeBuffer buffer = CustomRenderTypeBuffer.instance();
-        float pt = AnimationTickHelper.getPartialTicks();
         tickRenders(ms, buffer, pt);
         buffer.finish();
+        buffer.finish(CustomRenderTypes.TRANSPARENT_BLOCK);
+        buffer.finish(CustomRenderTypes.TRANSPARENT_BLOCK_DYNAMIC);
         ms.popPose();
+
+        VanillaShaderManager.forEachShader(it ->
+            it.render(pt)
+        );
 
     }
 

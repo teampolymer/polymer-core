@@ -1,0 +1,41 @@
+{
+    "targets": [
+        "schematic",
+        "dynamic",
+        "final"
+    ],
+    "passes": [
+        {
+            "name": "polymer-core:schematic",
+            "intarget": "minecraft:main",
+            "outtarget": "final",
+            "auxtargets": [
+                {
+                    "name": "DiffuseDepthSampler",
+                    "id": "minecraft:main:depth"
+                },
+                {
+                    "name": "SchematicSampler",
+                    "id": "schematic"
+                },
+                {
+                    "name": "SchematicDepthSampler",
+                    "id": "schematic:depth"
+                },
+                {
+                    "name": "DynamicSampler",
+                    "id": "dynamic"
+                },
+                {
+                    "name": "DynamicDepthSampler",
+                    "id": "dynamic:depth"
+                }
+            ]
+        },
+        {
+            "name": "minecraft:blit",
+            "intarget": "final",
+            "outtarget": "minecraft:main"
+        }
+    ]
+}

@@ -4,13 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.teampolymer.polymer.core.client.event.SchematicSpecialRenderEvent;
+import com.teampolymer.polymer.core.client.renderer.ColoredVertexBuilder;
 import com.teampolymer.polymer.core.client.renderer.CustomRenderTypes;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -30,10 +29,10 @@ public class RenderUtils {
                                    boolean isDynamic) {
 
 
-        boolean cancelled = MinecraftForge.EVENT_BUS.post(new SchematicSpecialRenderEvent(blockStateIn, bufferSource, ms, isDynamic, combinedLightIn));
-        if (cancelled) {
-            return;
-        }
+//        boolean cancelled = MinecraftForge.EVENT_BUS.post(new SchematicSpecialRenderEvent(blockStateIn, bufferSource, ms, isDynamic, combinedLightIn));
+//        if (cancelled) {
+//            return;
+//        }
 
         Minecraft mc = Minecraft.getInstance();
         BlockRendererDispatcher dispatcher = mc.getBlockRenderer();
@@ -43,7 +42,15 @@ public class RenderUtils {
             float r = (float) (i >> 16 & 255) / 255.0F;
             float g = (float) (i >> 8 & 255) / 255.0F;
             float b = (float) (i & 255) / 255.0F;
-            IVertexBuilder buffer = bufferSource.getBuffer(isDynamic ? CustomRenderTypes.TRANSPARENT_BLOCK_DYNAMIC : CustomRenderTypes.TRANSPARENT_BLOCK);
+//            IVertexBuilder buffer = bufferSource.getBuffer(RenderType.translucent());
+//            IVertexBuilder buffer = bufferSource.getBuffer(isDynamic ? CustomRenderTypes.TRANSPARENT_BLOCK_DYNAMIC : CustomRenderTypes.TRANSPARENT_BLOCK);
+            IVertexBuilder buffer = bufferSource.getBuffer( CustomRenderTypes.TRANSPARENT_BLOCK);
+
+            float factor = 0.3f;
+            if (isDynamic) {
+                factor = AnimationTickHelper.sinCirculateIn(0.6f, 1.0f, 30);
+            }
+            buffer = new ColoredVertexBuilder(buffer, 1.0f, 1.0f, 1.0f, factor);
             dispatcher.getModelRenderer().renderModel(
                 ms.last(),
                 buffer,
@@ -53,6 +60,7 @@ public class RenderUtils {
                 combinedLightIn,
                 OverlayTexture.NO_OVERLAY,
                 EmptyModelData.INSTANCE);
+
 
         } else if (blockStateIn.getRenderShape() == BlockRenderType.ENTITYBLOCK_ANIMATED) {
             GhostBlockUtils.renderGhostBlock(blockStateIn, bufferSource, ms, combinedLightIn, isDynamic);

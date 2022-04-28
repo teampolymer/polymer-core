@@ -36,6 +36,9 @@
     },
     "E": {
       "fluid": "minecraft:water"
+    },
+    "F": {
+      "block": "minecraft:chest"
     }
   },
   "core": "B",
@@ -46,7 +49,7 @@
       "ACCCD"
     ],
     [
-      "ACCCA",
+      "ACFCA",
       "AEDEA",
       "ACBCD"
     ],
