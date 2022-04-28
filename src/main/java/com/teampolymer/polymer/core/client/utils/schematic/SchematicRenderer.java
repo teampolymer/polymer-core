@@ -11,6 +11,7 @@ import com.teampolymer.polymer.core.api.util.PositionUtils;
 import com.teampolymer.polymer.core.client.renderer.CustomRenderTypeBuffer;
 import com.teampolymer.polymer.core.client.renderer.CustomRenderTypes;
 import com.teampolymer.polymer.core.client.utils.AnimationTickHelper;
+import com.teampolymer.polymer.core.client.utils.GhostBlockUtils;
 import com.teampolymer.polymer.core.client.utils.InputUtils;
 import com.teampolymer.polymer.core.client.utils.RenderUtils;
 import com.teampolymer.polymer.core.client.utils.math.SchematicTransform;
@@ -152,7 +153,7 @@ public class SchematicRenderer {
             IPartChoice choice = part.pickupChoice(current, MultiblockDirection.get(rotation, isSymmetrical));
             //找不到choice了，表示当前位置不合法
             if (choice == null) {
-                notEmptyAreas.put(entry.getKey(), current.getBlock() == Blocks.AIR);
+                notEmptyAreas.put(entry.getKey(), current.isAir());
             } else {
                 //TODO: 已经放置的方块，检查限制
             }
@@ -170,12 +171,8 @@ public class SchematicRenderer {
         Map<Vector3i, ISampleProvider> samples = getSchematicMultiblock().getSamples(transform.isFlipped());
         Vector3d view = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 
-        //转换视角
         Vector4f viewRelative = transformCamera(view, transform);
-
         SortedMap<Double, Vector3i> map = sortByDistance(samples.keySet(), viewRelative);
-
-
         ms.pushPose();
         if (animating) {
             transform.applyEntirely(ms);
@@ -190,13 +187,12 @@ public class SchematicRenderer {
                 //获取显示的样本
                 BlockState block = pickupSampleBlock(renderTicks, samples.get(relativePos));
                 //渲染投影
-                RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, false);
+                RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, GhostBlockUtils.GhostRenderType.STATIC);
                 ms.popPose();
             }
-
-
         } else {
             BlockPos hovering = InputUtils.getHoveringPos();
+            transform.applyEntirely(ms);
             //检查错误的方块并渲染
             for (Vector3i relativePos : map.values()) {
                 BlockPos offPos = PositionUtils.applyModifies(relativePos, offset, rotation, isSymmetrical);
@@ -206,35 +202,33 @@ public class SchematicRenderer {
                 ms.pushPose();
 
                 //渲染投影
-                if (notEmptyAreas.containsKey(relativePos))
-                    if (!notEmptyAreas.getBoolean(relativePos)) {
-                        ms.translate(offPos.getX(), offPos.getY(), offPos.getZ());
+                if (notEmptyAreas.containsKey(relativePos)) {
 
-                        transform.applyPartially(ms);
-                        //渲染错误的方块
-                        RenderUtils.renderCube(ms, buffer.getBuffer(CustomRenderTypes.CUBE_NO_DEPTH),
-                            0.15f, 0.15f, 0.15f,
-                            0.85f, 0.85f, 0.85f,
-                            0.9f, 0.3f, 0.25f, 0.4f);
+                    ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
+                    transform.applyPartially(ms);
+                    if (!notEmptyAreas.getBoolean(relativePos)) {
+                        //稍微缩小一点点
+                        ms.translate(0.15f, 0.15f, 0.15f);
+                        ms.scale(0.7f, 0.7f, 0.7f);
+
+                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, GhostBlockUtils.GhostRenderType.ERROR);
+
                     } else {
-                        transform.applyEntirely(ms);
-                        ms.translate(transform.getFlip() * relativePos.getX(), relativePos.getY(), relativePos.getZ());
-                        transform.applyPartially(ms);
                         //稍微缩小一点点
                         ms.translate(0.03f, 0.03f, 0.03f);
                         ms.scale(0.94f, 0.94f, 0.94f);
 
-                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, offPos.equals(hovering));
+
+                        RenderUtils.renderBlock(block, buffer, ms, 0xF000F0,
+                            offPos.equals(hovering) ? GhostBlockUtils.GhostRenderType.ANIMATED : GhostBlockUtils.GhostRenderType.STATIC);
 
                     }
-
+                }
                 ms.popPose();
 
             }
 
-            RenderSystem.disableDepthTest();
-            RenderSystem.depthFunc(515);
-            buffer.finish();
+//            buffer.finish();
         }
 
         ms.popPose();

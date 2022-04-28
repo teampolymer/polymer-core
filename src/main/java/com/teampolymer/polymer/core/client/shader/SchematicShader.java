@@ -1,28 +1,16 @@
 package com.teampolymer.polymer.core.client.shader;
 
 import com.google.gson.JsonSyntaxException;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.teampolymer.polymer.core.PolymerCore;
 import com.teampolymer.polymer.core.api.PolymerCoreApi;
-import com.teampolymer.polymer.core.client.renderer.CustomRenderTypeBuffer;
-import jdk.nashorn.internal.runtime.regexp.joni.WarnCallback;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.FaceBakery;
 import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderGroup;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 
 import java.io.IOException;
-import java.nio.IntBuffer;
 
 public class SchematicShader implements IVanillaShaderHelper {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -86,7 +74,7 @@ public class SchematicShader implements IVanillaShaderHelper {
     }
 
     @Override
-    public void render(float pt) {
+    public void postRender(float pt) {
         if (shader == null) {
             return;
         }

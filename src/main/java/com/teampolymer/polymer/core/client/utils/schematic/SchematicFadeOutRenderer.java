@@ -3,6 +3,7 @@ package com.teampolymer.polymer.core.client.utils.schematic;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teampolymer.polymer.core.client.renderer.CustomRenderTypeBuffer;
 import com.teampolymer.polymer.core.client.utils.AnimationTickHelper;
+import com.teampolymer.polymer.core.client.utils.GhostBlockUtils;
 import com.teampolymer.polymer.core.client.utils.RenderUtils;
 import com.teampolymer.polymer.core.client.utils.math.SchematicTransform;
 import com.teampolymer.polymer.core.client.utils.multiblock.ISampleProvider;
@@ -100,7 +101,7 @@ public class SchematicFadeOutRenderer {
             BlockState block = pickupSampleBlock(renderTicks, parts.get(relativePos));
             IModelData modelData = findModelData(block, relativePos, schematicMultiblock.getOriginalMultiblock());
             //渲染投影
-            RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, false);
+            RenderUtils.renderBlock(block, buffer, ms, 0xF000F0, GhostBlockUtils.GhostRenderType.STATIC);
 
             ms.popPose();
         }

@@ -1,6 +1,7 @@
 package com.teampolymer.polymer.core.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teampolymer.polymer.core.api.capability.IMultiblockLocateHandler;
 import com.teampolymer.polymer.core.api.capability.IMultiblockSupplier;
 import com.teampolymer.polymer.core.api.multiblock.IArchetypeMultiblock;
@@ -90,6 +91,7 @@ public class MultiblockSchematicHandler implements IRenderer {
 
     @Override
     public void doRender(MatrixStack ms, CustomRenderTypeBuffer buffer, float pt) {
+        RenderSystem.depthMask(false);
         //动画效果
         if (animatingTicks > 0 && targetTransform != null) {
             float percent = ((totalAnimatingTicks - animatingTicks) + pt) / totalAnimatingTicks;
@@ -115,6 +117,7 @@ public class MultiblockSchematicHandler implements IRenderer {
 
         }
 
+        RenderSystem.depthMask(true);
     }
 
 

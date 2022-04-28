@@ -68,6 +68,8 @@ public class CustomRenderTypeBuffer implements IRenderTypeBuffer {
 
     public void finish() {
         impl.endBatch();
+        impl.endBatch(CustomRenderTypes.SCHEMATIC_TRANSPARENT_NO_DEPTH);
+        impl.endBatch(CustomRenderTypes.SCHEMATIC_TRANSPARENT);
     }
 
     public void finish(RenderType renderType) {

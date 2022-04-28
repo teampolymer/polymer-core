@@ -45,7 +45,7 @@ public final class SchematicRenderUtils {
 
         Double2ObjectRBTreeMap<Vector3i> map = new Double2ObjectRBTreeMap<>(DoubleComparators.OPPOSITE_COMPARATOR);
         for (Vector3i relativePos : positions) {
-            double distanceSq = relativePos.distSqr(viewRelative.x(), viewRelative.y(), viewRelative.z(), true);
+            double distanceSq = relativePos.distSqr(viewRelative.x() - 0.5, viewRelative.y() - 0.5, viewRelative.z() - 0.5, true);
             map.put(distanceSq, relativePos);
         }
         return map;

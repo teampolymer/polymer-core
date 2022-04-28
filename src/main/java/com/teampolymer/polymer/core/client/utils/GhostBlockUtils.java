@@ -1,132 +1,109 @@
 package com.teampolymer.polymer.core.client.utils;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.teampolymer.polymer.core.api.PolymerCoreApi;
-import com.teampolymer.polymer.core.client.renderer.CustomRenderTypeBuffer;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import com.teampolymer.polymer.core.client.renderer.ColoredVertexBuilder;
+import com.teampolymer.polymer.core.client.renderer.CustomRenderTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import javax.annotation.Nullable;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.WeakHashMap;
 
 public class GhostBlockUtils {
 
-    private static IRenderTypeBuffer.Impl buffers = null;
-    private static IRenderTypeBuffer.Impl buffersDynamic = null;
-
+    public enum GhostRenderType {
+        NONE,
+        STATIC,
+        ANIMATED,
+        ERROR
+    }
 
     public static void renderGhostBlock(BlockState blockStateIn,
                                         IRenderTypeBuffer bufferSource,
                                         MatrixStack ms,
                                         int combinedLightIn,
-                                        boolean isDynamic) {
-        IRenderTypeBuffer.Impl impl;
-        if (bufferSource instanceof IRenderTypeBuffer.Impl) {
-            impl = (IRenderTypeBuffer.Impl) bufferSource;
-        } else if (bufferSource instanceof CustomRenderTypeBuffer) {
-            impl = ((CustomRenderTypeBuffer) bufferSource).getImpl();
-        } else {
-            return;
-        }
+                                        GhostRenderType type) {
 
         Minecraft mc = Minecraft.getInstance();
         BlockRendererDispatcher dispatcher = mc.getBlockRenderer();
+
+        dispatcher.renderBlock(blockStateIn, ms, wrap(bufferSource, type), combinedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+
+
+    }
+
+    public static IRenderTypeBuffer wrap(IRenderTypeBuffer bufferSource, GhostRenderType type) {
+        switch (type) {
+            case STATIC:
+                return GhostBlockUtils.wrap(bufferSource, false);
+            case ANIMATED:
+                return GhostBlockUtils.wrap(bufferSource, true);
+            case ERROR:
+                return GhostBlockUtils.wrapError(bufferSource);
+            default:
+                return bufferSource;
+        }
+    }
+
+
+    public static IVertexBuilder wrap(IVertexBuilder buffer, GhostRenderType type) {
+        switch (type) {
+            case STATIC:
+                return GhostBlockUtils.wrap(buffer, false);
+            case ANIMATED:
+                return GhostBlockUtils.wrap(buffer, true);
+            case ERROR:
+                return GhostBlockUtils.wrapError(buffer);
+            default:
+                return buffer;
+        }
+    }
+
+    public static IVertexBuilder wrap(IVertexBuilder delegate, boolean isDynamic) {
+        float factor = 0.5f;
         if (isDynamic) {
-
-            if (buffersDynamic == null) {
-                buffersDynamic = initBuffers(impl, () -> AnimationTickHelper.sinCirculateIn(0.6f, 1.0f, 30));
-            }
-            dispatcher.renderBlock(blockStateIn, ms, buffersDynamic, combinedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
-            buffersDynamic.endBatch();
-        } else {
-            if (buffers == null) {
-                buffers = initBuffers(impl, () -> 0.4f);
-            }
-            dispatcher.renderBlock(blockStateIn, ms, buffers, combinedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
-            buffers.endBatch();
+            factor = AnimationTickHelper.sinCirculateIn(0.6f, 1.0f, 30);
         }
+        return new ColoredVertexBuilder(delegate, 1.0f, 1.0f, 1.0f, factor);
+    }
 
+    public static IVertexBuilder wrapError(IVertexBuilder delegate) {
+        return new ColoredVertexBuilder(delegate, 1.0f, 0.2f, 0.16f, 0.8f);
+    }
+
+
+    private static final WeakHashMap<IRenderTypeBuffer, IRenderTypeBuffer> staticGhostBuffers = new WeakHashMap<>();
+    private static final WeakHashMap<IRenderTypeBuffer, IRenderTypeBuffer> dynamicGhostBuffers = new WeakHashMap<>();
+    private static final WeakHashMap<IRenderTypeBuffer, IRenderTypeBuffer> errorGhostBuffers = new WeakHashMap<>();
+
+
+    public static IRenderTypeBuffer wrapError(IRenderTypeBuffer delegate) {
+        return errorGhostBuffers.computeIfAbsent(delegate, GhostBlockUtils::wrapErrorImpl);
+    }
+
+    public static IRenderTypeBuffer wrap(IRenderTypeBuffer delegate, boolean isDynamic) {
+        if (isDynamic) {
+            return dynamicGhostBuffers.computeIfAbsent(delegate, GhostBlockUtils::wrapDynamicImpl);
+        }
+        return staticGhostBuffers.computeIfAbsent(delegate, GhostBlockUtils::wrapStaticImpl);
+    }
+
+
+    private static IRenderTypeBuffer wrapStaticImpl(IRenderTypeBuffer delegate) {
+        return (type) -> wrap(delegate.getBuffer(CustomRenderTypes.schematicFor(type, true)), false);
+    }
+
+    private static IRenderTypeBuffer wrapDynamicImpl(IRenderTypeBuffer delegate) {
+        return (type) -> wrap(delegate.getBuffer(CustomRenderTypes.schematicFor(type, true)), true);
+    }
+
+    public static IRenderTypeBuffer wrapErrorImpl(IRenderTypeBuffer delegate) {
+        return (type) -> wrapError(delegate.getBuffer(CustomRenderTypes.schematicFor(type, false)));
 
     }
 
 
-    private static IRenderTypeBuffer.Impl initBuffers(IRenderTypeBuffer.Impl original, Supplier<Float> alphaSupplier) {
-        BufferBuilder fallback = ObfuscationReflectionHelper.getPrivateValue(IRenderTypeBuffer.Impl.class, original, "builder");
-        Map<RenderType, BufferBuilder> layerBuffers = ObfuscationReflectionHelper.getPrivateValue(IRenderTypeBuffer.Impl.class, original, "fixedBuffers");
-        Map<RenderType, BufferBuilder> remapped = new Object2ObjectLinkedOpenHashMap<>();
-        Map<RenderType, RenderType> remappedTypes = new IdentityHashMap<>();
-        for (Map.Entry<RenderType, BufferBuilder> e : layerBuffers.entrySet()) {
-            remapped.put(GhostRenderType.remap(remappedTypes, e.getKey(), alphaSupplier), e.getValue());
-        }
-        return new GhostBuffers(fallback, remapped, remappedTypes, alphaSupplier);
-    }
-
-    private static class GhostBuffers extends IRenderTypeBuffer.Impl {
-        private final Map<RenderType, RenderType> remappedTypes;
-        public final Supplier<Float> alphaSupplier;
-
-        protected GhostBuffers(BufferBuilder fallback, Map<RenderType, BufferBuilder> layerBuffers, Map<RenderType, RenderType> remappedTypes, Supplier<Float> alphaSupplier) {
-            super(fallback, layerBuffers);
-            this.remappedTypes = remappedTypes;
-            this.alphaSupplier = alphaSupplier;
-        }
-
-        @Override
-        public IVertexBuilder getBuffer(RenderType type) {
-            return super.getBuffer(GhostRenderType.remap(remappedTypes, type, alphaSupplier));
-        }
-    }
-
-    private static class GhostRenderType extends RenderType {
-
-        private GhostRenderType(RenderType original, Supplier<Float> alphaSupplier) {
-            super(String.format("%s_%s_ghost", original.toString(), PolymerCoreApi.MOD_ID), original.format(), original.mode(), original.bufferSize(), original.affectsCrumbling(), true, () -> {
-                original.setupRenderState();
-
-                // Alter GL state
-                RenderSystem.enableDepthTest();
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SourceFactor.CONSTANT_ALPHA, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_ALPHA);
-                RenderSystem.blendColor(1, 1, 1, alphaSupplier.get());
-            }, () -> {
-                RenderSystem.blendColor(1, 1, 1, 1);
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.disableBlend();
-                RenderSystem.disableDepthTest();
-
-                original.clearRenderState();
-            });
-        }
-
-        @Override
-        public boolean equals(@Nullable Object other) {
-            return this == other;
-        }
-
-        @Override
-        public int hashCode() {
-            return System.identityHashCode(this);
-        }
-
-        public static RenderType remap(Map<RenderType, RenderType> remappedTypes, RenderType in, Supplier<Float> alphaSupplier) {
-            if (in instanceof GhostRenderType) {
-                return in;
-            } else {
-                return remappedTypes.computeIfAbsent(in, it -> new GhostRenderType(it, alphaSupplier));
-            }
-        }
-    }
 }

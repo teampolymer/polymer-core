@@ -11,32 +11,38 @@ public abstract class WrappedVertexBuilder implements IVertexBuilder {
 
     @Override
     public IVertexBuilder vertex(double pX, double pY, double pZ) {
-        return delegate.vertex(pX, pY, pZ);
+        delegate.vertex(pX, pY, pZ);
+        return this;
     }
 
     @Override
     public IVertexBuilder color(int pRed, int pGreen, int pBlue, int pAlpha) {
-        return delegate.color(pRed, pGreen, pBlue, pAlpha);
+        delegate.color(pRed, pGreen, pBlue, pAlpha);
+        return this;
     }
 
     @Override
     public IVertexBuilder uv(float pU, float pV) {
-        return delegate.uv(pU, pV);
+        delegate.uv(pU, pV);
+        return this;
     }
 
     @Override
     public IVertexBuilder overlayCoords(int pU, int pV) {
-        return delegate.overlayCoords(pU, pV);
+        delegate.overlayCoords(pU, pV);
+        return this;
     }
 
     @Override
     public IVertexBuilder uv2(int pU, int pV) {
-        return delegate.uv2(pU, pV);
+        delegate.uv2(pU, pV);
+        return this;
     }
 
     @Override
     public IVertexBuilder normal(float pX, float pY, float pZ) {
-        return delegate.normal(pX, pY, pZ);
+        delegate.normal(pX, pY, pZ);
+        return this;
     }
 
     @Override

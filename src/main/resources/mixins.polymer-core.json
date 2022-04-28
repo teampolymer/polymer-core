@@ -1,0 +1,8 @@
+{
+  "package": "com.teampolymer.polymer.core.mixin",
+  "mixins": [],
+  "client": [
+    "MixinWorldRender"
+  ],
+  "server": []
+}

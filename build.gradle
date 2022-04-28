@@ -9,6 +9,7 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.13.6'
         classpath 'org.parchmentmc:librarian:1.+'
+        classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
 
@@ -16,6 +17,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'pl.allegro.tech.build.axion-release'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
 scmVersion {
     tag {
@@ -73,6 +75,9 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+            // Allow dependent mixins to run
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             mods {
                 'polymer-core' {
@@ -95,6 +100,9 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+            // Allow dependent mixins to run
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             mods {
                 'polymer-core' {
@@ -117,6 +125,9 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+            // Allow dependent mixins to run
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
             args '--mod', 'polymer-core', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
@@ -146,6 +157,13 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.20'
     implementation 'org.jetbrains:annotations:23.0.0'
 
+}
+
+
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, "mixins.polymer-core.refmap.json"
+    config "mixins.polymer-core.json"
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
